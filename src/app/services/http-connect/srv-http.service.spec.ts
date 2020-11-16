@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { HttpConnectService } from './http-connect.service';
+import { SrvHttpService } from './srv-http.service';
 
-describe('HttpConnectService', () => {
-  let service: HttpConnectService;
+describe('SrvHttpService', () => {
+  let service: SrvHttpService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(HttpConnectService);
+    service = TestBed.inject(SrvHttpService);
   });
 
   it('should be created', () => {
