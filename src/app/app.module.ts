@@ -1,3 +1,5 @@
+import { AppSettingsService } from './services/app-settings/app-settings.service';
+
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
@@ -18,7 +20,10 @@ import { AppComponent } from 'app/app.component';
 import { LayoutModule } from 'app/layout/layout.module';
 import { SampleModule } from 'app/main/sample/sample.module';
 import { LandingPageModule } from 'app/main/pages/landing-page/landing-page.module';
-import { HttpConnectService } from 'app/services/http-connect/http-connect.service';
+import { SrvHttpService } from 'app/services/http-connect/srv-http.service';
+import { SrvCookieService } from 'app/services/srv-cookie/srv-cookie.service';
+import { LogPublishersService } from './shared/log-publishers.service';
+import { LoggerService } from './services/logger/logger.service';
 
 const appRoutes: Routes = [
     {
@@ -59,7 +64,11 @@ const appRoutes: Routes = [
         LandingPageModule
     ],
     providers: [
-        HttpConnectService
+        SrvHttpService,
+        SrvCookieService,
+        LoggerService,
+        LogPublishersService,
+        AppSettingsService
     ],
     bootstrap   : [
         AppComponent
