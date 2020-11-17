@@ -2,16 +2,19 @@
     {
         "loggerName": "console",
         "loggerLocation": "",
+        "logLevels": [3,4,5],
         "isActive":  true
     },
     {
         "loggerName": "localstorage",
         "loggerLocation": "logging",
+        "logLevels": [3,4,5],
         "isActive": true
     },
     {
         "loggerName": "webapi",
         "loggerLocation": "/api/log",
+        "logLevels": [3,4,5],
         "isActive": true
     }
 ]

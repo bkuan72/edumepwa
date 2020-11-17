@@ -1,3 +1,4 @@
+import { LogLevel } from './../services/logger/logger.service';
 import { catchError, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { LogServer } from './log-server';
@@ -7,9 +8,10 @@ import { Injectable } from '@angular/core';
 import { LogLocalStorage } from './log-local-storage';
 const PUBLISHERS_FILE = '/src/app/assets/log-publishers.json';
 
-class LogPublisherConfig {
+export class LogPublisherConfig {
     loggerName: string;
     loggerLocation: string;
+    logLevels: LogLevel[];
     isActive: boolean;
 }
 
@@ -42,10 +44,10 @@ export class LogPublishersService {
                         logPub = new LogConsole();
                         break;
                     case 'localstorage':
-                        logPub = new LogLocalStorage();
+                        logPub = new LogLocalStorage(pub);
                         break;
                     case 'webapi':
-                        logPub = new LogServer(this.http);
+                        logPub = new LogServer(this.http, pub);
                         break;
                 }
 
