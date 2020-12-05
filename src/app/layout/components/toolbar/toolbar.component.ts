@@ -1,3 +1,5 @@
+import { Router } from '@angular/router';
+import { AuthenticationService } from './../../../services/authentication/authentication.service';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -39,7 +41,9 @@ export class ToolbarComponent implements OnInit, OnDestroy
     constructor(
         private _fuseConfigService: FuseConfigService,
         private _fuseSidebarService: FuseSidebarService,
-        private _translateService: TranslateService
+        private _translateService: TranslateService,
+        private auth: AuthenticationService,
+        private router: Router
     )
     {
         // Set the defaults
@@ -159,5 +163,16 @@ export class ToolbarComponent implements OnInit, OnDestroy
 
         // Use the selected language for translations
         this._translateService.use(lang.id);
+    }
+
+    isAuth(): boolean {
+        return this.auth.isLoggedIn();
+    }
+    
+    doLogin(): void {
+        this.router.navigateByUrl('pages/authentication/login');
+    }
+    doLogout(): void {
+        this.auth.logout();
     }
 }

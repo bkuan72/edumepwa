@@ -1,3 +1,6 @@
+import { PagesModule } from './main/pages/pages.module';
+import { CommonFn } from './shared/common-fn';
+import { AlertService } from './services/alert/alert.service';
 import { AppSettingsService } from './services/app-settings/app-settings.service';
 
 import { NgModule } from '@angular/core';
@@ -18,17 +21,19 @@ import { fuseConfig } from 'app/fuse-config';
 
 import { AppComponent } from 'app/app.component';
 import { LayoutModule } from 'app/layout/layout.module';
-import { SampleModule } from 'app/main/sample/sample.module';
-import { LandingPageModule } from 'app/main/pages/landing-page/landing-page.module';
 import { SrvHttpService } from 'app/services/http-connect/srv-http.service';
-import { SrvCookieService } from 'app/services/srv-cookie/srv-cookie.service';
+import { SrvAuthTokenService } from 'app/services/srv-cookie/srv-auth-token.service';
 import { LogPublishersService } from './shared/log-publishers.service';
 import { LoggerService } from './services/logger/logger.service';
 
 const appRoutes: Routes = [
     {
-        path      : '**',
-        redirectTo: 'pages/landing-page'
+        path        : 'pages',
+        loadChildren: () => import('./main/pages/pages.module').then(m => m.PagesModule)
+    },
+    {
+        path        : '**',
+        redirectTo  :  'search/modern'
     }
 ];
 
@@ -60,15 +65,16 @@ const appRoutes: Routes = [
 
         // App modules
         LayoutModule,
-        SampleModule,
-        LandingPageModule
+        PagesModule
     ],
     providers: [
         SrvHttpService,
-        SrvCookieService,
+        SrvAuthTokenService,
         LoggerService,
         LogPublishersService,
-        AppSettingsService
+        AppSettingsService,
+        AlertService,
+        CommonFn
     ],
     bootstrap   : [
         AppComponent

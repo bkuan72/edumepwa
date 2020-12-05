@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SrvCookieService } from './srv-cookie.service';
+import { SrvAuthTokenService } from './srv-auth-token.service';
 
 describe('CookieService', () => {
-  let service: SrvCookieService;
+  let service: SrvAuthTokenService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SrvCookieService);
+    service = TestBed.inject(SrvAuthTokenService);
   });
 
   it('should be created', () => {

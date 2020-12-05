@@ -9,23 +9,23 @@ import { MatTabsModule } from '@angular/material/tabs';
 
 import { FuseSharedModule } from '@fuse/shared.module';
 
-import { LandingPageComponent } from './landing-page.component';
-import { LandingPageService } from './landing-page.service';
+import { SearchModernComponent } from 'app/main/pages/search/modern/search-modern.component';
+import { SearchModernService } from 'app/main/pages/search/modern/search-modern.service';
 
 
 const routes = [
     {
-        path     : 'landing-page',
-        component: LandingPageComponent,
+        path     : 'search/modern',
+        component: SearchModernComponent,
         resolve  : {
-            search: LandingPageService
+            search: SearchModernService
         }
     }
 ];
 
 @NgModule({
     declarations: [
-        LandingPageComponent,
+        SearchModernComponent,
     ],
     imports     : [
         RouterModule.forChild(routes),
@@ -40,9 +40,9 @@ const routes = [
         FuseSharedModule
     ],
     providers   : [
-        LandingPageService
+        SearchModernService
     ]
 })
-export class LandingPageModule
+export class SearchModernModule
 {
 }

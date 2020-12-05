@@ -1,19 +1,21 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+
+import { fuseAnimations } from '@fuse/animations';
+
+import { ProfileService } from '../../profile.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { LandingPageService } from './landing-page.service';
-
-
 
 @Component({
-    selector     : 'landing-page',
-    templateUrl  : './landing-page.component.html',
-    styleUrls    : ['./landing-page.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    selector     : 'profile-timeline',
+    templateUrl  : './timeline.component.html',
+    styleUrls    : ['./timeline.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    animations   : fuseAnimations
 })
-export class LandingPageComponent implements OnInit, OnDestroy
+export class ProfileTimelineComponent implements OnInit, OnDestroy
 {
-    searchItems: any[];
+    timeline: any;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -21,15 +23,14 @@ export class LandingPageComponent implements OnInit, OnDestroy
     /**
      * Constructor
      *
-     * @param {LandingPageService} _searchModernService
+     * @param {ProfileService} _profileService
      */
     constructor(
-        private _searchModernService: LandingPageService
+        private _profileService: ProfileService
     )
     {
         // Set the private defaults
         this._unsubscribeAll = new Subject();
-        this.searchItems = [];
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -41,10 +42,10 @@ export class LandingPageComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        this._searchModernService.dataOnChanged
+        this._profileService.timelineOnChanged
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(searchItems => {
-                this.searchItems = searchItems;
+            .subscribe(timeline => {
+                this.timeline = timeline;
             });
     }
 

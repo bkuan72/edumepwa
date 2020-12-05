@@ -1,6 +1,6 @@
+import { SrvApiEnvEnum } from './SrvApiEnvEnum';
 import { isUndefined } from 'lodash';
 import { catchError, map } from 'rxjs/operators';
-import { HttpResponse } from '@angular/common/http';
 import { SrvHttpService } from './../services/http-connect/srv-http.service';
 import { Observable, of, throwError } from 'rxjs';
 import { LogEntry } from '../services/logger/logger.service';
@@ -14,9 +14,6 @@ export class LogServer extends LogPublisher {
         ) {
         // Must call `super()`from derived classes
         super();
-
-        // Set location
-        this.location = '/api/log';
     }
 
     // Clear all log entries from local storage
@@ -39,13 +36,14 @@ export class LogServer extends LogPublisher {
         }
 
         if (sendLog) {
-            const httpConfig = this.http.getSrvHttpConfig(this.location,
+            const httpConfig = this.http.getSrvHttpConfig(SrvApiEnvEnum.log,
                 [],
                 entry,
-                'application/json');
+                'application/json',
+                false);
             return this.http.PostObs(httpConfig, true)
             .pipe(map(response => response.json()),
-            catchError(this.http.handleErrors));
+            catchError(this.http.handleObsErrors));
         } else {
             return of(true);
         }

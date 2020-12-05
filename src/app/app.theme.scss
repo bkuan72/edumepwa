@@ -80,6 +80,20 @@ $typography: mat-typography-config(
 // Import app and page component themes here to enable theming for them
 @import "src/app/layout/components/chat-panel/chat-panel.theme";
 @import "src/app/layout/components/toolbar/toolbar.theme";
+@import "src/app/main/pages/authentication/login/login.theme";
+@import "src/app/main/pages/authentication/register/register.theme";
+@import "src/app/main/pages/authentication/reset-password/reset-password.theme";
+@import "src/app/main/pages/authentication/forgot-password/forgot-password.theme";
+@import "src/app/main/pages/authentication/lock/lock.theme";
+@import "src/app/main/pages/authentication/mail-confirm/mail-confirm.theme";
+@import "src/app/main/pages/coming-soon/coming-soon.theme";
+@import "src/app/main/pages/errors/404/error-404.theme";
+@import "src/app/main/pages/errors/500/error-500.theme";
+@import "src/app/main/pages/profile/tabs/about/about.theme";
+@import "src/app/main/pages/profile/tabs/photos-videos/photos-videos.theme";
+@import "src/app/main/pages/profile/tabs/timeline/timeline.theme";
+
+
 
 // Define a mixin for easier access
 @mixin components-theme($theme) {
@@ -87,6 +101,17 @@ $typography: mat-typography-config(
     // Layout components
     @include chat-panel-theme($theme);
     @include toolbar-theme($theme);
+    @include login-theme($theme);
+    @include register-theme($theme);
+    @include reset-password-theme($theme);
+    @include forgot-password-theme($theme);
+    @include lock-theme($theme);
+    @include mail-confirm-theme($theme);
+    @include coming-soon-theme($theme);
+    @include error-404-theme($theme);
+    @include error-500-theme($theme);
+    @include profile-photos-videos-theme($theme);
+    @include profile-timeline-theme($theme);
 }
 
 // -----------------------------------------------------------------------------------------------------

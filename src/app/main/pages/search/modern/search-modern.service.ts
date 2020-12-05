@@ -1,10 +1,12 @@
+import { CommonFn } from './../../../../shared/common-fn';
+import { SrvApiEnvEnum } from './../../../../shared/SrvApiEnvEnum';
+import { SrvHttpService } from 'app/services/http-connect/srv-http.service';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable()
-export class LandingPageService implements Resolve<any>
+export class SearchModernService implements Resolve<any>
 {
     data: any;
     dataOnChanged: BehaviorSubject<any>;
@@ -15,7 +17,7 @@ export class LandingPageService implements Resolve<any>
      * @param {HttpClient} _httpClient
      */
     constructor(
-        private _httpClient: HttpClient
+        private _http: SrvHttpService
     )
     {
         // Set the defaults
@@ -33,7 +35,7 @@ export class LandingPageService implements Resolve<any>
     {
         return new Promise((resolve, reject) => {
             Promise.all([
-                this.getSearchData()
+                this.getSearchData('')
             ]).then(
                 () => {
                     resolve();
@@ -46,16 +48,24 @@ export class LandingPageService implements Resolve<any>
     /**
      * Get search data
      */
-    getSearchData(): Promise<any[]>
+    getSearchData(searchStr: string): Promise<any[]>
     {
         return new Promise((resolve, reject) => {
-
-            this._httpClient.get('api/search')
-                .subscribe((data: any) => {
-                    this.data = data;
-                    this.dataOnChanged.next(this.data);
-                    resolve(this.data);
+        let httpConfig: any;
+        if (searchStr.length === 0) {
+            httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.advertisements
+                );
+        } else {
+            httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.advertisementSearch,
+                [searchStr],
+                );
+        }
+        this._http.GetObs(httpConfig, true)
+            .subscribe((data: any) => {
+                this.data = data;
+                this.dataOnChanged.next(this.data);
+                resolve(this.data);
                 }, reject);
-        });
+    });
     }
 }

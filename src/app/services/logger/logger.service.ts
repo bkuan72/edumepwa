@@ -19,15 +19,11 @@ export class LogEntry {
     message = '';
     level: LogLevel = LogLevel.Debug;
     extraInfo: any[] = [];
-    logWithDate = true;
 
     buildLogString(): string {
         let ret = '';
 
-        if (this.logWithDate) {
-            ret = new Date() + ' - ';
-        }
-
+        ret = new Date() + ' - ';
         ret += 'Type: ' + LogLevel[this.level];
         ret += ' - Message: ' + this.message;
         if (this.extraInfo.length) {
@@ -86,7 +82,6 @@ export class LoggerService {
             entry.message = msg;
             entry.level = level;
             entry.extraInfo = params;
-            entry.logWithDate = this.logWithDate;
             for (const logger of this.publishers) {
                 logger.log(entry).subscribe(response => console.log(response));
             }

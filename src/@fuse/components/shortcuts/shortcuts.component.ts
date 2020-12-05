@@ -35,14 +35,14 @@ export class FuseShortcutsComponent implements OnInit, AfterViewInit, OnDestroy
     /**
      * Constructor
      *
-     * @param {CookieService} _cookieService
+     * @param {CookieService} _authTokenService
      * @param {FuseMatchMediaService} _fuseMatchMediaService
      * @param {FuseNavigationService} _fuseNavigationService
      * @param {MediaObserver} _mediaObserver
      * @param {Renderer2} _renderer
      */
     constructor(
-        private _cookieService: CookieService,
+        private _authTokenService: CookieService,
         private _fuseMatchMediaService: FuseMatchMediaService,
         private _fuseNavigationService: FuseNavigationService,
         private _mediaObserver: MediaObserver,
@@ -70,9 +70,9 @@ export class FuseShortcutsComponent implements OnInit, AfterViewInit, OnDestroy
         // Get the navigation items and flatten them
         this.filteredNavigationItems = this.navigationItems = this._fuseNavigationService.getFlatNavigation(this.navigation);
 
-        if ( this._cookieService.check('FUSE2.shortcuts') )
+        if ( this._authTokenService.check('FUSE2.shortcuts') )
         {
-            this.shortcutItems = JSON.parse(this._cookieService.get('FUSE2.shortcuts'));
+            this.shortcutItems = JSON.parse(this._authTokenService.get('FUSE2.shortcuts'));
         }
         else
         {
@@ -175,7 +175,7 @@ export class FuseShortcutsComponent implements OnInit, AfterViewInit, OnDestroy
                 this.shortcutItems.splice(i, 1);
 
                 // Save to the cookies
-                this._cookieService.set('FUSE2.shortcuts', JSON.stringify(this.shortcutItems));
+                this._authTokenService.set('FUSE2.shortcuts', JSON.stringify(this.shortcutItems));
 
                 return;
             }
@@ -184,7 +184,7 @@ export class FuseShortcutsComponent implements OnInit, AfterViewInit, OnDestroy
         this.shortcutItems.push(itemToToggle);
 
         // Save to the cookies
-        this._cookieService.set('FUSE2.shortcuts', JSON.stringify(this.shortcutItems));
+        this._authTokenService.set('FUSE2.shortcuts', JSON.stringify(this.shortcutItems));
     }
 
     /**

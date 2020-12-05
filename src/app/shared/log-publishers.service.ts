@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { LogLevel } from './../services/logger/logger.service';
 import { catchError, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -6,7 +7,7 @@ import { SrvHttpService } from 'app/services/http-connect/srv-http.service';
 import { LogConsole, LogPublisher } from './log-publisher';
 import { Injectable } from '@angular/core';
 import { LogLocalStorage } from './log-local-storage';
-const PUBLISHERS_FILE = '/src/app/assets/log-publishers.json';
+const PUBLISHERS_FILE = 'assets/log-publishers.json';
 
 export class LogPublisherConfig {
     loggerName: string;
@@ -20,18 +21,15 @@ export class LogPublisherConfig {
 })
 export class LogPublishersService {
     publishers: LogPublisher[] = [];
-    constructor(private http: SrvHttpService) {
+    constructor(private _httpClient: HttpClient,
+                private http: SrvHttpService) {
         this.buildPublishers();
     }
 
-    getLoggers(): Observable<LogPublisherConfig[]> {
-        const httpConfig = this.http.getSrvHttpConfig(PUBLISHERS_FILE,
-            [],
-            undefined,
-            'application/json');
-        return this.http.GetObs(httpConfig, true)
-                .pipe(map(response => response.json()),
-                catchError(this.http.handleErrors));
+    getLoggers(): Observable<any> {
+        return this._httpClient.get(
+            PUBLISHERS_FILE
+        );
     }
 
     buildPublishers = (): void => {

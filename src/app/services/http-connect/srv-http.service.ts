@@ -1,12 +1,20 @@
+import { AlertService } from './../alert/alert.service';
 import { AppSettingsService } from './../app-settings/app-settings.service';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { isUndefined } from 'lodash';
-import { SrvCookieService } from 'app/services/srv-cookie/srv-cookie.service';
+import { SrvAuthTokenService } from 'app/services/srv-cookie/srv-auth-token.service';
 import { Observable, throwError } from 'rxjs';
 import { AppSettings } from 'app/shared/app-settings';
 
 export class HttpConfig {
+    private _withCredentials: boolean;
+    public get withCredentials(): boolean {
+        return this._withCredentials;
+    }
+    public set withCredentials(value: boolean) {
+        this._withCredentials = value;
+    }
     private _srvApi: boolean;
     public get srvApi(): boolean {
         return this._srvApi;
@@ -42,6 +50,7 @@ export class HttpConfig {
         this._headers = value;
     }
 
+
     private _requestTimeStamp: number;
     public get requestTimeStamp(): number {
         return this._requestTimeStamp;
@@ -61,7 +70,8 @@ export class HttpConfig {
         this.srvApi = false;
         this.url = url;
         this.data = httpData;
-        this.headers = { contentType: 'application/x-www-form-urlencoded' };
+        this.withCredentials = false;
+        this.headers = { contentType: 'application/json; charset=utf-8' };
     }
 }
 
@@ -73,10 +83,11 @@ export class SrvHttpService {
     private serverUrl: string;
     constructor(
         private _httpClient: HttpClient,
-        private _cookie: SrvCookieService,
-        private _appSettings: AppSettingsService
+        private _authToken: SrvAuthTokenService,
+        private _appSettings: AppSettingsService,
+        private alert: AlertService
     ) {
-        this.serverUrl = 'http://localhost:3000';
+        this.serverUrl = 'http://localhost:3300';
         this._appSettings.getSettings().subscribe(settings => this.settings = settings, () => null, () => {
                 this.serverUrl = this.settings.defaultUrl;
             });
@@ -84,9 +95,10 @@ export class SrvHttpService {
 
     getSrvHttpConfig = (
         apiPath: string,
-        paramArray: string[],
-        httpData: any,
-        contentType?: string
+        paramArray?: string[],
+        httpData?: any,
+        contentType?: string,
+        withCredentials?: boolean
     ): HttpConfig => {
         let httpUrl = this.serverUrl + apiPath;
         if (!isUndefined(paramArray) && paramArray.length > 0) {
@@ -103,6 +115,12 @@ export class SrvHttpService {
         }
         const config = new HttpConfig(httpUrl, httpData);
         config.srvApi = true;
+        if (contentType) {
+            config.headers.contentType = contentType;
+        }
+        if (withCredentials !== undefined) {
+            config.withCredentials = withCredentials;
+        }
         return config;
     }
 
@@ -134,34 +152,35 @@ export class SrvHttpService {
 
     GetObs = (srvConfig: HttpConfig, silentOnError: boolean): Observable<any> => {
         let httpHdr: HttpHeaders = new HttpHeaders();
-        if (srvConfig.srvApi && !isUndefined(this._cookie.cookie)) {
-            httpHdr = httpHdr.append('Cookie', this._cookie.cookie);
+        if (srvConfig.srvApi && !this._authToken.isUndefined()) {
+            httpHdr = httpHdr.append('Authorization', this._authToken.getAuthToken());
         }
         srvConfig.requestTimeStamp = new Date().getTime();
         return this._httpClient
-            .get(srvConfig.url, { headers: httpHdr});
+            .get(srvConfig.url, { headers: httpHdr, withCredentials: srvConfig.withCredentials });
     }
 
 
     Get = (srvConfig: HttpConfig, silentOnError: boolean): Promise<object> => {
         return new Promise((resolve, reject) => {
             let httpHdr: HttpHeaders = new HttpHeaders();
-            if (srvConfig.srvApi && !isUndefined(this._cookie.cookie)) {
-                httpHdr = httpHdr.append('Cookie', this._cookie.cookie);
+            if (srvConfig.srvApi && !this._authToken.isUndefined()) {
+                httpHdr = httpHdr.append('Authorization', this._authToken.getAuthToken());
             }
             srvConfig.requestTimeStamp = new Date().getTime();
             this._httpClient
-                .get(srvConfig.url, { headers: httpHdr, observe: 'response' })
+                .get(srvConfig.url, { headers: httpHdr, observe: 'response', withCredentials: srvConfig.withCredentials })
                 .subscribe(
                     (httpResponse: HttpResponse<object>) => {
                         // SUCCESS
                         srvConfig.responseTimeStamp = new Date().getTime();
                         resolve(httpResponse.body);
                     },
-                    (httpError) => {
+                    (httpError: HttpErrorResponse) => {
                         srvConfig.responseTimeStamp = new Date().getTime();
                         // FAILURE
                         if (!silentOnError) {
+                            this.handleErrors(httpError);
                         }
                         reject(httpError);
                     }
@@ -169,11 +188,11 @@ export class SrvHttpService {
         });
     }
 
-    Post = (srvConfig: HttpConfig, silentOnError: boolean) => {
+    Post = (srvConfig: HttpConfig, silentOnError: boolean): Promise<any> => {
         return new Promise((resolve, reject) => {
             let httpHdr: HttpHeaders = new HttpHeaders();
-            if (srvConfig.srvApi && !isUndefined(this._cookie.cookie)) {
-                httpHdr = httpHdr.append('Cookie', this._cookie.cookie);
+            if (srvConfig.srvApi && !this._authToken.isUndefined()) {
+                httpHdr = httpHdr.append('Authorization', this._authToken.getAuthToken());
             }
             httpHdr = httpHdr.append(
                 'Content-Type',
@@ -185,6 +204,7 @@ export class SrvHttpService {
                     headers: httpHdr,
                     observe: 'response',
                     responseType: 'json',
+                    withCredentials: srvConfig.withCredentials
                 })
                 .subscribe(
                     (httpResponse: HttpResponse<object>) => {
@@ -192,10 +212,11 @@ export class SrvHttpService {
                         // SUCCESS
                         resolve(httpResponse.body);
                     },
-                    (httpError) => {
+                    (httpError: HttpErrorResponse) => {
                         srvConfig.responseTimeStamp = new Date().getTime();
                         // FAILURE
                         if (!silentOnError) {
+                            this.handleErrors(httpError);
                         }
                         reject(httpError);
                     }
@@ -205,8 +226,8 @@ export class SrvHttpService {
 
     PostObs = (srvConfig: HttpConfig, silentOnError: boolean): Observable<any>  => {
             let httpHdr: HttpHeaders = new HttpHeaders();
-            if (srvConfig.srvApi && !isUndefined(this._cookie.cookie)) {
-                httpHdr = httpHdr.append('Cookie', this._cookie.cookie);
+            if (srvConfig.srvApi && !this._authToken.isUndefined()) {
+                httpHdr = httpHdr.append('Authorization', this._authToken.getAuthToken());
             }
             httpHdr = httpHdr.append(
                 'Content-Type',
@@ -215,15 +236,15 @@ export class SrvHttpService {
             srvConfig.requestTimeStamp = new Date().getTime();
             return this._httpClient
                 .post(srvConfig.url, srvConfig.data, {
-                    headers: httpHdr
+                    headers: httpHdr, withCredentials: srvConfig.withCredentials
                 });
     }
 
-    Put = (srvConfig: HttpConfig, silentOnError: boolean) => {
+    Put = (srvConfig: HttpConfig, silentOnError: boolean): Promise<any>  => {
         return new Promise((resolve, reject) => {
             let httpHdr: HttpHeaders = new HttpHeaders();
-            if (srvConfig.srvApi && !isUndefined(this._cookie.cookie)) {
-                httpHdr = httpHdr.append('Cookie', this._cookie.cookie);
+            if (srvConfig.srvApi && !this._authToken.isUndefined()) {
+                httpHdr = httpHdr.append('Authorization', this._authToken.getAuthToken());
             }
             httpHdr = httpHdr.append(
                 'Content-Type',
@@ -235,6 +256,7 @@ export class SrvHttpService {
                     headers: httpHdr,
                     observe: 'response',
                     responseType: 'json',
+                    withCredentials: srvConfig.withCredentials
                 })
                 .subscribe(
                     (httpResponse: HttpResponse<object>) => {
@@ -242,10 +264,11 @@ export class SrvHttpService {
                         // SUCCESS
                         resolve(httpResponse.body);
                     },
-                    (httpError) => {
+                    (httpError: HttpErrorResponse) => {
                         srvConfig.responseTimeStamp = new Date().getTime();
                         // FAILURE
                         if (!silentOnError) {
+                            this.handleErrors(httpError);
                         }
                         reject(httpError);
                     }
@@ -255,14 +278,17 @@ export class SrvHttpService {
 
     }
 
-    handleErrors = (error: any): Observable<any> => {
+    handleErrors = (httpError: HttpErrorResponse): void => {
+        this.alert.warn(httpError.error);
+    }
+    handleObsErrors = (error: HttpErrorResponse): Observable<any> => {
         const errors: string[] = [];
         let msg = '';
 
         msg = 'Status: ' + error.status;
         msg += ' - Status Text: ' + error.statusText;
-        if (error.json()) {
-            msg += ' - Exception Message: ' + error.json().exceptionMessage;
+        if (error.error) {
+            msg += ' - Exception Message: ' + error.error;
         }
         errors.push(msg);
 
