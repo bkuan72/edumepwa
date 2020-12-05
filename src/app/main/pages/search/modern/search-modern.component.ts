@@ -1,3 +1,4 @@
+import { CommonFn } from './../../../../shared/common-fn';
 import { AppSettings } from './../../../../shared/app-settings';
 import { isUndefined, isArray } from 'lodash';
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, ElementRef, AfterViewInit } from '@angular/core';
@@ -35,7 +36,8 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
      */
     constructor(
         private _searchModernService: SearchModernService,
-        private _appSettings: AppSettingsService
+        private _appSettings: AppSettingsService,
+        private _commonFn: CommonFn
     )
     {
         // Set the private defaults
@@ -68,7 +70,7 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
                 if (isArray(results) && !isUndefined(results.length)) {
                     this.foundItems = results;
                     this.searchItems = [];
-                    this.doLoadPage(0);
+                    this.doLoadPage(1);
                 }
             });
     }
@@ -97,20 +99,27 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
         .subscribe();
     }
 
+    leftChevronDisabled() {
+        return this.currentPage <= 1;
+    }
+
     doLoadPage = (pageNo: number): void => {
         let cntLines = 0;
-        if (pageNo < 0) {
-            pageNo = 0;
+        this.maxPageNo = this._commonFn.getPageNo(this.foundItems.length, this.pageLines);
+        if (pageNo <= 0) {
+            pageNo = 1;
         } else {
             if (pageNo > this.maxPageNo) {
                 return;
             }
         }
         this.currentPage = pageNo;
-        const startIdx = this.currentPage * this.pageLines;
+        const startIdx = (this.currentPage - 1) * this.pageLines;
         this.pageNumbers = [];
+        this.searchItems = [];
         let paginationSet = false;
         let lastPage = 0;
+
         this.foundItems.forEach((item, idx) => {
             if (idx >= startIdx) {
                 if (cntLines < this.pageLines) {
@@ -118,7 +127,7 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
                     cntLines++;
                 }
             }
-            const page = Math.floor(idx / this.pageLines) + 1;
+            const page = this._commonFn.getPageNo(idx, this.pageLines);
             if (page >= this.paginationStart) {
                 if (paginationSet) {
                     this.pageNumbers.push(-1);
@@ -130,7 +139,6 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
                     lastPage = page;
                 }
             }
-
         });
 
     }
@@ -141,4 +149,8 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
     movePaginationBack(): void {
 
     }
+
+    trackByUuid(index: number, item: any) {
+        return item.data.id;
+      }
 }

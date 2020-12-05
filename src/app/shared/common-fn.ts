@@ -43,4 +43,12 @@ export class CommonFn {
         }
         return ret;
     }
+
+    getPageNo(lines: number, pageLines: number): number {
+        let pageNo = Math.floor(lines / pageLines);
+        if (lines % pageLines > 0) {
+            pageNo += 1;
+        }
+        return  pageNo;
+    }
 }

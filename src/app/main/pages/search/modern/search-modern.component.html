@@ -21,14 +21,14 @@
         <div class="result-info" fxLayout="row" fxLayoutAlign="start center">
 
             <span class="result-count h3 secondary-text">
-                <span>{{searchItems.length}}</span>
+                <span>{{foundItems.length}}</span>
                 <span class="ml-4">Results</span>
             </span>
         </div>
 
         <div class="results">
 
-            <div class="result-item" *ngFor="let item of searchItems">
+            <div class="result-item" *ngFor="let item of searchItems; let i = index; trackBy: trackByUuid">
                 <div class="title blue-800-fg">{{item.data.header}}</div>
                 <div class="url green-800-fg">{{item.data.url}}</div>
                 <div class="excerpt">{{item.data.excerpt}}</div>
@@ -36,13 +36,14 @@
 
             <div class="simple-pagination">
 
-                <button mat-button class="pagination-item disabled" disabled="disabled"
+                <button mat-button class="pagination-item disabled" 
                         aria-label="Go to previous page" (click)="doLoadPage(currentPage - 1)">
                     <mat-icon>chevron_left</mat-icon>
                 </button>
 
                 <div *ngFor="let page of pageNumbers">
-                    <button mat-button class="pagination-item active"
+                    <button mat-button [ngClass]="{'pagination-item active': page === currentPage,
+                                                   'pagination-item': page !== currentPage}"
                             [disableRipple]="true"
                             aria-label="Go to page "
                             *ngIf="page !== -1"
@@ -60,9 +61,6 @@
                         <span>...</span>
                     </button>
                 </div>
-                <!-- <button mat-button class="pagination-item" aria-label="Go to page">
-                    <span>10</span>
-                </button> -->
 
                 <button mat-button class="pagination-item" aria-label="Go to next page" (click)="doLoadPage(currentPage + 1)">
                     <mat-icon>chevron_right</mat-icon>

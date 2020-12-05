@@ -13,18 +13,27 @@ const SETTINGS_KEY = 'configuration';
 })
 export class AppSettingsService {
     settings: AppSettings;
-    constructor(private _httpClient: HttpClient) {}
+    constructor(private _httpClient: HttpClient) {
+        this._httpClient.get(
+            SETTINGS_JSON_LOCATION
+        ).subscribe((dfltSettings: AppSettings) => {
+            this.settings = dfltSettings;
+        })
+    }
 
     getSettings(): Observable<any> {
-        const settings = localStorage.getItem(SETTINGS_KEY);
-
+        // const settings = localStorage.getItem(SETTINGS_KEY);
         // if (settings) {
         //     return of(JSON.parse(settings));
-        // } else {
-        return this._httpClient.get(
-            SETTINGS_JSON_LOCATION
-        );
-        // }
+        // } 
+        if (this.settings) {
+            return of(this.settings);
+        }
+        else {
+            return this._httpClient.get(
+                SETTINGS_JSON_LOCATION
+            );
+        }
     }
 
     private handleMissingJSONSettingsConfigErrors(error: any): Observable<AppSettings> {
