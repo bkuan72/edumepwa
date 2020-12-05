@@ -99,10 +99,6 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
         .subscribe();
     }
 
-    leftChevronDisabled() {
-        return this.currentPage <= 1;
-    }
-
     doLoadPage = (pageNo: number): void => {
         let cntLines = 0;
         this.maxPageNo = this._commonFn.getPageNo(this.foundItems.length, this.pageLines);
