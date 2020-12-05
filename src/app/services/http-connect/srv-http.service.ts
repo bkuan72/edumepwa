@@ -95,23 +95,14 @@ export class SrvHttpService {
 
     getSrvHttpConfig = (
         apiPath: string,
-        paramArray?: string[],
+        param?: string,
         httpData?: any,
         contentType?: string,
         withCredentials?: boolean
     ): HttpConfig => {
         let httpUrl = this.serverUrl + apiPath;
-        if (!isUndefined(paramArray) && paramArray.length > 0) {
-            let first = true;
-            paramArray.forEach((paramStr) => {
-                if (first) {
-                    httpUrl += '?';
-                    first = false;
-                } else {
-                    httpUrl += '&';
-                }
-                httpUrl += paramStr;
-            });
+        if (!isUndefined(param) && param.length > 0) {
+            httpUrl += encodeURI(param);
         }
         const config = new HttpConfig(httpUrl, httpData);
         config.srvApi = true;
@@ -126,22 +117,13 @@ export class SrvHttpService {
 
     getHttpConfig = (
         url: string,
-        paramArray: string[],
+        param: string,
         httpData: any,
         contentType?: string
     ): HttpConfig => {
         let httpUrl = url;
-        if (!isUndefined(paramArray) && paramArray.length > 0) {
-            let first = true;
-            paramArray.forEach((paramStr) => {
-                if (first) {
-                    httpUrl += '?';
-                    first = false;
-                } else {
-                    httpUrl += '&';
-                }
-                httpUrl += paramStr;
-            });
+        if (!isUndefined(param) && param.length > 0) {
+            httpUrl += encodeURI(param);
         }
         const config = new HttpConfig(httpUrl, httpData);
         if (!isUndefined(contentType)) {

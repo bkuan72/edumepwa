@@ -57,7 +57,7 @@ export class SearchModernService implements Resolve<any>
                 );
         } else {
             httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.advertisementSearch,
-                [searchStr],
+                searchStr,
                 );
         }
         this._http.GetObs(httpConfig, true)
