@@ -150,7 +150,7 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
 
     }
 
-    trackByUuid(index: number, item: any) {
+    trackByUuid(index: number, item: any): string {
         return item.data.id;
       }
 }
