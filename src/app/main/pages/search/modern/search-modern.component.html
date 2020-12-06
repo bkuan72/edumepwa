@@ -47,18 +47,13 @@
                                                    'pagination-item': page !== currentPage}"
                             [disableRipple]="true"
                             aria-label="Go to page "
-                            *ngIf="page !== -1"
+                            *ngIf="page > 0"
                             (click)="doLoadPage(page)">
                         <span>{{page}}</span>
                     </button>
                     <button mat-button class="pagination-item"
-                            *ngIf="page === -1"
-                            (click)="movePaginationForward()">
-                        <span>...</span>
-                    </button>
-                    <button mat-button class="pagination-item"
-                            *ngIf="page === -1"
-                            (click)="movePaginationBack()">
+                            *ngIf="page < 0"
+                            (click)="doLoadPage(page)">
                         <span>...</span>
                     </button>
                 </div>

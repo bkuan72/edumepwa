@@ -8,6 +8,12 @@ import { takeUntil, debounceTime, distinctUntilChanged, filter, tap } from 'rxjs
 import { SearchModernService } from 'app/main/pages/search/modern/search-modern.service';
 import { AppSettingsService } from 'app/services/app-settings/app-settings.service';
 
+enum PaginationType {
+    PAGE_UP,
+    PAGE_DOWN,
+    NONE
+};
+
 @Component({
     selector     : 'search-modern',
     templateUrl  : './search-modern.component.html',
@@ -25,6 +31,8 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
     maxPageNo: number;
     pageNumbers: number[];
     paginationStart: number;
+    paginationEnd: number;
+    paginationRange: number;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -46,7 +54,9 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
         this.foundItems = [];
         this.currentPage = 0;
         this.maxPageNo = 0;
-        this.paginationStart = 4;
+        this.paginationStart = 1;
+        this.paginationRange = 2;
+        this.paginationEnd = this.paginationStart + this.paginationRange;
         this.pageNumbers = [];
         this.pageLines = 20;
         this._appSettings.getSettings().subscribe(settings => this.settings = settings, () => null, () => {
@@ -99,22 +109,74 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
         .subscribe();
     }
 
+
     doLoadPage = (pageNo: number): void => {
+        let paginationAction: PaginationType = PaginationType.NONE;
         let cntLines = 0;
         this.maxPageNo = this._commonFn.getPageNo(this.foundItems.length, this.pageLines);
-        if (pageNo <= 0) {
-            pageNo = 1;
+        let moveAPage = true;
+        if (pageNo === 0) {
+            return;
+        }
+        if (pageNo > this.maxPageNo) {
+            return;
+        }
+        if (pageNo < 0) {
+            if (pageNo === -2) {
+                paginationAction = PaginationType.PAGE_UP;
+                moveAPage = false;
+            } else { 
+                if (pageNo === -1) {
+                    paginationAction = PaginationType.PAGE_DOWN;
+                    moveAPage = false;
+                }
+            }
         } else {
-            if (pageNo > this.maxPageNo) {
-                return;
+            if (pageNo < this.paginationStart) {
+                paginationAction = PaginationType.PAGE_DOWN;
+            }
+            if (pageNo > this.paginationEnd) {
+                paginationAction = PaginationType.PAGE_UP;
             }
         }
+        if (pageNo < 0 && paginationAction === PaginationType.NONE) {
+            pageNo = 1;
+            return;
+        }
+        if (pageNo > this.maxPageNo) {
+            return;
+        }
+        switch(paginationAction) {
+            case PaginationType.PAGE_UP:
+                this.paginationStart += this.paginationRange;
+                this.paginationEnd = this.paginationStart + this.paginationRange;
+                if (this.paginationEnd > this.maxPageNo) {
+                    this.paginationEnd = this.maxPageNo;
+                }
+                pageNo = this.paginationStart;
+                if (moveAPage) {
+                    pageNo += 1;
+                }
+                break;
+            case PaginationType.PAGE_DOWN:
+                this.paginationEnd = this.paginationStart;
+                this.paginationStart -= this.paginationRange;
+                pageNo = this.paginationEnd;
+                if (moveAPage) {
+                    pageNo -= 1;
+                }
+                break;
+        }
+
         this.currentPage = pageNo;
         const startIdx = (this.currentPage - 1) * this.pageLines;
         this.pageNumbers = [];
         this.searchItems = [];
-        let paginationSet = false;
+        let paginationStartSet = false;
+        let paginationEndSet = false;
+        let page = 0;
         let lastPage = 0;
+        let lastPushPage = 0;
 
         this.foundItems.forEach((item, idx) => {
             if (idx >= startIdx) {
@@ -123,27 +185,27 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
                     cntLines++;
                 }
             }
-            const page = this._commonFn.getPageNo(idx, this.pageLines);
-            if (page >= this.paginationStart) {
-                if (paginationSet) {
+            page = this._commonFn.getPageNo(idx, this.pageLines);
+            if (lastPage !== page) {
+                if (page < this.paginationStart && !paginationStartSet) {
                     this.pageNumbers.push(-1);
+                    paginationStartSet = true;
                 }
-                paginationSet = true;
-            } else {
-                if (lastPage !== page) {
+                if ( page > this.paginationEnd && page < this.maxPageNo && !paginationEndSet) {
+                    this.pageNumbers.push(-2);
+                    paginationEndSet = true;
+                }
+                if (page >= this.paginationStart && page <= this.paginationEnd) {
                     this.pageNumbers.push(page);
-                    lastPage = page;
+                    lastPushPage = page;
                 }
             }
+            lastPage = page;
+
         });
-
-    }
-
-    movePaginationForward(): void {
-
-    }
-    movePaginationBack(): void {
-
+        if ( lastPushPage !== this.maxPageNo) {
+            this.pageNumbers.push(this.maxPageNo);
+        }
     }
 
     trackByUuid(index: number, item: any): string {
