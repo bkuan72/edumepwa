@@ -37,7 +37,7 @@ export class LogServer extends LogPublisher {
 
         if (sendLog) {
             const httpConfig = this.http.getSrvHttpConfig(SrvApiEnvEnum.log,
-                [],
+                undefined,
                 entry,
                 'application/json',
                 false);

@@ -61,6 +61,7 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
         this.pageLines = 20;
         this._appSettings.getSettings().subscribe(settings => this.settings = settings, () => null, () => {
             this.pageLines = this.settings.searchPageLines;
+            this.paginationRange = this.settings.paginationRange;
         });
     }
 

@@ -1,7 +1,10 @@
+// Please add entry to assets/app-settings.json for each entry here
+// the server will read the that json file to configure the values below
 export class AppSettings {
-    defaultUrl = 'http://localhost:3300';
-    settingsApi = '/api/config';
-    googleApi = '';
-    tokenRenewalTime = 1; // 1 hour
-    searchPageLines = 10;
+    defaultUrl = 'http://localhost:3300';  // backend server path
+    propertiesPrefix = 'domain.co.nz';  // prefix to use for prefixing properties for the frontend server eg domain.co.nz.token.expiry.in.minutes
+    googleApiKey = '';       // google API Key
+    tokenRenewalTime = 1; // renew token by x hour
+    searchPageLines = 10; // number of result per search page
+    paginationRange = 3;  // number of page to show before a pagination '...' icon is displayed
 }

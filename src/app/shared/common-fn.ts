@@ -44,9 +44,14 @@ export class CommonFn {
         return ret;
     }
 
-    getPageNo(lines: number, pageLines: number): number {
-        let pageNo = Math.floor(lines / pageLines);
-        if (lines % pageLines > 0) {
+    /**
+     * This function calculates the number of pages based of result set lines and lines per page
+     * @param lines - result set count
+     * @param linesPerPage - lines per page
+     */
+    getPageNo(lines: number, linesPerPage: number): number {
+        let pageNo = Math.floor(lines / linesPerPage);
+        if (lines % linesPerPage > 0) {
             pageNo += 1;
         }
         return  pageNo;
