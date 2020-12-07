@@ -27,6 +27,7 @@ import { SrvAuthTokenService } from 'app/services/srv-cookie/srv-auth-token.serv
 import { LogPublishersService } from './shared/log-publishers.service';
 import { LoggerService } from './services/logger/logger.service';
 import { AuthenticationService } from './services/authentication/authentication.service';
+import { AvatarModule } from 'ngx-avatar';
 
 const appRoutes: Routes = [
     {
@@ -52,6 +53,7 @@ const appRoutes: Routes = [
         TranslateModule.forRoot(),
 
         CommonComponentModule,
+        AvatarModule,
 
         // Material moment date module
         MatMomentDateModule,

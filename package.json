@@ -50,6 +50,7 @@
         "moment": "2.27.0",
         "ng2-charts": "2.3.2",
         "ngrx-store-freeze": "0.2.4",
+        "ngx-avatar": "4.0.0",
         "ngx-color-picker": "9.1.0",
         "ngx-cookie-service": "3.1.2",
         "perfect-scrollbar": "1.5.0",

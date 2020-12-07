@@ -1,3 +1,4 @@
+import { AvatarModule } from 'ngx-avatar';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,7 +17,8 @@ import { NavbarVerticalStyle1Component } from 'app/layout/components/navbar/vert
         MatIconModule,
 
         FuseSharedModule,
-        FuseNavigationModule
+        FuseNavigationModule,
+        AvatarModule
     ],
     exports     : [
         NavbarVerticalStyle1Component

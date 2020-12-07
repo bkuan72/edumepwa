@@ -33,7 +33,8 @@
                     <mat-icon class="s-16" fxHide.xs>keyboard_arrow_down</mat-icon>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="isAuth()">
-                    <img class="avatar mr-0 mr-sm-16" src="assets/images/avatars/Lily.jpg">
+                    <!-- <img class="avatar mr-0 mr-sm-16" src="assets/images/avatars/Lily.jpg"> -->
+                    <ngx-avatar name="{{user.user_name}}"></ngx-avatar>
                     <span class="username mr-12" fxHide fxShow.gt-sm>{{user.user_name}}</span>
                     <mat-icon class="s-16" fxHide.xs>keyboard_arrow_down</mat-icon>
                 </div>

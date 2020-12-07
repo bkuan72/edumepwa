@@ -38,10 +38,11 @@
 
         <div class="h3 username">{{user.user_name}}</div>
         <div class="h5 email hint-text mt-8">{{user.email}}</div>
-        <div class="avatar-container" [ngClass]="fuseConfig.layout.navbar.primaryBackground">
-            <img class="avatar" src="assets/images/avatars/Lily.jpg">
-        </div>
+        <ngx-avatar name="{{user.user_name}}" size="80"></ngx-avatar>
 
+        <!-- <div class="avatar-container" [ngClass]="fuseConfig.layout.navbar.primaryBackground">
+            <img class="avatar" src="assets/images/avatars/Lily.jpg">
+        </div> -->
     </div>
 
     <div class="navbar-content">
