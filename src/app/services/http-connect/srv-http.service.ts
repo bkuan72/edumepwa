@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { isUndefined } from 'lodash';
 import { SrvAuthTokenService } from 'app/services/srv-cookie/srv-auth-token.service';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AppSettings } from 'app/shared/app-settings';
 
 export class HttpConfig {
@@ -261,20 +261,22 @@ export class SrvHttpService {
     }
 
     handleErrors = (httpError: HttpErrorResponse): void => {
-        this.alert.warn(httpError.error);
+        // this.alert.warn(httpError.error);
     }
     handleObsErrors = (error: HttpErrorResponse): Observable<any> => {
-        const errors: string[] = [];
-        let msg = '';
+        // const errors: string[] = [];
+        // let msg = '';
 
-        msg = 'Status: ' + error.status;
-        msg += ' - Status Text: ' + error.statusText;
-        if (error.error) {
-            msg += ' - Exception Message: ' + error.error;
-        }
-        errors.push(msg);
+        // msg = 'Status: ' + error.status;
+        // msg += ' - Status Text: ' + error.statusText;
+        // if (error.error) {
+        //     msg += ' - Exception Message: ' + error.error;
+        // }
+        // errors.push(msg);
 
-        console.error('An error occurred', errors);
-        return throwError(errors);
+        // console.error('An error occurred', errors);
+        // return throwError(errors);
+        // this.alert.warn(error.error);
+        return of(error.error);
     }
 }

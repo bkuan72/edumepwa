@@ -1,3 +1,4 @@
+import { CommonComponentModule } from './components/component.module';
 import { PagesModule } from './main/pages/pages.module';
 import { CommonFn } from './shared/common-fn';
 import { AlertService } from './services/alert/alert.service';
@@ -25,6 +26,7 @@ import { SrvHttpService } from 'app/services/http-connect/srv-http.service';
 import { SrvAuthTokenService } from 'app/services/srv-cookie/srv-auth-token.service';
 import { LogPublishersService } from './shared/log-publishers.service';
 import { LoggerService } from './services/logger/logger.service';
+import { AuthenticationService } from './services/authentication/authentication.service';
 
 const appRoutes: Routes = [
     {
@@ -49,6 +51,8 @@ const appRoutes: Routes = [
 
         TranslateModule.forRoot(),
 
+        CommonComponentModule,
+
         // Material moment date module
         MatMomentDateModule,
 
@@ -70,6 +74,7 @@ const appRoutes: Routes = [
     providers: [
         SrvHttpService,
         SrvAuthTokenService,
+        AuthenticationService,
         LoggerService,
         LogPublishersService,
         AppSettingsService,

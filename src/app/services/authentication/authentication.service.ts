@@ -1,4 +1,6 @@
-import { HttpResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { AlertService } from './../alert/alert.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { RegisterDTO } from './../../dtos/register-dto';
 import { LoginDTO } from './../../dtos/login-dto';
 import { SrvApiEnvEnum } from './../../shared/SrvApiEnvEnum';
@@ -18,7 +20,9 @@ export class AuthenticationService {
   constructor(
       private _http: SrvHttpService,
       private _authToken: SrvAuthTokenService,
-      private _logger: LoggerService
+      private _logger: LoggerService,
+      private _alert: AlertService,
+      private router: Router
   ) {
     this._authToken.tokenExpiry().subscribe((expiring) => {
         if (expiring) {
@@ -28,16 +32,17 @@ export class AuthenticationService {
   }
 
   registerNewUser = (registerDTO: RegisterDTO): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.register,
-            [],
+            undefined,
             registerDTO);
         this._http.Post(httpConfig, false).then (() => {
                 resolve(true);
             })
-            .catch((res) => {
+            .catch((res: HttpErrorResponse) => {
+                this._alert.error(res.error);
                 this._logger.error('Error Registering User', res);
-                resolve(false);
+                reject(false);
             });
       });
   }
@@ -47,23 +52,24 @@ export class AuthenticationService {
   }
 
   login = (loginDTO: LoginDTO): Promise<boolean> => {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         const httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.login,
-            [],
+            undefined,
             loginDTO);
         this._http.Post(httpConfig, false).then ((responseBody) => {
                 this._authToken.setToken(responseBody);
                 resolve(true);
             })
-            .catch((res) => {
+            .catch((res: HttpErrorResponse) => {
+                // this._alert.error(res.error);
                 this._logger.error('Error Logging In', res);
-                resolve(false);
+                reject(false);
             });
       });
   }
 
   logout = (): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.logout);
         this._http.Post(httpConfig, false).then ((res) => {
                 this._authToken.deleteToken();
@@ -72,7 +78,7 @@ export class AuthenticationService {
             .catch((res) => {
                 this._authToken.deleteToken();
                 this._logger.error('Error Logging Out', res);
-                resolve(false);
+                reject(false);
             });
     });
   }

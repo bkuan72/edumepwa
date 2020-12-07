@@ -1,3 +1,5 @@
+import { CommonComponentModule } from './../../../../components/component.module';
+import { AlertComponent } from 'app/components/alert/alert.component';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,7 +32,8 @@ const routes = [
         MatIconModule,
         MatInputModule,
 
-        FuseSharedModule
+        FuseSharedModule,
+        CommonComponentModule
     ]
 })
 export class LoginModule
