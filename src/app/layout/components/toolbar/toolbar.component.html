@@ -29,12 +29,12 @@
                     class="user-button">
                 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="!isAuth()">
                     <img class="avatar mr-0 mr-sm-16" src="assets/images/avatars/profile.jpg">
-                    <span class="username mr-12" fxHide fxShow.gt-sm>Charlie Adams</span>
+                    <span class="username mr-12" fxHide fxShow.gt-sm>Anonymous</span>
                     <mat-icon class="s-16" fxHide.xs>keyboard_arrow_down</mat-icon>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="isAuth()">
                     <img class="avatar mr-0 mr-sm-16" src="assets/images/avatars/Lily.jpg">
-                    <span class="username mr-12" fxHide fxShow.gt-sm>Charlie Adams</span>
+                    <span class="username mr-12" fxHide fxShow.gt-sm>{{user.user_name}}</span>
                     <mat-icon class="s-16" fxHide.xs>keyboard_arrow_down</mat-icon>
                 </div>
             </button>
@@ -43,7 +43,8 @@
 
                 <button mat-menu-item *ngIf="isAuth()">
                     <mat-icon>account_circle</mat-icon>
-                    <span>My Profile</span>
+                    <!-- <span>My Profile</span> -->
+                    <a class="link" [routerLink]="'/pages/profile'">My Profile</a>
                 </button>
 
                 <button mat-menu-item class="" *ngIf="isAuth()">

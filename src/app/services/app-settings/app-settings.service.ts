@@ -1,12 +1,9 @@
+import { SrvApiEnvEnum } from './../../shared/SrvApiEnvEnum';
+import { LocalStoreVarEnum } from './../../shared/local-store-var-enum';
 import { Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AppSettings } from '../../shared/app-settings';
-import { catchError, map } from 'rxjs/operators';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-const SETTINGS_JSON_LOCATION = 'assets/app-settings.json';
-const SETTINGS_KEY = 'configuration';
-// let   SETTINGS_WEBAPI_LOCATION = '/api/config';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root',
@@ -15,14 +12,14 @@ export class AppSettingsService {
     settings: AppSettings;
     constructor(private _httpClient: HttpClient) {
         this._httpClient.get(
-            SETTINGS_JSON_LOCATION
+            SrvApiEnvEnum.SETTINGS_JSON_LOCATION
         ).subscribe((dfltSettings: AppSettings) => {
             this.settings = dfltSettings;
         })
     }
 
     getSettings(): Observable<any> {
-        // const settings = localStorage.getItem(SETTINGS_KEY);
+        // const settings = localStorage.getItem(LocalStoreVarEnum.SETTINGS);
         // if (settings) {
         //     return of(JSON.parse(settings));
         // } 
@@ -31,7 +28,7 @@ export class AppSettingsService {
         }
         else {
             return this._httpClient.get(
-                SETTINGS_JSON_LOCATION
+                SrvApiEnvEnum.SETTINGS_JSON_LOCATION
             );
         }
     }
@@ -40,7 +37,7 @@ export class AppSettingsService {
         // Log the error to the console
         switch (error.status) {
             case 404:
-                console.error('Can\'t find file: ' + SETTINGS_JSON_LOCATION);
+                console.error('Can\'t find file: ' + SrvApiEnvEnum.SETTINGS_JSON_LOCATION);
                 break;
             default:
                 console.error(error);
@@ -82,10 +79,10 @@ export class AppSettingsService {
 
 
     saveSettings = (settings: AppSettings) => {
-        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        localStorage.setItem(LocalStoreVarEnum.SETTINGS, JSON.stringify(settings));
     }
 
     deleteSettings(): void {
-        localStorage.removeItem(SETTINGS_KEY);
+        localStorage.removeItem(LocalStoreVarEnum.SETTINGS);
       }
 }

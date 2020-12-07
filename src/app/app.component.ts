@@ -26,6 +26,7 @@ export class AppComponent implements OnInit, OnDestroy
 {
     fuseConfig: any;
     navigation: any;
+    user: any;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -55,6 +56,7 @@ export class AppComponent implements OnInit, OnDestroy
         private _auth: AuthenticationService
     )
     {
+        this.user = this._auth.userValue;
         // Get default navigation
         this.navigation = navigation;
 

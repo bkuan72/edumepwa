@@ -1,3 +1,4 @@
+import { LocalStoreVarEnum } from './local-store-var-enum';
 import { isUndefined } from 'lodash';
 import { LogPublisher } from './log-publisher';
 import { Observable, of } from 'rxjs';
@@ -13,7 +14,7 @@ export class LogLocalStorage extends LogPublisher {
         super();
 
         // Set location
-        this.location = 'logging';
+        this.location = LocalStoreVarEnum.LOGGING;
     }
 
     // Append log entry to local storage

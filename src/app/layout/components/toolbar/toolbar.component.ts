@@ -27,6 +27,7 @@ export class ToolbarComponent implements OnInit, OnDestroy
     navigation: any;
     selectedLanguage: any;
     userStatusOptions: any[];
+    user: any;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -46,6 +47,7 @@ export class ToolbarComponent implements OnInit, OnDestroy
         private router: Router
     )
     {
+        this.user = this.auth.userValue;
         // Set the defaults
         this.userStatusOptions = [
             {

@@ -19,6 +19,7 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy
 {
     fuseConfig: any;
     navigation: any;
+    user: any;
 
     // Private
     private _fusePerfectScrollbar: FusePerfectScrollbarDirective;
@@ -40,6 +41,7 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy
         private auth: AuthenticationService
     )
     {
+        this.user = this.auth.userValue;
         // Set the private defaults
         this._unsubscribeAll = new Subject();
     }
