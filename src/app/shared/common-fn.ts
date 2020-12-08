@@ -56,4 +56,8 @@ export class CommonFn {
         }
         return  pageNo;
     }
+
+    showGenericAvatar(user: any): boolean {
+        return user.avatar === undefined || user.avatar.length === 0;
+    }
 }

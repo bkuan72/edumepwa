@@ -1,3 +1,4 @@
+import { CommonFn } from './../../../shared/common-fn';
 import { Router } from '@angular/router';
 import { AuthenticationService } from './../../../services/authentication/authentication.service';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
@@ -44,7 +45,8 @@ export class ToolbarComponent implements OnInit, OnDestroy
         private _fuseSidebarService: FuseSidebarService,
         private _translateService: TranslateService,
         private auth: AuthenticationService,
-        private router: Router
+        private router: Router,
+        public  fn: CommonFn
     )
     {
         this.user = this.auth.userValue;
@@ -177,4 +179,6 @@ export class ToolbarComponent implements OnInit, OnDestroy
     doLogout(): void {
         this.auth.logout();
     }
+
+
 }

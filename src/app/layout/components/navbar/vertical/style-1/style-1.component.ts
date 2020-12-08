@@ -1,3 +1,4 @@
+import { CommonFn } from './../../../../../shared/common-fn';
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -38,7 +39,8 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy
         private _fuseNavigationService: FuseNavigationService,
         private _fuseSidebarService: FuseSidebarService,
         private _router: Router,
-        private auth: AuthenticationService
+        private auth: AuthenticationService,
+        public  fn: CommonFn
     )
     {
         this.user = this.auth.userValue;
