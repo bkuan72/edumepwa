@@ -7,4 +7,5 @@ export class AppSettings {
     tokenRenewalTime = 1; // renew token by x hour
     searchPageLines = 10; // number of result per search page
     paginationRange = 3;  // number of page to show before a pagination '...' icon is displayed
+    postHistoryDays = 10; // number of days into the past to retrieve
 }

@@ -6,10 +6,12 @@
 
         <div class="user-info" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-sm="row"
              fxLayoutAlign.gt-sm="start center">
-            <img class="profile-image avatar huge" src="assets/images/avatars/Velazquez.jpg"
+            <img *ngIf="!isAuth()" class="profile-image avatar huge" src="assets/images/avatars/profile.jpg"
                  [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">
+            <img [hidden]="user && isAuth() && fn.showGenericAvatar(user.avatar)" class="profile-image avatar huge" src="{{user.avatar}}">
+            <ngx-avatar size="80" [hidden]="user && isAuth() && !fn.showGenericAvatar(user.avatar)" name="{{user.user_name}}"></ngx-avatar>
             <div class="name" [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">
-                Charlie Adams
+                {{user.user_name}}
             </div>
         </div>
 

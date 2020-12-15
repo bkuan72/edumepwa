@@ -36,23 +36,27 @@
 
         <mat-divider></mat-divider>
 
-        <div class="timeline-item" *ngFor="let post of timeline.posts">
+        <div class="timeline-item" *ngFor="let post of timeline">
 
             <header fxLayout="row" fxLayoutAlign="space-between start">
-                <div class="user" fxLayout="row" fxLayoutAlign="start center">
-                    <img class="avatar" [src]="post.user.avatar">
+                <div *ngIf="post.user">
+                    <div class="user" fxLayout="row" fxLayoutAlign="start center">
+                        <ngx-avatar [hidden]="!fn.showGenericAvatar(post.user.avatar)" name="{{post.user.name}}" size="40"></ngx-avatar>
+                        <img [hidden]="fn.showGenericAvatar(post.user.avatar)" class="avatar" [src]="post.user.avatar">
 
-                    <div fxLayout="column">
-                        <div class="title">
-                            <span class="username">{{post.user.name}}</span>
-                            <span *ngIf="post.type === 'post'">posted on your timeline</span>
-                            <span *ngIf="post.type === 'something'">shared something with you</span>
-                            <span *ngIf="post.type === 'video'">shared a video with you</span>
-                            <span *ngIf="post.type === 'article'">shared an article with you</span>
+                        <div fxLayout="column">
+                            <div class="title">
+                                <span class="username">{{post.user.name}}</span>
+                                <span *ngIf="post.type === 'post'">posted on your timeline</span>
+                                <span *ngIf="post.type === 'something'">shared something with you</span>
+                                <span *ngIf="post.type === 'video'">shared a video with you</span>
+                                <span *ngIf="post.type === 'article'">shared an article with you</span>
+                            </div>
+                            <div class="time">{{post.time}}</div>
                         </div>
-                        <div class="time">{{post.time}}</div>
                     </div>
                 </div>
+
 
                 <button mat-icon-button aria-label="More">
                     <mat-icon>more_vert</mat-icon>
@@ -82,13 +86,13 @@
                     <button mat-button class="like-button">
                         <span fxLayout="row" fxLayoutAlign="start center">
                             <mat-icon class="s-16">favorite</mat-icon>
-                            <span>Like</span>&nbsp;<span>({{post.like}})</span>
+                            <span>Like</span>&nbsp;<span>({{post.likes}})</span>
                         </span>
                     </button>
                     <button mat-button class="share-button">
                         <span fxLayout="row" fxLayoutAlign="start center">
                             <mat-icon class="s-16">share</mat-icon>
-                            <span>Share</span>&nbsp;<span>({{post.share}})</span>
+                            <span>Share</span>&nbsp;<span>({{post.shared}})</span>
                         </span>
                     </button>
                 </div>
@@ -144,7 +148,7 @@
             <div class="content" fxLayout="row wrap">
                 <div class="activities">
                     <div class="activity" fxLayout="row" fxLayoutAlign="start start"
-                         *ngFor="let activity of timeline.activities">
+                         *ngFor="let activity of activities">
                         <img [src]="activity.user.avatar" class="avatar" alt="{{activity.user.name}}"/>
 
                         <div fxLayout="column">

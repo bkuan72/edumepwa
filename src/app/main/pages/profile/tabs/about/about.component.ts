@@ -1,3 +1,4 @@
+import { group } from '@angular/animations';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -15,6 +16,8 @@ import { ProfileService } from 'app/main/pages/profile/profile.service';
 export class ProfileAboutComponent implements OnInit, OnDestroy
 {
     about: any;
+    friends: any[];
+    groups: any[];
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -28,6 +31,8 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
         private _profileService: ProfileService
     )
     {
+        this.friends = [];
+        this.groups = [];
         // Set the private defaults
         this._unsubscribeAll = new Subject();
     }
@@ -46,6 +51,16 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
             .subscribe(about => {
                 this.about = about;
             });
+        this._profileService.friendsOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe(friends => {
+            this.friends = friends;
+        });
+        this._profileService.groupsOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe(groups => {
+            this.groups = groups;
+        });
     }
 
     /**

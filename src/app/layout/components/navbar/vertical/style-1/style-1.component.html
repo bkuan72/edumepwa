@@ -34,13 +34,12 @@
         </div>
 
     </div>
-    <div class="user" fxLayout="column" [ngClass]="fuseConfig.layout.navbar.secondaryBackground" *ngIf="isAuth()">
-
+    <div class="user" fxLayout="column" [ngClass]="fuseConfig.layout.navbar.secondaryBackground" *ngIf="isAuth() && user">
         <div class="h3 username">{{user.user_name}}</div>
         <div class="h5 email hint-text mt-8">{{user.email}}</div>
-        <ngx-avatar [hidden]="!fn.showGenericAvatar(user)" name="{{user.user_name}}" size="80"></ngx-avatar>
+        <ngx-avatar [hidden]="!fn.showGenericAvatar(user.avatar)" name="{{user.user_name}}" size="80"></ngx-avatar>
 
-        <div [hidden]="fn.showGenericAvatar(user)"class="avatar-container" [ngClass]="fuseConfig.layout.navbar.primaryBackground">
+        <div [hidden]="fn.showGenericAvatar(user.avatar)" class="avatar-container" [ngClass]="fuseConfig.layout.navbar.primaryBackground">
             <img class="avatar" src="{{user.avatar}}">
         </div>
     </div>

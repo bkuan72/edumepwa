@@ -15,7 +15,7 @@ import { Subject } from 'rxjs';
 })
 export class ProfilePhotosVideosComponent implements OnInit, OnDestroy
 {
-    photosVideos: any;
+    photosVideos: any[];
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -29,6 +29,7 @@ export class ProfilePhotosVideosComponent implements OnInit, OnDestroy
         private _profileService: ProfileService
     )
     {
+        this.photosVideos = [];
         // Set the private defaults
         this._unsubscribeAll = new Subject();
     }

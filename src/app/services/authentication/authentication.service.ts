@@ -87,14 +87,14 @@ export class AuthenticationService {
         this._http.Post(httpConfig, false).then ((res) => {
                     // remove user from local storage and set current user to null
                 localStorage.removeItem(LocalStoreVarEnum.USER);
-                this.userSubject.next(null);
+                this.userSubject.next(undefined);
                 this._authToken.deleteToken();
                 resolve(true);
             })
             .catch((res) => {
                 // remove user from local storage and set current user to null
                 localStorage.removeItem(LocalStoreVarEnum.USER);
-                this.userSubject.next(null);
+                this.userSubject.next(undefined);
                 this._authToken.deleteToken();
                 this._logger.error('Error Logging Out', res);
                 reject(false);

@@ -112,7 +112,7 @@
             </header>
 
             <div class="content" fxLayout="row wrap">
-                <div class="friend" fxFlex="20" *ngFor="let friend of about.friends">
+                <div class="friend" fxFlex="20" *ngFor="let friend of friends">
                     <img [src]="friend.avatar">
                 </div>
             </div>
@@ -130,7 +130,7 @@
 
             <div class="content">
 
-                <div class="group" *ngFor="let group of about.groups" fxLayout="row"
+                <div class="group" *ngFor="let group of groups" fxLayout="row"
                      fxLayoutAlign="space-between center">
 
                     <div fxLayout="row" fxLayoutAlign="start center">

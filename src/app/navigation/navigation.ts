@@ -6,6 +6,14 @@ export const navigation: FuseNavigation[] = [
         title    : 'Applications',
         translate: 'NAV.APPLICATIONS',
         type     : 'group',
+        children : [
+            {
+                id: 'home',
+                title: 'Home',
+                type: 'item',
+                url: 'search/modern'
+            }
+        ]
         // children : [
         //     {
         //         id   : 'login',

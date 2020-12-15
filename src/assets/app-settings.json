@@ -4,5 +4,6 @@
     "tokenRenewalTime": 1,
     "googleApiKey": "AIzaSyCoWC3b2-x6UZxmG2HmksDhLDGUnKYy9qM",
     "searchPageLines": 10,
-    "paginationRange": 4
+    "paginationRange": 4,
+    "postHistoryDays": 10
   }

@@ -32,9 +32,9 @@
                     <span class="username mr-12" fxHide fxShow.gt-sm>Anonymous</span>
                     <mat-icon class="s-16" fxHide.xs>keyboard_arrow_down</mat-icon>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="center center" *ngIf="isAuth()">
-                    <img [hidden]="fn.showGenericAvatar(user)" class="avatar mr-0 mr-sm-16" src="{{user.avatar}}">
-                    <ngx-avatar [hidden]="!fn.showGenericAvatar(user)" name="{{user.user_name}}"></ngx-avatar>
+                <div fxLayout="row" fxLayoutAlign="center center" *ngIf="user && isAuth()">
+                    <img [hidden]="fn.showGenericAvatar(user.avatar)" class="avatar mr-0 mr-sm-16" src="{{user.avatar}}">
+                    <ngx-avatar [hidden]="!fn.showGenericAvatar(user.avatar)" name="{{user.user_name}}"></ngx-avatar>
                     <span class="username mr-12" fxHide fxShow.gt-sm>{{user.user_name}}</span>
                     <mat-icon class="s-16" fxHide.xs>keyboard_arrow_down</mat-icon>
                 </div>
@@ -42,10 +42,9 @@
 
             <mat-menu #userMenu="matMenu" [overlapTrigger]="false">
 
-                <button mat-menu-item *ngIf="isAuth()">
+                <button mat-menu-item *ngIf="isAuth()" (click)="goToUserProfile()">
                     <mat-icon>account_circle</mat-icon>
-                    <!-- <span>My Profile</span> -->
-                    <a class="link" [routerLink]="'/pages/profile'">My Profile</a>
+                    <span>My Profile</span>
                 </button>
 
                 <button mat-menu-item class="" *ngIf="isAuth()">
@@ -57,7 +56,7 @@
                     <mat-icon>exit_to_app</mat-icon>
                     <span>Logout</span>
                 </button>
-                <button mat-menu-item class="" *ngIf="!isAuth()" (click) ="doLogin()">
+                <button mat-menu-item class="" *ngIf="!isAuth()" (click)="doLogin()">
                     <mat-icon>exit_to_app</mat-icon>
                     <span>Login</span>
                 </button>

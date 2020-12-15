@@ -1,3 +1,4 @@
+import { AvatarModule } from 'ngx-avatar';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -38,6 +39,7 @@ const routes = [
         MatDividerModule,
         MatIconModule,
         MatTabsModule,
+        AvatarModule,
 
         FuseSharedModule
     ],
