@@ -80,17 +80,13 @@ export class HttpConfig {
 })
 export class SrvHttpService {
     private settings: AppSettings;
-    private serverUrl: string;
     constructor(
         private _httpClient: HttpClient,
         private _authToken: SrvAuthTokenService,
         private _appSettings: AppSettingsService,
         private alert: AlertService
     ) {
-        this.serverUrl = 'http://localhost:3300';
-        this._appSettings.getSettings().subscribe(settings => this.settings = settings, () => null, () => {
-                this.serverUrl = this.settings.defaultUrl;
-            });
+        this.settings = this._appSettings.settingsValue;
     }
 
     getSrvHttpConfig = (
@@ -100,7 +96,7 @@ export class SrvHttpService {
         contentType?: string,
         withCredentials?: boolean
     ): HttpConfig => {
-        let httpUrl = this.serverUrl + apiPath;
+        let httpUrl = this.settings.defaultUrl + apiPath;
         if (!isUndefined(params) && params.length > 0) {
             params.forEach((param) => {
                 httpUrl += '/' + encodeURI(param);

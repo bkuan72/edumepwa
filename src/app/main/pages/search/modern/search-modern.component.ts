@@ -26,13 +26,11 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
     searchItems: any[];
     foundItems: any[];
     currentPage: number;
-    pageLines: number;
     settings: AppSettings;
     maxPageNo: number;
     pageNumbers: number[];
     paginationStart: number;
     paginationEnd: number;
-    paginationRange: number;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -49,20 +47,15 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
     )
     {
         // Set the private defaults
+        this.settings = this._appSettings.settingsValue;
         this._unsubscribeAll = new Subject();
         this.searchItems = [];
         this.foundItems = [];
         this.currentPage = 0;
         this.maxPageNo = 0;
         this.paginationStart = 1;
-        this.paginationRange = 2;
-        this.paginationEnd = this.paginationStart + this.paginationRange;
+        this.paginationEnd = this.paginationStart + this.settings.paginationRange;
         this.pageNumbers = [];
-        this.pageLines = 20;
-        this._appSettings.getSettings().subscribe(settings => this.settings = settings, () => null, () => {
-            this.pageLines = this.settings.searchPageLines;
-            this.paginationRange = this.settings.paginationRange;
-        });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -114,7 +107,7 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
     doLoadPage = (pageNo: number): void => {
         let paginationAction: PaginationType = PaginationType.NONE;
         let cntLines = 0;
-        this.maxPageNo = this._commonFn.getPageNo(this.foundItems.length, this.pageLines);
+        this.maxPageNo = this._commonFn.getPageNo(this.foundItems.length, this.settings.searchPageLines);
         let moveAPage = true;
         if (pageNo === 0) {
             return;
@@ -149,8 +142,8 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
         }
         switch(paginationAction) {
             case PaginationType.PAGE_UP:
-                this.paginationStart += this.paginationRange;
-                this.paginationEnd = this.paginationStart + this.paginationRange;
+                this.paginationStart += this.settings.paginationRange;
+                this.paginationEnd = this.paginationStart + this.settings.paginationRange;
                 if (this.paginationEnd > this.maxPageNo) {
                     this.paginationEnd = this.maxPageNo;
                 }
@@ -161,7 +154,7 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
                 break;
             case PaginationType.PAGE_DOWN:
                 this.paginationEnd = this.paginationStart;
-                this.paginationStart -= this.paginationRange;
+                this.paginationStart -= this.settings.paginationRange;
                 pageNo = this.paginationEnd;
                 if (moveAPage) {
                     pageNo -= 1;
@@ -170,7 +163,7 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
         }
 
         this.currentPage = pageNo;
-        const startIdx = (this.currentPage - 1) * this.pageLines;
+        const startIdx = (this.currentPage - 1) * this.settings.searchPageLines;
         this.pageNumbers = [];
         this.searchItems = [];
         let paginationStartSet = false;
@@ -181,12 +174,12 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
 
         this.foundItems.forEach((item, idx) => {
             if (idx >= startIdx) {
-                if (cntLines < this.pageLines) {
+                if (cntLines < this.settings.searchPageLines) {
                     this.searchItems.push(item);
                     cntLines++;
                 }
             }
-            page = this._commonFn.getPageNo(idx, this.pageLines);
+            page = this._commonFn.getPageNo(idx, this.settings.searchPageLines);
             if (lastPage !== page) {
                 if (page < this.paginationStart && !paginationStartSet) {
                     this.pageNumbers.push(-1);

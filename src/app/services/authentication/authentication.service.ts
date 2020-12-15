@@ -16,7 +16,6 @@ import { LoggerService } from '../logger/logger.service';
 })
 export class AuthenticationService {
     private userSubject: BehaviorSubject<any>;
-    public user: Observable<any>;
 
 
   renewCookieObserver: Observable<boolean>;
@@ -28,7 +27,6 @@ export class AuthenticationService {
       private _alert: AlertService
   ) {
     this.userSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem(LocalStoreVarEnum.USER)));
-    this.user = this.userSubject.asObservable();
     this._authToken.tokenExpiry().subscribe((expiring) => {
         if (expiring) {
             this.renewCookie();

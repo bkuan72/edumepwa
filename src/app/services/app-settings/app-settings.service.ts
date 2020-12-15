@@ -1,6 +1,6 @@
 import { SrvApiEnvEnum } from './../../shared/SrvApiEnvEnum';
 import { LocalStoreVarEnum } from './../../shared/local-store-var-enum';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AppSettings } from '../../shared/app-settings';
 import { HttpClient } from '@angular/common/http';
@@ -9,28 +9,26 @@ import { HttpClient } from '@angular/common/http';
     providedIn: 'root',
 })
 export class AppSettingsService {
+    private settingsSubject: BehaviorSubject<any>;
+
     settings: AppSettings;
+
+
     constructor(private _httpClient: HttpClient) {
+        this.settingsSubject = new BehaviorSubject<any>(new AppSettings());
+        this.getSettings();
+    }
+
+    public get settingsValue(): AppSettings {
+        return this.settingsSubject.value;
+    }
+
+    getSettings(): void {
         this._httpClient.get(
             SrvApiEnvEnum.SETTINGS_JSON_LOCATION
         ).subscribe((dfltSettings: AppSettings) => {
-            this.settings = dfltSettings;
-        })
-    }
-
-    getSettings(): Observable<any> {
-        // const settings = localStorage.getItem(LocalStoreVarEnum.SETTINGS);
-        // if (settings) {
-        //     return of(JSON.parse(settings));
-        // } 
-        if (this.settings) {
-            return of(this.settings);
-        }
-        else {
-            return this._httpClient.get(
-                SrvApiEnvEnum.SETTINGS_JSON_LOCATION
-            );
-        }
+            this.settingsSubject.next(dfltSettings);
+        });
     }
 
     private handleMissingJSONSettingsConfigErrors(error: any): Observable<AppSettings> {
