@@ -15,7 +15,8 @@ import { LoggerService } from '../logger/logger.service';
   providedIn: 'root'
 })
 export class AuthenticationService {
-    private userSubject: BehaviorSubject<any>;
+  private userSubject: BehaviorSubject<any>;
+  rememberMe: boolean;
 
 
   renewCookieObserver: Observable<boolean>;
@@ -26,6 +27,7 @@ export class AuthenticationService {
       private _logger: LoggerService,
       private _alert: AlertService
   ) {
+    this.rememberMe = true;
     this.userSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem(LocalStoreVarEnum.USER)));
     this._authToken.tokenExpiry().subscribe((expiring) => {
         if (expiring) {
@@ -60,7 +62,7 @@ export class AuthenticationService {
 
   }
 
-  login = (loginDTO: LoginDTO): Promise<boolean> => {
+  login = (loginDTO: LoginDTO, rememberMe: boolean): Promise<boolean> => {
       return new Promise((resolve, reject) => {
         const httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.login,
             undefined,
@@ -68,7 +70,7 @@ export class AuthenticationService {
         this._http.Post(httpConfig, false).then ((responseBody) => {
                 localStorage.setItem(LocalStoreVarEnum.USER, JSON.stringify(responseBody.data));
                 this.userSubject.next(responseBody.data);
-                this._authToken.setToken(responseBody);
+                this._authToken.setToken(responseBody, rememberMe);
                 resolve(true);
             })
             .catch((res: HttpErrorResponse) => {
@@ -101,10 +103,10 @@ export class AuthenticationService {
   }
 
   isLoggedIn = (): boolean => {
-      if (this._authToken.isExpired()) {
-          return false;
+      if (this.userValue && this.userValue !== null && !this._authToken.isExpired()) {
+          return true;
       }
-      return true;
+      return false;
   }
 
 }

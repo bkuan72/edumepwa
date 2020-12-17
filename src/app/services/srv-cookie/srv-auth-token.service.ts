@@ -1,5 +1,4 @@
 import { CommonFn, DateAddIntervalEnum } from './../../shared/common-fn';
-import { CookieService } from 'ngx-cookie-service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import jwt_decode from 'jwt-decode';
@@ -34,12 +33,11 @@ export class SrvAuthTokenService {
   AUTH_TOKEN_EXPIRY_IN = 'AuthorizationTokenExpiryIn';
 
   constructor(
-    private _authTokenService: CookieService,
     private _commonFn: CommonFn
   ) {
-    if (this._authTokenService.check(this.AUTH_TOKEN)) {
-        this.tokenStr = this._authTokenService.get(this.AUTH_TOKEN);
-        this.expireInMin = parseInt(this._authTokenService.get(this.AUTH_TOKEN_EXPIRY_IN), 0);
+    if (localStorage.getItem(this.AUTH_TOKEN) !== null) {
+        this.tokenStr = localStorage.getItem(this.AUTH_TOKEN);
+        this.expireInMin = parseInt(localStorage.getItem(this.AUTH_TOKEN_EXPIRY_IN), 0);
         this.tokenData = jwt_decode(this.tokenStr) as DataStoredInToken;
         this.expiryDate = new Date(this.tokenData.createTimeStamp);
         this.expiryDate = this._commonFn.dateAdd(this.expiryDate,
@@ -58,22 +56,25 @@ export class SrvAuthTokenService {
   getToken = () => {
       return this.tokenStr;
   }
-  setToken = (responseBody: LoginResponse) => {
+  setToken = (responseBody: LoginResponse, rememberMe: boolean) => {
     if (responseBody && responseBody.token) {
         this.tokenData = jwt_decode(responseBody.token.token) as DataStoredInToken;
         if (this.tokenData) {
             this.tokenStr = responseBody.token.token;
-            this._authTokenService.set(this.AUTH_TOKEN,
-                this.tokenStr
-                );
             this.expireInMin = responseBody.token.expiresIn;
-            this._authTokenService.set(this.AUTH_TOKEN_EXPIRY_IN,
-                this.expireInMin.toString()
-                );
             this.expiryDate = new Date(this.tokenData.createTimeStamp);
             this.expiryDate = this._commonFn.dateAdd(this.expiryDate,
                                                     DateAddIntervalEnum.MINUTE,
                                                     this.tokenData.expireInMin);
+            if (rememberMe) {
+                localStorage.setItem(this.AUTH_TOKEN,
+                    this.tokenStr
+                    );
+
+                localStorage.setItem(this.AUTH_TOKEN_EXPIRY_IN,
+                    this.expireInMin.toString()
+                    );
+            }
         } else {
             this.deleteToken();
         }
@@ -83,12 +84,12 @@ export class SrvAuthTokenService {
   }
 
   deleteToken = () => {
-    if (this._authTokenService.check(this.AUTH_TOKEN)) {
-        this._authTokenService.delete(this.AUTH_TOKEN);
+    if (localStorage.getItem(this.AUTH_TOKEN) !== null) {
+        localStorage.removeItem(this.AUTH_TOKEN);
         this.tokenStr = undefined;
     }
-    if (this._authTokenService.check(this.AUTH_TOKEN_EXPIRY_IN)) {
-        this._authTokenService.delete(this.AUTH_TOKEN_EXPIRY_IN);
+    if (localStorage.getItem(this.AUTH_TOKEN_EXPIRY_IN) !== null) {
+        localStorage.removeItem(this.AUTH_TOKEN_EXPIRY_IN);
         this.expireInMin = 0;
     }
     this.tokenData = undefined;
