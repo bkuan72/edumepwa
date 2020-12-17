@@ -1,3 +1,4 @@
+import { TermsAndConditionsModule } from './docs/terms-and-conditions/terms-and-condition.module';
 import { SearchModernModule } from './search/modern/search-modern.module';
 import { ProfileModule } from './profile/profile.module';
 import { ComingSoonModule } from './coming-soon/coming-soon.module';
@@ -56,6 +57,7 @@ import { NgModule } from '@angular/core';
 
         // Knowledge base
         // KnowledgeBaseModule
+        TermsAndConditionsModule
     ]
 })
 export class PagesModule
