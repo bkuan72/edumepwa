@@ -1,3 +1,5 @@
+import { RegisterDTO } from './../../../../dtos/register-dto';
+import { AlertService } from './../../../../services/alert/alert.service';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -5,6 +7,9 @@ import { takeUntil } from 'rxjs/operators';
 
 import { FuseConfigService } from '@fuse/services/config.service';
 import { fuseAnimations } from '@fuse/animations';
+import { AuthenticationService } from 'app/services/authentication/authentication.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoggerService } from 'app/services/logger/logger.service';
 
 @Component({
     selector     : 'register',
@@ -16,13 +21,20 @@ import { fuseAnimations } from '@fuse/animations';
 export class RegisterComponent implements OnInit, OnDestroy
 {
     registerForm: FormGroup;
-
+    loading = false;
+    submitted = false;
+    warnAcceptTerms = false;
     // Private
     private _unsubscribeAll: Subject<any>;
 
     constructor(
+        private route: ActivatedRoute,
+        private router: Router,
         private _fuseConfigService: FuseConfigService,
-        private _formBuilder: FormBuilder
+        private _formBuilder: FormBuilder,
+        private alertService: AlertService,
+        private _auth: AuthenticationService,
+        private _log: LoggerService
     )
     {
         // Configure the layout
@@ -60,7 +72,8 @@ export class RegisterComponent implements OnInit, OnDestroy
             name           : ['', Validators.required],
             email          : ['', [Validators.required, Validators.email]],
             password       : ['', Validators.required],
-            passwordConfirm: ['', [Validators.required, confirmPasswordValidator]]
+            passwordConfirm: ['', [Validators.required, confirmPasswordValidator]],
+            acceptTerms    : [false]
         });
 
         // Update the validity of the 'passwordConfirm' field
@@ -80,8 +93,68 @@ export class RegisterComponent implements OnInit, OnDestroy
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+                    // restore Configure the layout
+        this._fuseConfigService.config = {
+                        layout: {
+                            navbar   : {
+                                hidden: false
+                            },
+                            toolbar  : {
+                                hidden: false
+                            },
+                            footer   : {
+                                hidden: false
+                            },
+                            sidepanel: {
+                                hidden: false
+                            }
+                        }
+                    };
+    }
+    // convenience getter for easy access to form fields
+    // tslint:disable-next-line:typedef
+    get f() { return this.registerForm.controls; }
+
+    onSubmit(): void {
+        this.submitted = true;
+
+        // reset alerts on submit
+        this.alertService.clear();
+
+        // stop here if form is invalid
+        if (this.registerForm.invalid) {
+            return;
+        }
+
+        if (!this.f.acceptTerms.value) {
+            this.warnAcceptTerms = true;
+        }
+
+        this.loading = true;
+        let registerData: RegisterDTO;
+        registerData = {
+            email: this.f.email.value,
+            user_name: this.f.name.value,
+            password: this.f.password.value
+        };
+        this._auth.registerNewUser(registerData).then(() => {
+            this._log.log('register user');
+
+            // get return url from query parameters or default to home page
+            const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+            this.router.navigateByUrl(returnUrl);
+        })
+        .catch(() => {
+            this.alertService.error('Register User Failed');
+            this.loading = false;
+        });
+    }
+
+    showAcceptTermWarning(): boolean {
+        return (this.warnAcceptTerms && !this.f.acceptTerms.value)
     }
 }
+
 
 /**
  * Confirm password validator
@@ -116,3 +189,4 @@ export const confirmPasswordValidator: ValidatorFn = (control: AbstractControl):
 
     return {passwordsNotMatching: true};
 };
+

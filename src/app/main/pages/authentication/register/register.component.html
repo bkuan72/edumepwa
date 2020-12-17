@@ -10,7 +10,7 @@
 
             <div class="title">CREATE AN ACCOUNT</div>
 
-            <form name="registerForm" [formGroup]="registerForm" novalidate>
+            <form name="registerForm" [formGroup]="registerForm" novalidate (ngSubmit)="onSubmit()">
 
                 <mat-form-field appearance="outline">
                     <mat-label>Name</mat-label>
@@ -56,10 +56,15 @@
                 </mat-form-field>
 
                 <div class="terms" fxLayout="row" fxLayoutAlign="center center">
-                    <mat-checkbox name="terms" aria-label="I read and accept" required>
+                    <mat-checkbox name="terms" aria-label="I read and accept" required formControlName="acceptTerms">
                         <span>I read and accept</span>
                     </mat-checkbox>
-                    <a href="#">terms and conditions</a>
+                    <a class="link" [routerLink]="'/pages/docs/terms-and-conditions'">terms and conditions</a>
+                </div>
+                <div class="terms" fxLayout="row" *ngIf="showAcceptTermWarning()">
+                    <mat-error>
+                        Please read and accept terms!
+                    </mat-error>
                 </div>
 
                 <button mat-raised-button color="accent" class="submit-button" aria-label="CREATE AN ACCOUNT"

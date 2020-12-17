@@ -96,6 +96,7 @@ export class LoginComponent implements OnInit, OnDestroy
     }
 
     // convenience getter for easy access to form fields
+    // tslint:disable-next-line:typedef
     get f() { return this.loginForm.controls; }
 
     onSubmit(): void {
