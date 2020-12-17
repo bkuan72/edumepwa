@@ -21,12 +21,7 @@ export const navigation: FuseNavigation[] = [
         //         type : 'item',
         //         url  : '/pages/authentication/login'
         //     },
-        //     {
-        //         id   : 'register',
-        //         title: 'Register',
-        //         type : 'item',
-        //         url  : '/pages/authentication/register'
-        //     },
+
         //     {
         //         id   : 'reset-password',
         //         title: 'Reset Password',

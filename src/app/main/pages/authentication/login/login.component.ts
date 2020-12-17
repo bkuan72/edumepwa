@@ -18,6 +18,7 @@ import { LoggerService } from 'app/services/logger/logger.service';
 })
 export class LoginComponent implements OnInit, OnDestroy
 {
+    rememberMe = false;
     loginForm: FormGroup;
     loading = false;
     submitted = false;
@@ -68,7 +69,8 @@ export class LoginComponent implements OnInit, OnDestroy
     {
         this.loginForm = this._formBuilder.group({
             email   : ['', [Validators.required, Validators.email]],
-            password: ['', Validators.required]
+            password: ['', Validators.required],
+            rememberMe: [this.rememberMe]
         });
     }
 
@@ -113,7 +115,8 @@ export class LoginComponent implements OnInit, OnDestroy
             email: this.f.email.value,
             password: this.f.password.value
         };
-        this._auth.login(loginData).then(() => {
+        this.rememberMe = this.f.rememberMe.value;
+        this._auth.login(loginData, this.rememberMe).then(() => {
             this._log.log('logged in');
 
             // get return url from query parameters or default to home page
