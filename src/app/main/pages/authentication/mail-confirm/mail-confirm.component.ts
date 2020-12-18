@@ -1,4 +1,5 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 
 import { FuseConfigService } from '@fuse/services/config.service';
 import { fuseAnimations } from '@fuse/animations';
@@ -10,17 +11,22 @@ import { fuseAnimations } from '@fuse/animations';
     encapsulation: ViewEncapsulation.None,
     animations   : fuseAnimations
 })
-export class MailConfirmComponent
+export class MailConfirmComponent implements OnInit
 {
+    user_id: string;
+    email: string;
     /**
      * Constructor
      *
      * @param {FuseConfigService} _fuseConfigService
      */
     constructor(
-        private _fuseConfigService: FuseConfigService
+        private _fuseConfigService: FuseConfigService,
+        private router: ActivatedRoute
     )
     {
+        this.user_id = '';
+        this.email = '';
         // Configure the layout
         this._fuseConfigService.config = {
             layout: {
@@ -38,5 +44,12 @@ export class MailConfirmComponent
                 }
             }
         };
+    }
+
+    ngOnInit(): void {
+        this.router.params.subscribe(params => {
+            this.user_id = params['user_id'];
+            this.email = params['email'];
+        });
     }
 }

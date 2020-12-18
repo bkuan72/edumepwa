@@ -1,0 +1,27 @@
+@mixin mail-confirmation-theme($theme) {
+
+    $background: map-get($theme, background);
+    $foreground: map-get($theme, foreground);
+    $is-dark: map-get($theme, is-dark);
+
+    mail-confirmation {
+
+        #mail-confirmation {
+
+            #mail-confirmation-form-wrapper {
+
+                #mail-confirmation-form {
+                    @if ($is-dark) {
+                        background: mat-color($fuse-navy, 600);
+                    } @else {
+                        background: map-get($background, card);
+                    }
+
+                    .subtitle {
+                        color: map-get($foreground, secondary-text);
+                    }
+                }
+            }
+        }
+    }
+}

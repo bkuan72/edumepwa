@@ -139,10 +139,7 @@ export class RegisterComponent implements OnInit, OnDestroy
         };
         this._auth.registerNewUser(registerData).then(() => {
             this._log.log('register user');
-
-            // get return url from query parameters or default to home page
-            const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-            this.router.navigateByUrl(returnUrl);
+            this.router.navigate(['auth/mail-confirm', { user_name: registerData.user_name, email: registerData.email }]);
         })
         .catch(() => {
             this.alertService.error('Register User Failed');
