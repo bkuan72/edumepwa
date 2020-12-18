@@ -28,8 +28,20 @@ import { LogPublishersService } from './shared/log-publishers.service';
 import { LoggerService } from './services/logger/logger.service';
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AvatarModule } from 'ngx-avatar';
+import { MailConfirmationComponent } from './main/pages/authentication/mail-confirmation/mail-confirmation.component';
+import { ResetPasswordComponent } from './main/pages/authentication/reset-password/reset-password.component';
 
 const appRoutes: Routes = [
+    {
+        path        : 'auth/confirmMail',
+        component   : MailConfirmationComponent,
+        pathMatch   : 'full'
+    },
+    {
+        path        : 'auth/resetPassword',
+        component   : ResetPasswordComponent,
+        pathMatch   : 'full'
+    },
     {
         path        : 'pages',
         loadChildren: () => import('./main/pages/pages.module').then(m => m.PagesModule)
@@ -37,7 +49,8 @@ const appRoutes: Routes = [
     {
         path        : '**',
         redirectTo  :  'search/modern'
-    }
+    },
+
 ];
 
 @NgModule({

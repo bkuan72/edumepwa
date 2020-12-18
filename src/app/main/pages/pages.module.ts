@@ -1,3 +1,5 @@
+import { ResetPasswordConfirmModule } from './authentication/reset-password-confirm/reset-password-confirm.module';
+import { MailConfirmationModule } from './authentication/mail-confirmation/mail-confirmation.module';
 import { TermsAndConditionsModule } from './docs/terms-and-conditions/terms-and-condition.module';
 import { SearchModernModule } from './search/modern/search-modern.module';
 import { ProfileModule } from './profile/profile.module';
@@ -24,9 +26,11 @@ import { NgModule } from '@angular/core';
         ForgotPasswordModule,
         // ForgotPassword2Module,
         ResetPasswordModule,
+        ResetPasswordConfirmModule,
         // ResetPassword2Module,
         LockModule,
         MailConfirmModule,
+        MailConfirmationModule,
 
         // Coming-soon
         ComingSoonModule,

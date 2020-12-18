@@ -109,4 +109,64 @@ export class AuthenticationService {
       return false;
   }
 
+  emailConfirmation(email: string, regConfirmKey: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.regConfirmation,
+            [email, regConfirmKey]);
+        this._http.Get(httpConfig, false).then ((res) => {
+                resolve();
+            })
+            .catch((res) => {
+                this._logger.error('Error Confirming Email', res);
+                reject();
+            });
+    });
+  }
+  resetPasswordConfirmation(email: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.resetPassword,
+            [email]);
+        this._http.Get(httpConfig, false).then ((res) => {
+                resolve();
+            })
+            .catch((res) => {
+                this._logger.error('Error Resetting Password', res);
+                reject();
+            });
+    });
+  }
+
+  validResetPasswordKey(email: string, resetPasswordKey: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.validResetPasswordKey,
+            [email, resetPasswordKey]);
+        this._http.Get(httpConfig, false).then ((res: { valid: boolean }) => {
+                if (res.valid) {
+                    resolve();
+                } else {
+                    this._logger.error('Invalid Reset Password Key', res);
+                    reject();
+                }
+            })
+            .catch((res) => {
+                this._logger.error('Error Reset Email Password', res);
+                reject();
+            });
+    });
+  }
+
+  updateUserPassword(email: string, resetPasswordKey: string, newPassword: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.newPasswordConfirmation,
+            [email, resetPasswordKey, newPassword]);
+        this._http.Get(httpConfig, false).then ((res) => {
+                resolve();
+            })
+            .catch((res) => {
+                this._logger.error('Error Reset Email Password', res);
+                reject();
+            });
+    });
+  }
+
 }

@@ -17,6 +17,10 @@ export enum SrvApiEnvEnum {
     increment_likes = '/api/posts/likes',
     increment_share = '/api/posts/share',
     userGroups = '/api/userGroups/byUserId',
+    regConfirmation = '/api/auth/confirm/byEmailNRegConfirmKey',
+    newPasswordConfirmation = '/api/auth/resetPassword/byEmailNresetConfirmKeyNnewPassword',
+    resetPassword = '/api/auth/resetPassword/byEmail',
+    validResetPasswordKey = '/api/auth/confirm/byEmailResetPasswordKey',
 
     // local web server path
     SETTINGS_JSON_LOCATION = 'assets/app-settings.json'
