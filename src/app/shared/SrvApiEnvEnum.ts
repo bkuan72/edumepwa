@@ -21,6 +21,8 @@ export enum SrvApiEnvEnum {
     newPasswordConfirmation = '/api/auth/resetPassword/byEmailNresetConfirmKeyNnewPassword',
     resetPassword = '/api/auth/resetPassword/byEmail',
     validResetPasswordKey = '/api/auth/confirm/byEmailResetPasswordKey',
+    userByUserId = '/api/users/byUserId',
+    basicUserByUserId = '/api/users/basicInfo/byUserId',
 
     // local web server path
     SETTINGS_JSON_LOCATION = 'assets/app-settings.json'

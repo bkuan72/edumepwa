@@ -1,3 +1,4 @@
+import { SessionService } from './../../../services/session/session.service';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -31,17 +32,31 @@ export class ProfileService implements Resolve<any>
      */
     constructor(
         private _http: SrvHttpService,
-        private _auth: AuthenticationService
+        private _session: SessionService
     )
     {
-        this.user = this._auth.userValue;
+        this.user = this._session.userProfileValue;
+        this.timeline = [];
+        this.about = {};
+        this.photosVideos = [];
+        this.activities = [];
+        this.friends = [];
+        this.groups = [];
+        Promise.all([
+            this.getTimeline(),
+            this.getAbout(),
+            this.getPhotosVideos(),
+            this.getActivities(),
+            this.getFriends(),
+            this.getGroups()
+        ]);
         // Set the defaults
-        this.timelineOnChanged = new BehaviorSubject({});
-        this.aboutOnChanged = new BehaviorSubject({});
-        this.photosVideosOnChanged = new BehaviorSubject({});
-        this.activitiesOnChanged = new BehaviorSubject({});
-        this.friendsOnChanged = new BehaviorSubject({});
-        this.groupsOnChanged = new BehaviorSubject({});
+        this.timelineOnChanged = new BehaviorSubject(this.timeline);
+        this.aboutOnChanged = new BehaviorSubject(this.about);
+        this.photosVideosOnChanged = new BehaviorSubject(this.photosVideos);
+        this.activitiesOnChanged = new BehaviorSubject(this.activities);
+        this.friendsOnChanged = new BehaviorSubject(this.friends);
+        this.groupsOnChanged = new BehaviorSubject(this.groups);
     }
 
     /**
@@ -53,7 +68,8 @@ export class ProfileService implements Resolve<any>
      */
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any
     {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
+
             Promise.all([
                 this.getTimeline(),
                 this.getAbout(),
@@ -67,6 +83,7 @@ export class ProfileService implements Resolve<any>
                 },
                 reject
             );
+
         });
     }
 

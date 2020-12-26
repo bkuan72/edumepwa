@@ -51,26 +51,40 @@ export class AuthenticationService {
                 resolve(true);
             })
             .catch((res: HttpErrorResponse) => {
-                this._alert.error(res.error);
+                // this._alert.error(res.error);
                 this._logger.error('Error Registering User', res);
                 reject(false);
             });
       });
   }
 
-  renewCookie = (): void => {
-
+  renewCookie = (): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+        const httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.renewToken);
+        this._http.Post(httpConfig, false).then ((responseBody) => {
+                localStorage.setItem(LocalStoreVarEnum.USER, JSON.stringify(responseBody.data));
+                this.userSubject.next(responseBody.data);
+                this._authToken.setToken(responseBody, this.rememberMe);
+                resolve(true);
+            })
+            .catch((res: HttpErrorResponse) => {
+                // this._alert.error(res.error);
+                this._logger.error('Error Renewing Auth Token', res);
+                reject(false);
+            });
+      });
   }
 
   login = (loginDTO: LoginDTO, rememberMe: boolean): Promise<boolean> => {
       return new Promise((resolve, reject) => {
+        this.rememberMe = rememberMe;
         const httpConfig = this._http.getSrvHttpConfig(SrvApiEnvEnum.login,
             undefined,
             loginDTO);
         this._http.Post(httpConfig, false).then ((responseBody) => {
                 localStorage.setItem(LocalStoreVarEnum.USER, JSON.stringify(responseBody.data));
                 this.userSubject.next(responseBody.data);
-                this._authToken.setToken(responseBody, rememberMe);
+                this._authToken.setToken(responseBody, this.rememberMe);
                 resolve(true);
             })
             .catch((res: HttpErrorResponse) => {

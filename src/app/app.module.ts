@@ -1,3 +1,6 @@
+import { AuthGuard } from './main/guards/auth.guard';
+import { ProfileComponent } from './main/pages/profile/profile.component';
+import { SessionService } from './services/session/session.service';
 import { CommonComponentModule } from './components/component.module';
 import { PagesModule } from './main/pages/pages.module';
 import { CommonFn } from './shared/common-fn';
@@ -41,6 +44,11 @@ const appRoutes: Routes = [
         path        : 'auth/resetPassword',
         component   : ResetPasswordComponent,
         pathMatch   : 'full'
+    },
+    {
+        path        : 'pages/profile',
+        component   : ProfileComponent,
+        canActivate : [AuthGuard]
     },
     {
         path        : 'pages',
@@ -94,6 +102,7 @@ const appRoutes: Routes = [
         LogPublishersService,
         AppSettingsService,
         AlertService,
+        SessionService,
         CommonFn
     ],
     bootstrap   : [

@@ -3,28 +3,30 @@ import { AuthenticationService } from './../../../services/authentication/authen
 import { Component, ViewEncapsulation } from '@angular/core';
 
 import { fuseAnimations } from '@fuse/animations';
+import { ProfileService } from './profile.service';
 
 @Component({
-    selector     : 'profile',
-    templateUrl  : './profile.component.html',
-    styleUrls    : ['./profile.component.scss'],
+    selector: 'profile',
+    templateUrl: './profile.component.html',
+    styleUrls: ['./profile.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    animations   : fuseAnimations
+    animations: fuseAnimations,
 })
-export class ProfileComponent
-{
+export class ProfileComponent {
+    userId: string;
     user: any;
     /**
      * Constructor
      */
-    constructor(private auth: AuthenticationService,
-                public  fn: CommonFn)
-    {
-        this.user = this.auth.userValue;
+    constructor(
+        private auth: AuthenticationService,
+        public fn: CommonFn,
+        private _profileService: ProfileService
+    ) {
+        this.user = this._profileService.user;
     }
 
     isAuth(): boolean {
         return this.auth.isLoggedIn();
     }
-
 }

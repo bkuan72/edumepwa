@@ -1,3 +1,4 @@
+import { CommonComponentModule } from './../../../../components/component.module';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +29,7 @@ const routes = [
         MatFormFieldModule,
         MatIconModule,
         MatInputModule,
-
+        CommonComponentModule,
         FuseSharedModule
     ]
 })

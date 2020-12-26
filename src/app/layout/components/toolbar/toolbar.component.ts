@@ -1,3 +1,4 @@
+import { SessionService } from './../../../services/session/session.service';
 import { CommonFn } from './../../../shared/common-fn';
 import { Router } from '@angular/router';
 import { AuthenticationService } from './../../../services/authentication/authentication.service';
@@ -46,7 +47,8 @@ export class ToolbarComponent implements OnInit, OnDestroy
         private _translateService: TranslateService,
         private auth: AuthenticationService,
         private router: Router,
-        public  fn: CommonFn
+        public  fn: CommonFn,
+        private _session: SessionService
     )
     {
         this.user = this.auth.userValue;
@@ -177,12 +179,12 @@ export class ToolbarComponent implements OnInit, OnDestroy
         this.router.navigateByUrl('pages/auth/login');
     }
     doLogout(): void {
-        this.auth.logout().finally(() => { 
+        this.auth.logout().finally(() => {
             this.router.navigateByUrl('pages/search/modern');
         });
     }
     goToUserProfile(): void {
-        this.router.navigateByUrl('/pages/profile');
+        this._session.goToUserProfile(this.user.id);
     }
 
 }

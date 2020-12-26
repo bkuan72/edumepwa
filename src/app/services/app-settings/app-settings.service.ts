@@ -82,5 +82,5 @@ export class AppSettingsService {
 
     deleteSettings(): void {
         localStorage.removeItem(LocalStoreVarEnum.SETTINGS);
-      }
+    }
 }
