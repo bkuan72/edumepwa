@@ -1,3 +1,4 @@
+import { MaintenanceModule } from './maintenance/maintenence.module';
 import { ResetPasswordConfirmModule } from './authentication/reset-password-confirm/reset-password-confirm.module';
 import { MailConfirmationModule } from './authentication/mail-confirmation/mail-confirmation.module';
 import { TermsAndConditionsModule } from './docs/terms-and-conditions/terms-and-condition.module';
@@ -44,7 +45,7 @@ import { NgModule } from '@angular/core';
         // InvoiceCompactModule,
 
         // Maintenance
-        // MaintenanceModule,
+        MaintenanceModule,
 
         // Pricing
         // PricingModule,

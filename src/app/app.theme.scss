@@ -94,6 +94,7 @@ $typography: mat-typography-config(
 @import "src/app/main/pages/profile/tabs/about/about.theme";
 @import "src/app/main/pages/profile/tabs/photos-videos/photos-videos.theme";
 @import "src/app/main/pages/profile/tabs/timeline/timeline.theme";
+@import "src/app/main/pages/maintenance/maintenance.theme";
 
 
 
@@ -116,6 +117,7 @@ $typography: mat-typography-config(
     @include error-500-theme($theme);
     @include profile-photos-videos-theme($theme);
     @include profile-timeline-theme($theme);
+    @include maintenance-theme($theme);
 }
 
 // -----------------------------------------------------------------------------------------------------

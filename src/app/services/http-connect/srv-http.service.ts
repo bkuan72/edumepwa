@@ -6,6 +6,7 @@ import { isUndefined } from 'lodash';
 import { SrvAuthTokenService } from 'app/services/srv-cookie/srv-auth-token.service';
 import { Observable, of, throwError } from 'rxjs';
 import { AppSettings } from 'app/shared/app-settings';
+import { Router } from '@angular/router';
 
 export class HttpConfig {
     private _withCredentials: boolean;
@@ -84,7 +85,7 @@ export class SrvHttpService {
         private _httpClient: HttpClient,
         private _authToken: SrvAuthTokenService,
         private _appSettings: AppSettingsService,
-        private alert: AlertService
+        private router: Router
     ) {
         this.settings = this._appSettings.settingsValue;
     }
@@ -263,6 +264,11 @@ export class SrvHttpService {
 
     handleErrors = (httpError: HttpErrorResponse): void => {
         // this.alert.warn(httpError.error);
+        if (httpError.status >= 500) {
+            this.router.navigateByUrl('errors/error-500');
+        } else {
+            this.router.navigateByUrl('errors/error-404');
+        }
     }
     handleObsErrors = (error: HttpErrorResponse): Observable<any> => {
         // const errors: string[] = [];
