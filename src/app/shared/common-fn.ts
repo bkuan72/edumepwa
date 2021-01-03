@@ -12,6 +12,27 @@ export enum DateAddIntervalEnum {
 
 export class CommonFn {
     /**
+     * Convert hour to milliseconds
+     * @param hour - hours
+     */
+    hourToMillisec(hour: number): number {
+        return hour * 3600000;
+    }
+    /**
+     * Convert minutes to milliseconds
+     * @param min - minutes
+     */
+    minToMillisec(min: number): number {
+        return min * 60000;
+    }
+    /**
+     * Convert seconds to milliseconds
+     * @param sec - seconds
+     */
+    secToMillisec(sec: number): number {
+        return sec * 1000;
+    }
+    /**
      * Adds time to a date. Modelled after MySQL DATE_ADD function.
      * Example: dateAdd(new Date(), 'minute', 30)  //returns 30 minutes from now.
      * https://stackoverflow.com/a/1214753/18511
@@ -51,13 +72,13 @@ export class CommonFn {
                 ret.setDate(ret.getDate() + units);
                 break;
             case DateAddIntervalEnum.HOUR:
-                ret.setTime(ret.getTime() + units * 3600000);
+                ret.setTime(ret.getTime() + this.hourToMillisec(units));
                 break;
             case DateAddIntervalEnum.MINUTE:
-                ret.setTime(ret.getTime() + units * 60000);
+                ret.setTime(ret.getTime() + this.minToMillisec(units));
                 break;
             case DateAddIntervalEnum.SECOND:
-                ret.setTime(ret.getTime() + units * 1000);
+                ret.setTime(ret.getTime() + this.secToMillisec(units));
                 break;
             case DateAddIntervalEnum.MILLISECOND:
                 ret.setTime(ret.getTime() + units);
