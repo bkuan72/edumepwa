@@ -1,7 +1,8 @@
+import { CommonFn } from './../../shared/common-fn';
+import { AppSettingsService } from 'app/services/app-settings/app-settings.service';
 import { LocalStoreVarEnum } from './../../shared/local-store-var-enum';
-import { Router } from '@angular/router';
 import { AlertService } from './../alert/alert.service';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, } from '@angular/common/http';
 import { RegisterDTO } from './../../dtos/register-dto';
 import { LoginDTO } from './../../dtos/login-dto';
 import { SrvApiEnvEnum } from './../../shared/SrvApiEnvEnum';
@@ -10,6 +11,7 @@ import { Injectable } from '@angular/core';
 import { SrvHttpService } from '../http-connect/srv-http.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { LoggerService } from '../logger/logger.service';
+import { AppSettings } from 'app/shared/app-settings';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +19,7 @@ import { LoggerService } from '../logger/logger.service';
 export class AuthenticationService {
   private userSubject: BehaviorSubject<any>;
   rememberMe: boolean;
+  settingsObs: Observable<AppSettings>;
 
 
   renewCookieObserver: Observable<boolean>;
@@ -25,13 +28,20 @@ export class AuthenticationService {
       private _http: SrvHttpService,
       private _authToken: SrvAuthTokenService,
       private _logger: LoggerService,
-      private _alert: AlertService
+      private _appSetting: AppSettingsService,
+      private _alert: AlertService,
+      private _fn: CommonFn,
   ) {
     this.rememberMe = true;
     this.userSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem(LocalStoreVarEnum.USER)));
-    this._authToken.tokenExpiry().subscribe((expiring) => {
-        if (expiring) {
-            this.renewCookie();
+    this.settingsObs = this._appSetting.settingsObs;
+    this.settingsObs.subscribe((appSetting) => {
+        if (appSetting.tokenRenewalIntervalInMin !== undefined) {
+            this._authToken.tokenExpiry(this._fn.minToMillisec(appSetting.tokenRenewalIntervalInMin)).subscribe((expiring) => {
+                if (expiring) {
+                    this.renewCookie();
+                }
+            });
         }
     });
   }

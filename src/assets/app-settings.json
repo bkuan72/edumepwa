@@ -1,7 +1,7 @@
 {
     "defaultUrl": "http://localhost:3300",
     "propertiesPrefix": "edume.co.nz",
-    "tokenRenewalTime": 1,
+    "tokenRenewalIntervalInMin": 15,
     "googleApiKey": "AIzaSyCoWC3b2-x6UZxmG2HmksDhLDGUnKYy9qM",
     "searchPageLines": 10,
     "paginationRange": 4,
