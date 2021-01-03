@@ -4,7 +4,7 @@ export class AppSettings {
     defaultUrl = 'http://localhost:3300';  // backend server path
     propertiesPrefix = 'domain.co.nz';  // prefix to use for prefixing properties for the frontend server eg domain.co.nz.token.expiry.in.minutes
     googleApiKey = '';       // google API Key
-    tokenRenewalTime = 1; // renew token by x hour
+    tokenRenewalIntervalInMin = undefined; // renew token by x minutes
     searchPageLines = 10; // number of result per search page
     paginationRange = 3;  // number of page to show before a pagination '...' icon is displayed
     postHistoryDays = 10; // number of days into the past to retrieve

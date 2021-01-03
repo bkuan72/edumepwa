@@ -1,7 +1,9 @@
 import { CommonFn, DateAddIntervalEnum } from './../../shared/common-fn';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import jwt_decode from 'jwt-decode';
+import { AppSettingsService } from '../app-settings/app-settings.service';
+import { AppSettings } from 'app/shared/app-settings';
 
 interface LoginResponse {
     data: object;
@@ -16,7 +18,7 @@ interface DataStoredInToken {
     adminUser: boolean;
     site_code: string;
     createTimeStamp: string;
-    expireInMin: number;
+    expiryInSec: number;
   }
 
 
@@ -24,25 +26,28 @@ interface DataStoredInToken {
   providedIn: 'root'
 })
 export class SrvAuthTokenService {
-  private expireInMin: number;
+  private expiryInSec: number;
   private tokenStr: string;
   private tokenData: DataStoredInToken;
   private expiryDate: Date;
+  private settings: AppSettings;
 
   AUTH_TOKEN = 'AuthorizationToken';
   AUTH_TOKEN_EXPIRY_IN = 'AuthorizationTokenExpiryIn';
 
   constructor(
-    private _commonFn: CommonFn
+    private _commonFn: CommonFn,
+    private _appSettings: AppSettingsService
   ) {
+    this.settings = this._appSettings.settingsValue;
     if (localStorage.getItem(this.AUTH_TOKEN) !== null) {
         this.tokenStr = localStorage.getItem(this.AUTH_TOKEN);
-        this.expireInMin = parseInt(localStorage.getItem(this.AUTH_TOKEN_EXPIRY_IN), 0);
+        this.expiryInSec = parseInt(localStorage.getItem(this.AUTH_TOKEN_EXPIRY_IN), 0);
         this.tokenData = jwt_decode(this.tokenStr) as DataStoredInToken;
         this.expiryDate = new Date(this.tokenData.createTimeStamp);
         this.expiryDate = this._commonFn.dateAdd(this.expiryDate,
-            DateAddIntervalEnum.MINUTE,
-            this.tokenData.expireInMin);
+            DateAddIntervalEnum.SECOND,
+            this.tokenData.expiryInSec);
     }
   }
 
@@ -61,18 +66,18 @@ export class SrvAuthTokenService {
         this.tokenData = jwt_decode(responseBody.token.token) as DataStoredInToken;
         if (this.tokenData) {
             this.tokenStr = responseBody.token.token;
-            this.expireInMin = responseBody.token.expiresIn;
+            this.expiryInSec = responseBody.token.expiresIn;
             this.expiryDate = new Date(this.tokenData.createTimeStamp);
             this.expiryDate = this._commonFn.dateAdd(this.expiryDate,
-                                                    DateAddIntervalEnum.MINUTE,
-                                                    this.tokenData.expireInMin);
+                                                    DateAddIntervalEnum.SECOND,
+                                                    this.tokenData.expiryInSec);
             if (rememberMe) {
                 localStorage.setItem(this.AUTH_TOKEN,
                     this.tokenStr
                     );
 
                 localStorage.setItem(this.AUTH_TOKEN_EXPIRY_IN,
-                    this.expireInMin.toString()
+                    this.expiryInSec.toString()
                     );
             }
         } else {
@@ -90,11 +95,11 @@ export class SrvAuthTokenService {
     }
     if (localStorage.getItem(this.AUTH_TOKEN_EXPIRY_IN) !== null) {
         localStorage.removeItem(this.AUTH_TOKEN_EXPIRY_IN);
-        this.expireInMin = 0;
+        this.expiryInSec = 0;
     }
     this.tokenData = undefined;
     this.expiryDate = undefined;
-    this.expireInMin = undefined;
+    this.expiryInSec = undefined;
   }
 
   isUndefined(): boolean {
@@ -117,18 +122,18 @@ export class SrvAuthTokenService {
         const expDateMillisec = this.expiryDate.valueOf();
         const currentDateMillisec = (new Date()).valueOf();
         // expire in 1 hour
-        if (expDateMillisec > currentDateMillisec - (60000 * this.expireInMin)) {
+        if (expDateMillisec > currentDateMillisec - this._commonFn.secToMillisec(this.expiryInSec)) {
             return true;
         }
     }
     return false;
   }
 
-  tokenExpiry = (): Observable<boolean> => {
+  tokenExpiry = (interval: number): Observable<boolean> => {
     return new Observable (observer => {
         setInterval(() => {
-          return this.isExpiringSoon();
-        }, 500);
+          observer.next(this.isExpiringSoon());
+        }, interval);
       });
     }
 }
