@@ -23,6 +23,10 @@ export class AppSettingsService {
         return this.settingsSubject.value;
     }
 
+    public get settingsObs(): Observable<AppSettings> {
+        return this.settingsSubject.asObservable();
+    }
+
     getSettings(): void {
         this._httpClient.get(
             SrvApiEnvEnum.SETTINGS_JSON_LOCATION
