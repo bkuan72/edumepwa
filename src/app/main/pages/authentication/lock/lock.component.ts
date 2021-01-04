@@ -72,7 +72,9 @@ export class LockComponent implements OnInit
      */
     ngOnInit(): void
     {
-
+        if (this.currentUser === undefined) {
+            this.router.navigateByUrl('home');
+        }
         this.lockForm = this._formBuilder.group({
             email: [
                 {
