@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { FuseSharedModule } from '@fuse/shared.module';
 
-import { MaintenanceComponent } from 'app/main/pages/maintenance/maintenance.component';
+import { MaintenanceComponent } from 'app/main/pages/errors/maintenance/maintenance.component';
 
 const routes = [
     {

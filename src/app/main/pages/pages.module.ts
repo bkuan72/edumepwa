@@ -1,4 +1,4 @@
-import { MaintenanceModule } from './maintenance/maintenence.module';
+import { MaintenanceModule } from './errors/maintenance/maintenance.module';
 import { ResetPasswordConfirmModule } from './authentication/reset-password-confirm/reset-password-confirm.module';
 import { MailConfirmationModule } from './authentication/mail-confirmation/mail-confirmation.module';
 import { TermsAndConditionsModule } from './docs/terms-and-conditions/terms-and-condition.module';
