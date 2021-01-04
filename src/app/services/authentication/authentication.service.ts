@@ -24,9 +24,11 @@ export class AuthenticationService {
         private _logger: LoggerService,
     ) {
         this.rememberMe = true;
-        this.userSubject = new BehaviorSubject<any>(
-            JSON.parse(localStorage.getItem(LocalStoreVarEnum.USER))
-        );
+        this.userSubject = new BehaviorSubject<any>(undefined);
+        const usr = JSON.parse(localStorage.getItem(LocalStoreVarEnum.USER));
+        if (usr && usr !== null) {
+            this.userSubject.next(usr);
+        }
     }
 
     public get userValue(): any {

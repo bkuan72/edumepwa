@@ -1,6 +1,6 @@
 import { CommonFn } from './../../../../shared/common-fn';
 import { LoginDTO } from './../../../../dtos/login-dto';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -32,7 +32,6 @@ export class LockComponent implements OnInit
     constructor(
         private _fuseConfigService: FuseConfigService,
         private _formBuilder: FormBuilder,
-        private activeRoute: ActivatedRoute,
         private location: Location,
         private router: Router,
         private _auth: AuthTokenSessionService,
@@ -72,8 +71,9 @@ export class LockComponent implements OnInit
      */
     ngOnInit(): void
     {
-        if (this.currentUser === undefined) {
+        if (this.currentUser === undefined || this.currentUser === null) {
             this.router.navigateByUrl('home');
+            return;
         }
         this.lockForm = this._formBuilder.group({
             email: [
