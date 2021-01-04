@@ -26,13 +26,12 @@ import { fuseConfig } from 'app/fuse-config';
 import { AppComponent } from 'app/app.component';
 import { LayoutModule } from 'app/layout/layout.module';
 import { SrvHttpService } from 'app/services/http-connect/srv-http.service';
-import { SrvAuthTokenService } from 'app/services/srv-cookie/srv-auth-token.service';
 import { LogPublishersService } from './shared/log-publishers.service';
 import { LoggerService } from './services/logger/logger.service';
-import { AuthenticationService } from './services/authentication/authentication.service';
 import { AvatarModule } from 'ngx-avatar';
 import { MailConfirmationComponent } from './main/pages/authentication/mail-confirmation/mail-confirmation.component';
 import { ResetPasswordComponent } from './main/pages/authentication/reset-password/reset-password.component';
+import { AuthTokenSessionService } from './services/auth-token-session/auth-token-session.service';
 
 const appRoutes: Routes = [
     {
@@ -96,8 +95,7 @@ const appRoutes: Routes = [
     ],
     providers: [
         SrvHttpService,
-        SrvAuthTokenService,
-        AuthenticationService,
+        AuthTokenSessionService,
         LoggerService,
         LogPublishersService,
         AppSettingsService,

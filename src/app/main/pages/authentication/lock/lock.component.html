@@ -8,7 +8,8 @@
                  fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="start center">
 
                 <div class="avatar-container">
-                    <img class="avatar big" src="assets/images/avatars/katherine.jpg">
+                    <img class="avatar big" [hidden]="!currentUser || fn.showGenericAvatar(currentUser.avatar)" src="assets/images/avatars/profile.jpg">
+                    <ngx-avatar size="80" [hidden]="currentUser && !fn.showGenericAvatar(currentUser.avatar)" name="{{currentUser.user_name}}"></ngx-avatar>
                     <mat-icon class="s-32">lock</mat-icon>
                 </div>
 
@@ -21,17 +22,17 @@
 
             </div>
 
-            <form name="lockForm" [formGroup]="lockForm" novalidate>
+            <form name="lockForm" [formGroup]="lockForm" novalidate (ngSubmit)="doSubmit()">
 
                 <mat-form-field appearance="outline">
-                    <mat-label>Username</mat-label>
-                    <input matInput formControlName="username">
+                    <mat-label>{{currentUser.user_name}}</mat-label>
+                    <input matInput formControlName="email">
                     <mat-icon matSuffix class="disabled-text">account_circle</mat-icon>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                     <mat-label>Password</mat-label>
-                    <input matInput formControlName="password">
+                    <input matInput type="password"  formControlName="password">
                     <mat-icon matSuffix class="secondary-text">vpn_key</mat-icon>
                     <mat-error>
                         Password is required
@@ -46,7 +47,7 @@
             </form>
 
             <div class="message">
-                <a class="link" [routerLink]="'/pages/authentication/login'">Are you not Katherine?</a>
+                <a class="link" [routerLink]="'/auth/login'">Are you not {{currentUser.user_name}}?</a>
             </div>
 
         </div>

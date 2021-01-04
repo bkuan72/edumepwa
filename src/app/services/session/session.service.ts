@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AppSettings } from '../../shared/app-settings';
 import { HttpClient } from '@angular/common/http';
+import { AuthTokenSessionService } from '../auth-token-session/auth-token-session.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,7 +15,8 @@ export class SessionService {
     private userProfileSubject: BehaviorSubject<any>;
     constructor(
         private _http: SrvHttpService,
-        private router: Router
+        private router: Router,
+        private _authTokenSession: AuthTokenSessionService
     ) {
         this.userProfileSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem(LocalStoreVarEnum.SESSION_USER_PROFILE)));
     }
@@ -30,6 +32,8 @@ export class SessionService {
         this._http
             .Get(httpConfig, true)
             .then((user) => {
+                this._authTokenSession.checkAuthTokenStatus();
+
                 localStorage.setItem(LocalStoreVarEnum.SESSION_USER_PROFILE, JSON.stringify(user));
                 this.userProfileSubject.next(user);
                 this.router.navigate(['/pages/profile']);

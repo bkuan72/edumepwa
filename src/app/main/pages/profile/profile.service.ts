@@ -2,9 +2,9 @@ import { SessionService } from './../../../services/session/session.service';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AuthenticationService } from 'app/services/authentication/authentication.service';
 import { SrvHttpService } from 'app/services/http-connect/srv-http.service';
 import { SrvApiEnvEnum } from 'app/shared/SrvApiEnvEnum';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 
 @Injectable()
 export class ProfileService implements Resolve<any>
@@ -32,7 +32,8 @@ export class ProfileService implements Resolve<any>
      */
     constructor(
         private _http: SrvHttpService,
-        private _session: SessionService
+        private _session: SessionService,
+        private _authTokenSession: AuthTokenSessionService
     )
     {
         this.user = this._session.userProfileValue;
@@ -98,6 +99,7 @@ export class ProfileService implements Resolve<any>
                 );
             this._http.GetObs(httpConfig, true)
                 .subscribe((timeline: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
                     this.timeline = timeline;
                     this.timelineOnChanged.next(this.timeline);
                     resolve(this.timeline);
@@ -116,6 +118,7 @@ export class ProfileService implements Resolve<any>
                 );
             this._http.GetObs(httpConfig, true)
                 .subscribe((about: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
                     this.about = about;
                     this.aboutOnChanged.next(this.about);
                     resolve(this.about);
@@ -135,6 +138,7 @@ export class ProfileService implements Resolve<any>
 
             this._http.GetObs(httpConfig, true)
                 .subscribe((photosVideos: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
                     this.photosVideos = photosVideos;
                     this.photosVideosOnChanged.next(this.photosVideos);
                     resolve(this.photosVideos);
@@ -154,6 +158,7 @@ export class ProfileService implements Resolve<any>
                 );
             this._http.GetObs(httpConfig, true)
                 .subscribe((activities: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
                     this.activities = activities;
                     this.activitiesOnChanged.next(this.activities);
                     resolve(this.activities);
@@ -172,6 +177,7 @@ export class ProfileService implements Resolve<any>
                 );
             this._http.GetObs(httpConfig, true)
                 .subscribe((friends: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
                     this.friends = friends;
                     this.friendsOnChanged.next(this.friends);
                     resolve(this.friends);
@@ -190,6 +196,8 @@ export class ProfileService implements Resolve<any>
                 );
             this._http.GetObs(httpConfig, true)
                 .subscribe((groups: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+
                     this.groups = groups;
                     this.groupsOnChanged.next(this.groups);
                     resolve(this.groups);

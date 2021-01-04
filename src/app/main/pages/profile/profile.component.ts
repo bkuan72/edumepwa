@@ -1,9 +1,9 @@
 import { CommonFn } from './../../../shared/common-fn';
-import { AuthenticationService } from './../../../services/authentication/authentication.service';
 import { Component, ViewEncapsulation } from '@angular/core';
 
 import { fuseAnimations } from '@fuse/animations';
 import { ProfileService } from './profile.service';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 
 @Component({
     selector: 'profile',
@@ -19,7 +19,7 @@ export class ProfileComponent {
      * Constructor
      */
     constructor(
-        private auth: AuthenticationService,
+        private _auth: AuthTokenSessionService,
         public fn: CommonFn,
         private _profileService: ProfileService
     ) {
@@ -27,6 +27,6 @@ export class ProfileComponent {
     }
 
     isAuth(): boolean {
-        return this.auth.isLoggedIn();
+        return this._auth.isLoggedIn();
     }
 }

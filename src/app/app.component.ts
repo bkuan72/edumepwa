@@ -15,7 +15,7 @@ import { navigation } from 'app/navigation/navigation';
 import { locale as navigationEnglish } from 'app/navigation/i18n/en';
 import { locale as navigationTurkish } from 'app/navigation/i18n/tr';
 import { AppSettingsService } from './services/app-settings/app-settings.service';
-import { AuthenticationService } from './services/authentication/authentication.service';
+import { AuthTokenSessionService } from './services/auth-token-session/auth-token-session.service';
 
 @Component({
     selector   : 'app',
@@ -53,7 +53,7 @@ export class AppComponent implements OnInit, OnDestroy
         private _translateService: TranslateService,
         private _platform: Platform,
         private _appSetting: AppSettingsService,
-        private _auth: AuthenticationService
+        private _auth: AuthTokenSessionService
     )
     {
         this.user = this._auth.userValue;

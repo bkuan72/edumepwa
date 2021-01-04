@@ -1,3 +1,4 @@
+import { AuthTokenSessionService } from './../../../../../services/auth-token-session/auth-token-session.service';
 import { CommonFn } from './../../../../../shared/common-fn';
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
@@ -8,7 +9,7 @@ import { FuseConfigService } from '@fuse/services/config.service';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
-import { AuthenticationService } from 'app/services/authentication/authentication.service';
+
 
 @Component({
     selector     : 'navbar-vertical-style-1',
@@ -39,11 +40,11 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy
         private _fuseNavigationService: FuseNavigationService,
         private _fuseSidebarService: FuseSidebarService,
         private _router: Router,
-        private auth: AuthenticationService,
+        private _auth: AuthTokenSessionService,
         public  fn: CommonFn
     )
     {
-        this.user = this.auth.userValue;
+        this.user = this._auth.userValue;
         // Set the private defaults
         this._unsubscribeAll = new Subject();
     }
@@ -158,6 +159,6 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy
     }
 
     isAuth(): boolean {
-        return this.auth.isLoggedIn();
+        return this._auth.isLoggedIn();
     }
 }

@@ -1,3 +1,4 @@
+import { AvatarModule } from 'ngx-avatar';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +29,9 @@ const routes = [
         MatIconModule,
         MatInputModule,
 
-        FuseSharedModule
+        FuseSharedModule,
+
+        AvatarModule
     ]
 })
 export class LockModule

@@ -1,7 +1,6 @@
 import { SessionService } from './../../../services/session/session.service';
 import { CommonFn } from './../../../shared/common-fn';
 import { Router } from '@angular/router';
-import { AuthenticationService } from './../../../services/authentication/authentication.service';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -12,6 +11,7 @@ import { FuseConfigService } from '@fuse/services/config.service';
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
 import { navigation } from 'app/navigation/navigation';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 
 @Component({
     selector     : 'toolbar',
@@ -45,13 +45,13 @@ export class ToolbarComponent implements OnInit, OnDestroy
         private _fuseConfigService: FuseConfigService,
         private _fuseSidebarService: FuseSidebarService,
         private _translateService: TranslateService,
-        private auth: AuthenticationService,
+        private _auth: AuthTokenSessionService,
         private router: Router,
         public  fn: CommonFn,
         private _session: SessionService
     )
     {
-        this.user = this.auth.userValue;
+        this.user = this._auth.userValue;
         // Set the defaults
         this.userStatusOptions = [
             {
@@ -172,14 +172,14 @@ export class ToolbarComponent implements OnInit, OnDestroy
     }
 
     isAuth(): boolean {
-        return this.auth.isLoggedIn();
+        return this._auth.isLoggedIn();
     }
 
     doLogin(): void {
         this.router.navigateByUrl('pages/auth/login');
     }
     doLogout(): void {
-        this.auth.logout().finally(() => {
+        this._auth.logout().finally(() => {
             this.router.navigateByUrl('pages/search/modern');
         });
     }

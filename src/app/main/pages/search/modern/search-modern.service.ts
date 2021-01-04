@@ -4,6 +4,7 @@ import { SrvHttpService } from 'app/services/http-connect/srv-http.service';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 
 @Injectable()
 export class SearchModernService implements Resolve<any>
@@ -18,7 +19,8 @@ export class SearchModernService implements Resolve<any>
      */
     constructor(
         private _http: SrvHttpService,
-        private router: Router
+        private router: Router,
+        private _authTokenSession: AuthTokenSessionService
     )
     {
         // Set the defaults
@@ -63,6 +65,8 @@ export class SearchModernService implements Resolve<any>
         }
         this._http.GetObs(httpConfig, true)
             .subscribe((data: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+
                 this.data = data;
                 this.dataOnChanged.next(this.data);
                 resolve(this.data);

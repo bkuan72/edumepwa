@@ -1,13 +1,13 @@
 import { AlertService } from './../../../../services/alert/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoginDTO } from './../../../../dtos/login-dto';
-import { AuthenticationService } from './../../../../services/authentication/authentication.service';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { FuseConfigService } from '@fuse/services/config.service';
 import { fuseAnimations } from '@fuse/animations';
 import { LoggerService } from 'app/services/logger/logger.service';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 
 @Component({
     selector     : 'login',
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit, OnDestroy
         private route: ActivatedRoute,
         private router: Router,
         private _formBuilder: FormBuilder,
-        private _auth: AuthenticationService,
+        private _auth: AuthTokenSessionService,
         private _log: LoggerService,
         private alertService: AlertService
     )
