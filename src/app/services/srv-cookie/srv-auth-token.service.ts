@@ -143,7 +143,7 @@ export class SrvAuthTokenService {
                 if (
                     expDateMillisec <
                     currentDateMillisec -
-                        this._commonFn.secToMillisec(
+                        this._commonFn.minToMillisec(
                             this.settings.tokenRenewBeforeMin
                         )
                 ) {
