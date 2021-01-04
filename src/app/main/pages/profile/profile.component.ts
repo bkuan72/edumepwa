@@ -15,6 +15,7 @@ import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-to
 export class ProfileComponent {
     userId: string;
     user: any;
+    allowFollow: boolean;
     /**
      * Constructor
      */
@@ -24,6 +25,11 @@ export class ProfileComponent {
         private _profileService: ProfileService
     ) {
         this.user = this._profileService.user;
+        this.allowFollow = true;
+        if (this._auth.userValue &&
+            this._auth.userValue.id === this.user.id) {
+                this.allowFollow = false;
+            }
     }
 
     isAuth(): boolean {

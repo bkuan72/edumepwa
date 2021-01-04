@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <div class="actions" fxLayout="row" fxLayoutAlign="end center" [@animate]="{value:'*',params:{delay:'200ms'}}">
+        <div *ngIf="allowFollow" class="actions" fxLayout="row" fxLayoutAlign="end center" [@animate]="{value:'*',params:{delay:'200ms'}}">
             <button mat-raised-button color="accent" aria-label="Follow">Follow</button>
             <button mat-raised-button color="primary" aria-label="Send Message">Send Message</button>
         </div>
