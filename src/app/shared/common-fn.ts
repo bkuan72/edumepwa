@@ -103,6 +103,10 @@ export class CommonFn {
         return pageNo;
     }
 
+    /**
+     * this function determine if a avatar has been defined
+     * @param avatar - ling to avatar file
+     */
     showGenericAvatar(avatar: any): boolean {
         return avatar === undefined || avatar === null || avatar.length === 0;
     }
@@ -120,5 +124,57 @@ export class CommonFn {
             configurable: true,
             enumerable: true,
         });
+    }
+
+    /**
+     * This function check if object has property name defined
+     * @param obj - object
+     * @param prop - property name
+     */
+    public hasProperty = (obj: any, prop: string): boolean => {
+        let found = false;
+        for (const key in obj) {
+          if (key === prop) {
+            found = true;
+          }
+        }
+        return found;
+    }
+
+    /**
+     * This function create a new object that has properties that obj1 and obj2 has matching
+     * and copy obj2 data to new object
+     * @param obj1 - object to map data to
+     * @param obj2 - object to data
+     */
+    public mapObj = (obj1: any, obj2: any): any => {
+        let mapObj = {};
+        for (const propName in obj1) {
+            if (this.hasProperty(obj2, propName)) {
+                mapObj = this.defineProperty(mapObj, propName, obj2[propName]);
+            }
+        }
+        return mapObj;
+    }
+
+    /**
+     * This function create a new object that has properties that obj1 and obj2 has matching
+     * and copy obj2 data to new object if the two property value does not match
+     * @param obj1 - object to map data to
+     * @param obj2 - object to data
+     */
+    public mapObjChangedPropertyValue = (obj1: any, obj2: any): any | undefined => {
+        let mapObj;
+        for (const propName in obj1) {
+            if (this.hasProperty(obj2, propName)) {
+                if (obj1[propName] !== obj2[propName]) {
+                    if (mapObj === undefined) {
+                        mapObj = {};
+                    }
+                    mapObj = this.defineProperty(mapObj, propName, obj1[propName].value);
+                }
+            }
+        }
+        return mapObj;
     }
 }
