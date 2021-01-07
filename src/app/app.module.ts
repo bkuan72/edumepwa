@@ -1,3 +1,4 @@
+import { UserProfileMaintenanceFormsComponent } from './main/pages/forms/user-profile-maintenance/user-profile-maintenance-forms.component';
 import { AuthGuard } from './main/guards/auth.guard';
 import { ProfileComponent } from './main/pages/profile/profile.component';
 import { SessionService } from './services/session/session.service';
@@ -47,6 +48,11 @@ const appRoutes: Routes = [
     {
         path        : 'pages/profile',
         component   : ProfileComponent,
+        canActivate : [AuthGuard]
+    },
+    {
+        path        : 'pages/forms/user-profile-maintenance-forms',
+        component   : UserProfileMaintenanceFormsComponent,
         canActivate : [AuthGuard]
     },
     {
