@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"cSpell.words": [
+			"Iface",
+			"dtos",
+			"edume",
+			"localstorage",
+			"sidepanel",
+			"webapi"
+		]
+	}
+}
