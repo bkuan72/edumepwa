@@ -3,7 +3,7 @@ import { AppSettingsService } from './../app-settings/app-settings.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { isUndefined } from 'lodash';
-import { SrvAuthTokenService } from 'app/services/srv-cookie/srv-auth-token.service';
+import { SrvAuthTokenService } from 'app/services/srv-auth-token/srv-auth-token.service';
 import { Observable, of, throwError } from 'rxjs';
 import { AppSettings } from 'app/shared/app-settings';
 import { Router } from '@angular/router';

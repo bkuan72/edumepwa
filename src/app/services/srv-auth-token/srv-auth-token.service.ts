@@ -1,4 +1,4 @@
-import { CommonFn, DateAddIntervalEnum } from './../../shared/common-fn';
+import { CommonFn, DateAddIntervalEnum } from '../../shared/common-fn';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import jwt_decode from 'jwt-decode';

@@ -4,7 +4,7 @@ import { AppSettings } from 'app/shared/app-settings';
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from '../authentication/authentication.service';
-import { SrvAuthTokenService, TokenStatus } from '../srv-cookie/srv-auth-token.service';
+import { SrvAuthTokenService, TokenStatus } from '../srv-auth-token/srv-auth-token.service';
 import { LoginDTO } from 'app/dtos/login-dto';
 import { AppSettingsService } from '../app-settings/app-settings.service';
 
