@@ -262,6 +262,60 @@ export class SrvHttpService {
 
     }
 
+
+
+    Patch = (srvConfig: HttpConfig, silentOnError: boolean): Promise<any> => {
+        return new Promise((resolve, reject) => {
+            let httpHdr: HttpHeaders = new HttpHeaders();
+            if (srvConfig.srvApi && !this._authToken.isUndefined()) {
+                httpHdr = httpHdr.append('Authorization', this._authToken.getAuthToken());
+            }
+            httpHdr = httpHdr.append(
+                'Content-Type',
+                srvConfig.headers.contentType
+            );
+            srvConfig.requestTimeStamp = new Date().getTime();
+            this._httpClient
+                .patch(srvConfig.url, srvConfig.data, {
+                    headers: httpHdr,
+                    observe: 'response',
+                    responseType: 'json',
+                    withCredentials: srvConfig.withCredentials
+                })
+                .subscribe(
+                    (httpResponse: HttpResponse<object>) => {
+                        srvConfig.responseTimeStamp = new Date().getTime();
+                        // SUCCESS
+                        resolve(httpResponse.body);
+                    },
+                    (httpError: HttpErrorResponse) => {
+                        srvConfig.responseTimeStamp = new Date().getTime();
+                        // FAILURE
+                        if (!silentOnError) {
+                            this.handleErrors(httpError);
+                        }
+                        reject(httpError);
+                    }
+                );
+        });
+    }
+
+    PatchObs = (srvConfig: HttpConfig, silentOnError: boolean): Observable<any>  => {
+            let httpHdr: HttpHeaders = new HttpHeaders();
+            if (srvConfig.srvApi && !this._authToken.isUndefined()) {
+                httpHdr = httpHdr.append('Authorization', this._authToken.getAuthToken());
+            }
+            httpHdr = httpHdr.append(
+                'Content-Type',
+                srvConfig.headers.contentType
+            );
+            srvConfig.requestTimeStamp = new Date().getTime();
+            return this._httpClient
+                .patch(srvConfig.url, srvConfig.data, {
+                    headers: httpHdr, withCredentials: srvConfig.withCredentials
+                });
+    }
+
     handleErrors = (httpError: HttpErrorResponse): void => {
         // this.alert.warn(httpError.error);
         if (httpError.status >= 500) {
