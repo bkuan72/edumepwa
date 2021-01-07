@@ -163,5 +163,13 @@ export class SrvAuthTokenService {
         });
     }
 
+    isAdminUser(): boolean {
+        let admin = false;
+        if (this.tokenData && this.tokenData.adminUser &&
+            !this.isExpired()) {
+            admin = true;
+        }
+        return admin;
+    }
 
 }
