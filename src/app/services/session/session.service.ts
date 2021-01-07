@@ -12,7 +12,7 @@ import { AuthTokenSessionService } from '../auth-token-session/auth-token-sessio
     providedIn: 'root',
 })
 export class SessionService {
-    private userProfileSubject: BehaviorSubject<any>;
+    userProfileSubject: BehaviorSubject<any>;
     constructor(
         private _http: SrvHttpService,
         private router: Router,

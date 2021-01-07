@@ -1,3 +1,4 @@
+import { UserProfileMaintenanceFormsModule } from './forms/user-profile-maintenance/user-profile-maintenance-forms.module';
 import { MaintenanceModule } from './errors/maintenance/maintenance.module';
 import { ResetPasswordConfirmModule } from './authentication/reset-password-confirm/reset-password-confirm.module';
 import { MailConfirmationModule } from './authentication/mail-confirmation/mail-confirmation.module';
@@ -62,7 +63,10 @@ import { NgModule } from '@angular/core';
 
         // Knowledge base
         // KnowledgeBaseModule
-        TermsAndConditionsModule
+        TermsAndConditionsModule,
+
+        // User Profile Maintenance form
+        UserProfileMaintenanceFormsModule
     ]
 })
 export class PagesModule

@@ -33,6 +33,10 @@
             </mat-tab>
 
             <mat-tab label="About">
+                <ng-template mat-tab-label>
+                    About&nbsp;&nbsp;
+                    <mat-icon *ngIf="!allowFollow" matSuffix class="primary-text" (click)="doMaintain()">edit</mat-icon>
+                  </ng-template>
                 <profile-about></profile-about>
             </mat-tab>
 

@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { CommonFn } from './../../../shared/common-fn';
 import { Component, ViewEncapsulation } from '@angular/core';
 
@@ -22,7 +23,8 @@ export class ProfileComponent {
     constructor(
         private _auth: AuthTokenSessionService,
         public fn: CommonFn,
-        private _profileService: ProfileService
+        private _profileService: ProfileService,
+        private router: Router
     ) {
         this.user = this._profileService.user;
         this.allowFollow = true;
@@ -34,5 +36,8 @@ export class ProfileComponent {
 
     isAuth(): boolean {
         return this._auth.isLoggedIn();
+    }
+    doMaintain(): void {
+        this.router.navigateByUrl('pages/forms/user-profile-maintenance-forms');
     }
 }

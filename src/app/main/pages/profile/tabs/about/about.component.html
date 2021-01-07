@@ -55,12 +55,7 @@
 
                 <div class="info-line">
                     <div class="title">Jobs</div>
-                    <table class="info jobs">
-                        <tr class="job" *ngFor="let job of about.work.jobs">
-                            <td class="company">{{job.company}}</td>
-                            <td class="date">{{job.date}}</td>
-                        </tr>
-                    </table>
+                    <div class="info">{{about.work.jobs}}</div>
                 </div>
             </div>
         </div>

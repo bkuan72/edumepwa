@@ -18,7 +18,7 @@ import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-to
 })
 export class LoginComponent implements OnInit, OnDestroy
 {
-    rememberMe = false;
+    rememberMe = true;
     loginForm: FormGroup;
     loading = false;
     submitted = false;

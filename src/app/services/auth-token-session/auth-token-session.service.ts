@@ -56,6 +56,10 @@ export class AuthTokenSessionService {
         return this._authToken.getAuthToken();
     }
 
+    get adminUser(): boolean {
+        return this._authToken.isAdminUser();
+    }
+
     isLoggedIn = (): boolean => {
         if (
             this._auth.userValue &&

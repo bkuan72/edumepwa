@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { group } from '@angular/animations';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subject } from 'rxjs';
@@ -28,7 +29,8 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
      * @param {ProfileService} _profileService
      */
     constructor(
-        private _profileService: ProfileService
+        private _profileService: ProfileService,
+        private router: Router
     )
     {
         this.friends = [];

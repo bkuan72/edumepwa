@@ -8,6 +8,9 @@ export enum SrvApiEnvEnum {
     properties = '/api/properties',
     advertisementSearch = '/api/advertisements/search/',
     advertisements = '/api/advertisements',
+    userDTO= '/api/users/DTO',
+    updUserDTO= '/api/users/updDTO',
+    userSchema= '/api/users/schema',
     about = '/api/users/profile-about/byUserId',
     friends = '/api/friends/friendList/byUserId',
     groups = '/api/groups/byUserId',
@@ -25,6 +28,8 @@ export enum SrvApiEnvEnum {
     basicUserByUserId = '/api/users/basicInfo/byUserId',
 
     // local web server path
-    SETTINGS_JSON_LOCATION = 'assets/app-settings.json'
+    SETTINGS_JSON_LOCATION = 'assets/app-settings.json',
+    COUNTRIES_JSON = 'assets/countries.json',
+    TITLES_JSON = 'assets/titles.json'
 
 }
