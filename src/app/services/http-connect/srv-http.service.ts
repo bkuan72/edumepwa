@@ -320,7 +320,8 @@ export class SrvHttpService {
         // this.alert.warn(httpError.error);
         if (httpError.status >= 500) {
             this.router.navigateByUrl('errors/error-500');
-        } else {
+        } else if (httpError.status > 401)
+        {
             this.router.navigateByUrl('errors/error-404');
         }
     }
