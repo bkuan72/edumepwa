@@ -2,6 +2,7 @@ import { LogPublisher } from '../../shared/log-publisher';
 
 import { LogPublishersService } from '../../shared/log-publishers.service';
 import { Injectable } from '@angular/core';
+import { isString } from 'lodash';
 
 export enum LogLevel {
     All = 0,
@@ -18,7 +19,7 @@ export class LogEntry {
     entryDate: Date = new Date();
     message = '';
     level: LogLevel = LogLevel.Debug;
-    extraInfo: any[] = [];
+    extraInfo: string;
 
     buildLogString(): string {
         let ret = '';
@@ -27,7 +28,7 @@ export class LogEntry {
         ret += 'Type: ' + LogLevel[this.level];
         ret += ' - Message: ' + this.message;
         if (this.extraInfo.length) {
-            ret += ' - Extra Info: ' + this.formatParams(this.extraInfo);
+            ret += ' - Extra Info: ' + this.extraInfo;
         }
 
         return ret;
@@ -76,12 +77,12 @@ export class LoggerService {
         return ret;
     }
 
-    private writeToLog(msg: string, level: LogLevel, params: any[]): void {
+    private writeToLog(msg: string, level: LogLevel, params: any): void {
         if (this.shouldLog(level)) {
             const entry: LogEntry = new LogEntry();
             entry.message = msg;
             entry.level = level;
-            entry.extraInfo = params;
+            entry.extraInfo = JSON.stringify(params);
             for (const logger of this.publishers) {
                 logger.log(entry).subscribe(response => console.log(response));
             }
