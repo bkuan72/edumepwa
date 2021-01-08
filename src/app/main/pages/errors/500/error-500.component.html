@@ -2,7 +2,8 @@
 
     <div class="content" fxLayout="column" fxLayoutAlign="center center">
 
-        <div class="error-code">500</div>
+        <div class="error-code">{{status}}</div>
+        <div [innerHTML]="error"></div>
 
         <div class="message">Well, you broke the internet!</div>
 

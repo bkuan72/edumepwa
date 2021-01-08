@@ -319,10 +319,10 @@ export class SrvHttpService {
     handleErrors = (httpError: HttpErrorResponse): void => {
         // this.alert.warn(httpError.error);
         if (httpError.status >= 500) {
-            this.router.navigateByUrl('errors/error-500');
+            this.router.navigate(['errors/error-500', {status: httpError.status, error: httpError.error}]);
         } else if (httpError.status > 401)
         {
-            this.router.navigateByUrl('errors/error-404');
+            this.router.navigate(['errors/error-404', {status: httpError.status, error: httpError.error}]);
         }
     }
     handleObsErrors = (error: HttpErrorResponse): Observable<any> => {
