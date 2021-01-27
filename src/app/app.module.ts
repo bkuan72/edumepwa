@@ -33,6 +33,8 @@ import { AvatarModule } from 'ngx-avatar';
 import { MailConfirmationComponent } from './main/pages/authentication/mail-confirmation/mail-confirmation.component';
 import { ResetPasswordComponent } from './main/pages/authentication/reset-password/reset-password.component';
 import { AuthTokenSessionService } from './services/auth-token-session/auth-token-session.service';
+import { ProfileService } from './main/pages/profile/profile.service';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 const appRoutes: Routes = [
     {
@@ -48,7 +50,10 @@ const appRoutes: Routes = [
     {
         path        : 'pages/profile',
         component   : ProfileComponent,
-        canActivate : [AuthGuard]
+        canActivate : [AuthGuard],
+        resolve     : {
+            any: ProfileService
+        }
     },
     {
         path        : 'pages/forms/user-profile-maintenance-forms',
@@ -80,6 +85,7 @@ const appRoutes: Routes = [
 
         CommonComponentModule,
         AvatarModule,
+        PickerModule,
 
         // Material moment date module
         MatMomentDateModule,

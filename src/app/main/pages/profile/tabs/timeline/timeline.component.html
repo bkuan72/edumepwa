@@ -5,12 +5,21 @@
         <div class="profile-box add-post">
 
             <div class="form" fxFlex>
+                <div class="emoji-container">
+                    <textarea matInput matTextareaAutosize   placeholder="Write something.." [(ngModel)]="post.message"></textarea>
+                </div>
 
-                <textarea placeholder="Write something.."></textarea>
-
+                <div class="content" *ngIf="post.medias.length > 0">
+    
+                    <div *ngIf="post.medias[0].type !== ''" class="media">
+                        <img *ngIf="post.medias[0].type === 'image'" [src]="post.medias[0].preview">
+                        <div *ngIf="post.medias[0].type === 'video'" [innerHtml]="post.medias[0].embed"></div>
+                    </div>
+                </div>
                 <footer fxLayout="row" fxLayoutAlign="space-between center">
+                    <emoji-mart class="emoji-mart" *ngIf="isPostEmojiPickerVisible" (emojiSelect)="addPostEmoji($event)" title="Choose your emoji"></emoji-mart>
 
-                    <div fxLayout="row" fxLayoutAlign="start center">
+                    <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!isPostEmojiPickerVisible" >
 
                         <button mat-icon-button aria-label="Add photo" matTooltip="Add Photo">
                             <mat-icon>photo</mat-icon>
@@ -20,13 +29,24 @@
                             <mat-icon>person</mat-icon>
                         </button>
 
-                        <button mat-icon-button aria-label="Add location" matTooltip="Add location">
-                            <mat-icon>location_on</mat-icon>
+                        <button mat-icon-button aria-label="emoji" matTooltip="Insert Emoji"
+                        (click)="isPostEmojiPickerVisible = !isPostEmojiPickerVisible;">
+                            <mat-icon>insert_emoticon</mat-icon>
                         </button>
 
-                    </div>
+                        <!-- <button mat-icon-button aria-label="Add location" matTooltip="Add location">
+                            <mat-icon>location_on</mat-icon>
+                        </button> -->
 
-                    <button mat-raised-button color="accent" class="post-button" aria-label="POST">POST</button>
+                    </div>
+                    <button mat-icon-button aria-label="close emoji" matTooltip="Close Emoji"
+                    *ngIf="isPostEmojiPickerVisible"
+                    (click)="isPostEmojiPickerVisible = !isPostEmojiPickerVisible;">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <button mat-raised-button color="accent" class="post-button" aria-label="POST"
+                    *ngIf="!isPostEmojiPickerVisible"
+                    (click)="doPostMessage()">POST</button>
 
                 </footer>
 
@@ -36,24 +56,24 @@
 
         <mat-divider></mat-divider>
 
-        <div class="timeline-item" *ngFor="let post of timeline">
+        <div class="timeline-item" *ngFor="let timeline of userTimeline; let i = index; trackBy: trackByUuid">
 
             <header fxLayout="row" fxLayoutAlign="space-between start">
-                <div *ngIf="post.user">
-                    <div class="user" fxLayout="row" fxLayoutAlign="start center">
-                        <ngx-avatar [hidden]="!fn.showGenericAvatar(post.user.avatar)" name="{{post.user.name}}" size="40"></ngx-avatar>
-                        <img [hidden]="fn.showGenericAvatar(post.user.avatar)" class="avatar" [src]="post.user.avatar">
 
-                        <div fxLayout="column">
-                            <div class="title">
-                                <span class="username">{{post.user.name}}</span>
-                                <span *ngIf="post.type === 'post'">posted on your timeline</span>
-                                <span *ngIf="post.type === 'something'">shared something with you</span>
-                                <span *ngIf="post.type === 'video'">shared a video with you</span>
-                                <span *ngIf="post.type === 'article'">shared an article with you</span>
-                            </div>
-                            <div class="time">{{post.time}}</div>
+                <div class="user" fxLayout="row" fxLayoutAlign="start center">
+                    <ngx-avatar [hidden]="!fn.showGenericAvatar(timeline.user.avatar)" name="{{timeline.user.user_name}}" size="40"></ngx-avatar>
+                    <img [hidden]="fn.showGenericAvatar(timeline.user.avatar)" class="avatar" [src]="timeline.user.avatar">
+
+                    <div fxLayout="column">
+                        <div class="title">
+                            <span class="username" *ngIf="currentUser.id != timeline.user.id">{{timeline.user.user_name}}</span>
+                            <span class="username" *ngIf="currentUser.id == timeline.user.id">&nbsp;YOU</span>
+                            <span *ngIf="timeline.post.post_type === 'post'">posted on your timeline</span>
+                            <span *ngIf="timeline.post.post_type === 'something'">shared something with you</span>
+                            <span *ngIf="timeline.post.post_type === 'video'">shared a video with you</span>
+                            <span *ngIf="timeline.post.post_type === 'article'">shared an article with you</span>
                         </div>
+                        <div class="time">{{ timeline.post_date | dateSinceNow }}</div>
                     </div>
                 </div>
 
@@ -64,73 +84,94 @@
             </header>
 
             <div class="content">
-                <div *ngIf="post.message" class="message">
-                    {{post.message}}
+                <div *ngIf="timeline.post.message" class="message">
+                    {{timeline.post.message}}
                 </div>
 
-                <div *ngIf="post.media" class="media">
-                    <img *ngIf="post.media.type === 'image'" [src]="post.media.preview">
-                    <div *ngIf="post.media.type === 'video'" [innerHtml]="post.media.embed"></div>
+                <div *ngIf="timeline.media.type !== ''" class="media">
+                    <img *ngIf="timeline.media.type === 'image'" [src]="timeline.media.preview">
+                    <div *ngIf="timeline.media.type === 'video'" [innerHtml]="timeline.media.embed"></div>
                 </div>
 
-                <div *ngIf="post.article" fxLayout="column" class="article">
+                <div *ngIf="timeline.article.media.type !== ''" fxLayout="column" class="article">
                     <div class="media">
-                        <img [src]="post.article.media.preview">
+                        <img [src]="timeline.article.media.preview">
                     </div>
-                    <div class="title">{{post.article.title}}</div>
-                    <div class="subtitle">{{post.article.subtitle}}</div>
-                    <div class="excerpt">{{post.article.excerpt}}</div>
+                    <div class="title">{{timeline.article.title}}</div>
+                    <div class="subtitle">{{timeline.article.subtitle}}</div>
+                    <div class="excerpt">{{timeline.article.excerpt}}</div>
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start center">
-                    <button mat-button class="like-button">
+                    <button mat-button class="like-button"
+                        (click)="doToggleTimelineLike(timeline)">
                         <span fxLayout="row" fxLayoutAlign="start center">
                             <mat-icon class="s-16">favorite</mat-icon>
-                            <span>Like</span>&nbsp;<span>({{post.likes}})</span>
+                            <span>Like</span>&nbsp;<span>({{timeline.likes}})</span>
                         </span>
                     </button>
                     <button mat-button class="share-button">
                         <span fxLayout="row" fxLayoutAlign="start center">
                             <mat-icon class="s-16">share</mat-icon>
-                            <span>Share</span>&nbsp;<span>({{post.shared}})</span>
+                            <span>Share</span>&nbsp;<span>({{timeline.shared}})</span>
                         </span>
                     </button>
                 </div>
             </div>
 
             <footer class="" fxLayout="column" fxLayoutAlign="start start">
-                <div *ngIf="post.comments" class="comment-count" fxLayout="row" fxLayoutAlign="start center">
-                    {{post.comments.length}} comments
+                <div *ngIf="timeline.comments" class="comment-count" fxLayout="row" fxLayoutAlign="start center">
+                    {{timeline.comments.length}} comments
                     <mat-icon class="s-16">keyboard_arrow_down</mat-icon>
                 </div>
 
-                <div class="comment" fxLayout="row" fxFlexFill *ngFor="let comment of post.comments">
-                    <img [src]="comment.user.avatar" class="avatar"/>
+                <div class="comment" fxLayout="row" fxFlexFill *ngFor="let comment of timeline.comments;  let i = index; trackBy: trackByUuid">
+                    <ngx-avatar [hidden]="!fn.showGenericAvatar(comment.user.avatar)" name="{{comment.user.user_name}}" size="20"></ngx-avatar>
+                    <img [hidden]="fn.showGenericAvatar(comment.user.avatar)" class="avatar" [src]="comment.user.avatar">
 
                     <div fxLayout="column" fxFlex>
                         <div fxLayout="row" fxLayoutAlign="start center">
-                            <span class="username">{{comment.user.name}}</span>
-                            <span class="time">{{comment.time}}</span>
+                            <span class="username">{{comment.user.user_name}}</span>
+                            <span class="time">{{ comment.date_comment | dateSinceNow }}</span>
                         </div>
                         <div class="message">
                             {{comment.message}}
                         </div>
-                        <div class="actions" fxLayout="row" fxLayoutAlign="space-between center">
-                            <a href="#" class="reply-button">Reply</a>
+                        <!-- <div class="actions" fxLayout="row" fxLayoutAlign="space-between center">
+                            <a href="#comment" class="reply-button">Reply</a>
                             <mat-icon fxFlex class="report-button s-16">flag</mat-icon>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
                 <div class="reply" fxLayout="row" fxFlexFill>
-                    <img src="assets/images/avatars/profile.jpg" class="avatar"/>
+                    <img [hidden]="currentUser && isAuth() && fn.showGenericAvatar(currentUser.avatar)" class="profile-image avatar huge" src="{{currentUser.avatar}}">
+                    <ngx-avatar size="40" [hidden]="currentUser && isAuth() && !fn.showGenericAvatar(currentUser.avatar)" name="{{currentUser.user_name}}"></ngx-avatar>
+                    <div class="form" fxFlex>
+                        <div class="emoji-container">
+                            <textarea matInput matTextareaAutosize   placeholder="Add a comment..." [(ngModel)]="timeline.newComment"></textarea>
+                        </div>
+                        <footer fxLayout="row" fxLayoutAlign="space-between center">
+                            <emoji-mart class="emoji-mart" *ngIf="emojiPickerVisible(timeline)" (emojiSelect)="addCommentEmoji(timeline, $event)" title="Choose your emoji"></emoji-mart>
+                            <button mat-icon-button aria-label="emoji" matTooltip="Insert Emoji"
+                            *ngIf="!emojiPickerVisible(timeline)" 
+                            (click)="toggleCommentEmojiPicker(timeline)">
+                                <mat-icon>insert_emoticon</mat-icon>
+                            </button>
+                            <button mat-icon-button aria-label="close emoji" matTooltip="Close Emoji"
+                            *ngIf="emojiPickerVisible(timeline)"
+                            (click)="timeline.isCommentEmojiPickerVisible = !timeline.isCommentEmojiPickerVisible;">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                            <button mat-raised-button color="accent" class="submit-button" aria-label="Post Comment"
+                            *ngIf="!emojiPickerVisible(timeline)"
+                            [disabled]="emptyComment(timeline)"
+                            (click)="doPostComments(timeline)">
+                                Post Comment
+                            </button>
+                        </footer>
 
-                    <form fxFlex>
-                        <textarea placeholder="Add a comment..."></textarea>
-                        <button mat-raised-button color="accent" class="post-comment-button" aria-label="Post Comment">
-                            Post Comment
-                        </button>
-                    </form>
+                    </div>
                 </div>
             </footer>
         </div>
@@ -149,14 +190,16 @@
                 <div class="activities">
                     <div class="activity" fxLayout="row" fxLayoutAlign="start start"
                          *ngFor="let activity of activities">
-                        <img [src]="activity.user.avatar" class="avatar" alt="{{activity.user.name}}"/>
+                        <!-- <img [src]="activity.user.avatar" class="avatar" alt="{{activity.user.user_name}}"/> -->
+                        <ngx-avatar [hidden]="!fn.showGenericAvatar(activity.user.avatar)" name="{{activity.user.user_name}}" size="40"></ngx-avatar>
+                        <img [hidden]="fn.showGenericAvatar(activity.user.avatar)" class="avatar" [src]="activity.user.avatar">
 
                         <div fxLayout="column">
                             <div>
-                                <span class="username">{{activity.user.name}}</span>
+                                <span class="username">{{activity.user.user_name}}</span>
                                 <span class="message"> {{activity.message}}</span>
                             </div>
-                            <span class="time secondary-text">{{activity.time}}</span>
+                            <span class="time secondary-text">{{activity.activity_date | dateSinceNow}}</span>
                         </div>
                     </div>
                 </div>

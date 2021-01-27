@@ -23,6 +23,8 @@ interface DataStoredInToken {
     user_id: string;
     uuid: string;
     adminUser: boolean;
+    devUser: boolean;
+    bizUser: boolean;
     site_code: string;
     createTimeStamp: string;
     expiryInSec: number;
@@ -171,5 +173,20 @@ export class SrvAuthTokenService {
         }
         return admin;
     }
-
+    isDevUser(): boolean {
+        let dev = false;
+        if (this.tokenData && this.tokenData.devUser &&
+            !this.isExpired()) {
+                dev = true;
+        }
+        return dev;
+    }
+    isBizUser(): boolean {
+        let biz = false;
+        if (this.tokenData && this.tokenData.bizUser &&
+            !this.isExpired()) {
+                biz = true;
+        }
+        return biz;
+    }
 }

@@ -236,7 +236,7 @@ export class SrvHttpService {
             );
             srvConfig.requestTimeStamp = new Date().getTime();
             this._httpClient
-                .post(srvConfig.url, srvConfig.data, {
+                .put(srvConfig.url, srvConfig.data, {
                     headers: httpHdr,
                     observe: 'response',
                     responseType: 'json',

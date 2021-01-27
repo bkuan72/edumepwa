@@ -1,3 +1,6 @@
+import { DateSinceNowPipe } from './../../../pipes/date-since-now.pipe';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { TimelineService } from './timeline.service';
 import { AvatarModule } from 'ngx-avatar';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
@@ -13,6 +16,8 @@ import { ProfileComponent } from 'app/main/pages/profile/profile.component';
 import { ProfileTimelineComponent } from 'app/main/pages/profile/tabs/timeline/timeline.component';
 import { ProfileAboutComponent } from 'app/main/pages/profile/tabs/about/about.component';
 import { ProfilePhotosVideosComponent } from 'app/main/pages/profile/tabs/photos-videos/photos-videos.component';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+
 
 
 const routes = [
@@ -30,21 +35,25 @@ const routes = [
         ProfileComponent,
         ProfileTimelineComponent,
         ProfileAboutComponent,
-        ProfilePhotosVideosComponent
+        ProfilePhotosVideosComponent,
+        DateSinceNowPipe
     ],
     imports     : [
         RouterModule.forChild(routes),
+        PickerModule,
 
         MatButtonModule,
         MatDividerModule,
         MatIconModule,
         MatTabsModule,
         AvatarModule,
+        MatMomentDateModule,
 
         FuseSharedModule
     ],
     providers   : [
-        ProfileService
+        ProfileService,
+        TimelineService
     ]
 })
 export class ProfileModule

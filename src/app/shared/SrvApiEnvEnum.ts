@@ -9,13 +9,13 @@ export enum SrvApiEnvEnum {
     advertisementSearch = '/api/advertisements/search/',
     advertisements = '/api/advertisements',
     userDTO= '/api/users/DTO',
+    insUserDTO= '/api/users/insDTO',
     updUserDTO= '/api/users/updDTO',
     userSchema= '/api/users/schema',
     about = '/api/users/profile-about/byUserId',
     friends = '/api/friends/friendList/byUserId',
     groups = '/api/groups/byUserId',
-    timeline = '/api/posts/profile-timeline/byUserIdOffSetDays',
-    activities = '/api/activities/activityList/byUserIdOffSetDays',
+    activities = '/api/activities/activityList/byTimelineUserIdOffSetDays',
     media = '/api/medias/byUserId',
     increment_likes = '/api/posts/likes',
     increment_share = '/api/posts/share',
@@ -26,6 +26,28 @@ export enum SrvApiEnvEnum {
     validResetPasswordKey = '/api/auth/confirm/byEmailResetPasswordKey',
     userByUserId = '/api/users/byUserId',
     basicUserByUserId = '/api/users/basicInfo/byUserId',
+
+    userTimeline = '/api/userTimelines/profile-timeline/timelineUserIdNOffsetDays',
+    userTimelineDTO= '/api/userTimelines/timelineDTO',
+    userTimelineLike= '/api/userTimelines/like',
+    userTimelineUnlike= '/api/userTimelines/unlike',
+
+    userPost= '/api/posts',
+    userTimelines= '/api/userTimelines',
+    postDTO= '/api/posts/DTO',
+    updPostDTO= '/api/posts/updDTO',
+    postSchema= '/api/posts/schema',
+
+    userActivitiesLikes= '/api/activities/likes',
+    findUserTimelineLikeActivity= '/api/activities/likes/byTimelineIdUserId',
+    userActivityRemove= '/api/activities/remove',
+
+    userTimelineComments = '/api/userTimelineComments',
+    userTimelineCommentDTO= '/api/userTimelineComments/DTO',
+    updUserTimelineCommentDTO= '/api/userTimelineComments/updDTO',
+    userTimelineCommentSchema= '/api/userTimelineComments/schema',
+    userTimelineCommentsByTimelineId= '/api/userTimelineComments/byTimelineId',
+
 
     // local web server path
     SETTINGS_JSON_LOCATION = 'assets/app-settings.json',

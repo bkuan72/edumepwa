@@ -107,8 +107,8 @@ export class CommonFn {
      * this function determine if a avatar has been defined
      * @param avatar - ling to avatar file
      */
-    showGenericAvatar(avatar: any): boolean {
-        return avatar === undefined || avatar === null || avatar.length === 0;
+    showGenericAvatar(avatar: string): boolean {
+        return avatar === undefined || avatar === null || avatar.length === 0 || avatar === '';
     }
 
     /**

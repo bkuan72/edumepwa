@@ -13,7 +13,6 @@ import { fuseAnimations } from '@fuse/animations';
 })
 export class ResetPasswordConfirmComponent implements OnInit
 {
-    user_id: string;
     email: string;
     /**
      * Constructor
@@ -22,10 +21,9 @@ export class ResetPasswordConfirmComponent implements OnInit
      */
     constructor(
         private _fuseConfigService: FuseConfigService,
-        private router: ActivatedRoute
+        private activeRouter: ActivatedRoute
     )
     {
-        this.user_id = '';
         this.email = '';
         // Configure the layout
         this._fuseConfigService.config = {
@@ -47,7 +45,7 @@ export class ResetPasswordConfirmComponent implements OnInit
     }
 
     ngOnInit(): void {
-        this.router.params.subscribe(params => {
+        this.activeRouter.params.subscribe(params => {
             this.email = params['email'];
         });
     }

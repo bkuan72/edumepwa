@@ -18,6 +18,7 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
     userData: any;
     userDTO: any;
     updUserDTO: any;
+    insUserDTO: any;
     userSchema: any;
     countries: any;
     titles: any;
@@ -42,6 +43,7 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
         this.user = this._userProfile.user;
         this.userDTO = this._userProfile.userDTO;
         this.updUserDTO = this._userProfile.updUserDTO;
+        this.insUserDTO = this._userProfile.insUserDTO;
         this.userSchema = this._userProfile.userSchema;
         this.countries = this._userProfile.countries;
         this.titles = this._userProfile.titles;
@@ -63,6 +65,11 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe(userDTO => {
             this.userDTO = userDTO;
+        });
+        this._userProfile.insUserDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe(insUserDTO => {
+            this.insUserDTO = insUserDTO;
         });
         this._userProfile.updUserDTOOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
@@ -104,7 +111,7 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
             post_code: ['', [Validators.required, Validators.maxLength(10)]],
             country   : ['', [Validators.required, Validators.maxLength(40)]],
             website     : ['', [Validators.maxLength(255)]],
-            birthday     : ['', [Validators.required, Validators.maxLength(20)]],
+            birthday     : [''],
             about_me     : ['', [Validators.maxLength(255)]],
             occupation     : ['', [Validators.maxLength(255)]],
             skills     : ['', [Validators.maxLength(255)]],
