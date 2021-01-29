@@ -139,16 +139,13 @@ export class SrvAuthTokenService {
             const expDateMillisec = this.expiryDate.valueOf();
             const currentDateMillisec = new Date().valueOf();
 
-            if (expDateMillisec < currentDateMillisec) {
+            if (currentDateMillisec > expDateMillisec) {
                 return TokenStatus.EXPIRED;
             } else {
-                if (
-                    expDateMillisec <
-                    currentDateMillisec -
-                        this._commonFn.minToMillisec(
-                            this.settings.tokenRenewBeforeMin
-                        )
-                ) {
+                const expiringMillisec  = expDateMillisec - this._commonFn.minToMillisec(
+                                                                                            this.settings.tokenRenewBeforeMin
+                                                                                        );
+                if (currentDateMillisec > expiringMillisec) {
                     return TokenStatus.EXPIRING;
                 }
             }
