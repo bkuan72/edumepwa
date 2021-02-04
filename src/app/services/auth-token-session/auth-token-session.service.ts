@@ -1,8 +1,9 @@
+import { takeUntil } from 'rxjs/operators';
 import { CommonFn } from './../../shared/common-fn';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { AppSettings } from 'app/shared/app-settings';
 import { Router } from '@angular/router';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { SrvAuthTokenService, TokenStatus } from '../srv-auth-token/srv-auth-token.service';
 import { LoginDTO } from 'app/dtos/login-dto';
@@ -11,9 +12,15 @@ import { AppSettingsService } from '../app-settings/app-settings.service';
 @Injectable({
     providedIn: 'root',
 })
-export class AuthTokenSessionService {
+export class AuthTokenSessionService implements OnDestroy {
     renewingAuthToken: boolean;
     settingsObs: Observable<AppSettings>;
+    authUser: any;
+
+    // Private
+    private _unsubscribeAll: Subject<any>;
+    authUserOnChanged: BehaviorSubject<any>;
+
 
     constructor(
         private _auth: AuthenticationService,
@@ -22,8 +29,15 @@ export class AuthTokenSessionService {
         private _appSetting: AppSettingsService,
         private _fn: CommonFn
     ) {
+
         this.renewingAuthToken = false;
+
+        this.authUserOnChanged = new BehaviorSubject(this.authUser);
+
+        // Set the private defaults
+        this._unsubscribeAll = new Subject();
         this.settingsObs = this._appSetting.settingsObs;
+
         this.settingsObs.subscribe((appSetting) => {
             if (appSetting.tokenRenewalIntervalInMin !== undefined) {
                 this._authToken
@@ -34,14 +48,29 @@ export class AuthTokenSessionService {
                     )
                     .subscribe((status: TokenStatus) => {
                         this.handleTokenStatus(status,
-                            this._auth.userValue);
+                            this.authUser);
                     });
             }
         });
+        this._auth.authUserOnChange
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((authUser) => {
+            this.authUser = authUser;
+            this.authUserOnChanged.next(this.authUser);
+        });
     }
 
-    get userValue(): any {
-        return this._auth.userValue;
+    /**
+     * On destroy
+     */
+    ngOnDestroy(): void {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
+    }
+
+    get currentAuthUser(): any {
+        return this.authUser;
     }
 
     get rememberMe(): boolean {
@@ -68,8 +97,8 @@ export class AuthTokenSessionService {
 
     isLoggedIn = (): boolean => {
         if (
-            this._auth.userValue &&
-            this._auth.userValue !== null &&
+            this.authUser &&
+            this.authUser !== null &&
             !this._authToken.isExpired()
         ) {
             return true;
@@ -79,7 +108,7 @@ export class AuthTokenSessionService {
 
     handleTokenStatus(
         status: TokenStatus,
-        userValue: any
+        authUser: any
     ): void {
         switch (status) {
             case TokenStatus.ALIVE:
@@ -100,8 +129,8 @@ export class AuthTokenSessionService {
                             this.router.navigate([
                                 'auth/lock',
                                 {
-                                    user_name: userValue.user_name,
-                                    email: userValue.email,
+                                    user_name: authUser.user_name,
+                                    email: authUser.email,
                                 },
                             ]);
                         }
@@ -113,8 +142,8 @@ export class AuthTokenSessionService {
                     this.router.navigate([
                         'auth/lock',
                         {
-                            user_name: userValue.user_name,
-                            email: userValue.email,
+                            user_name: authUser.user_name,
+                            email: authUser.email,
                         },
                     ]);
                 }
@@ -125,7 +154,7 @@ export class AuthTokenSessionService {
     checkAuthTokenStatus(): void {
         const tokenStatus = this._authToken.tokenExpiryStatus();
         this.handleTokenStatus(tokenStatus,
-                                this._auth.userValue
+                                this.authUser
                                 );
     }
 
@@ -159,5 +188,29 @@ export class AuthTokenSessionService {
                 reject(false);
             });
         });
+    }
+
+    renewAuthToken(): void {
+        this._auth.renewAuthToken()
+        .then((responseBody) => {
+            this._authToken.setToken(responseBody, this._auth.rememberMe);
+            this.renewingAuthToken = false;
+        })
+        .catch(() => {
+            this.renewingAuthToken = false;
+            if (!this.router.isActive('auth/lock', false)) {
+                this.router.navigate([
+                    'auth/lock',
+                    {
+                        user_name: this.authUser.user_name,
+                        email: this.authUser.email,
+                    },
+                ]);
+            }
+        });
+    }
+
+    setAuthUserAvatar(avatar: any): void {
+        this._auth.setAuthUserAvatar(avatar);
     }
 }

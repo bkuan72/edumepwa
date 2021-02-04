@@ -8,6 +8,7 @@ import { FuseConfigService } from '@fuse/services/config.service';
 import { fuseAnimations } from '@fuse/animations';
 import { Location } from '@angular/common';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
+import { Subject } from 'rxjs';
 
 @Component({
     selector     : 'lock',
@@ -18,10 +19,12 @@ import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-to
 })
 export class LockComponent implements OnInit
 {
-    user: any;
     currentUser: any;
     email: string;
     lockForm: FormGroup;
+
+    // Private
+    private _unsubscribeAll: Subject<any>;
 
     /**
      * Constructor
@@ -34,14 +37,13 @@ export class LockComponent implements OnInit
         private _formBuilder: FormBuilder,
         private location: Location,
         private router: Router,
-        private _auth: AuthTokenSessionService,
+        private _authSession: AuthTokenSessionService,
         public fn: CommonFn
     )
     {
-        this.user = this._auth.userValue;
+        this.currentUser = _authSession.currentAuthUser();
         this.email = '';
-        this.currentUser = this.user;
-        this._auth.resetAuthUser();
+        this._authSession.resetAuthUser();
 
         // Configure the layout
         this._fuseConfigService.config = {
@@ -71,14 +73,14 @@ export class LockComponent implements OnInit
      */
     ngOnInit(): void
     {
-        if (this.currentUser === undefined || this.currentUser === null) {
+        if (this._authSession.currentAuthUser === undefined || this._authSession.currentAuthUser === null) {
             this.router.navigateByUrl('home');
             return;
         }
         this.lockForm = this._formBuilder.group({
             email: [
                 {
-                    value   : this.currentUser.email,
+                    value   : this._authSession.currentAuthUser.email,
                     disabled: true
                 }, Validators.required
             ],
@@ -92,10 +94,10 @@ export class LockComponent implements OnInit
     doSubmit(): void {
         let loginData: LoginDTO;
         loginData = {
-            email: this.currentUser.email,
+            email: this._authSession.currentAuthUser.email,
             password: this.f.password.value
         };
-        this._auth.login(loginData, this._auth.rememberMe).then(() => { 
+        this._authSession.login(loginData, this._authSession.rememberMe).then(() => { 
             this.location.back();
         })
         .catch(() => {

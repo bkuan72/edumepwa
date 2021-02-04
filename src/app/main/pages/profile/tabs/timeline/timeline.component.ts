@@ -1,5 +1,5 @@
 import { CommonFn } from './../../../../../shared/common-fn';
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, ElementRef } from '@angular/core';
 
 import { fuseAnimations } from '@fuse/animations';
 
@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TimelinePostIfc, TimelineService } from '../../timeline.service';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
+import { CroppedEvent, NgxPhotoEditorComponent } from 'ngx-photo-editor';
 
 @Component({
     selector: 'profile-timeline',
@@ -17,16 +18,20 @@ import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-to
     animations: fuseAnimations,
 })
 export class ProfileTimelineComponent implements OnInit, OnDestroy {
-    currentUser: any;
+    @ViewChild('uploadPostImageFileInput') myUploadPostImageFileInput: ElementRef;
     post: TimelinePostIfc;
     userTimeline: any[];
     activities: any[];
     friends: any[];
+    authUser: any;
 
     commentSubmitted = false;
 
     public isPostEmojiPickerVisible: boolean;
     public isCommentEmojiPickerVisible: boolean;
+
+    showImageEditor = false;
+    imageChangedEvent: any;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -38,9 +43,8 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
      */
     constructor(private _profileService: ProfileService,
                 private _timelineService: TimelineService,
-                private _auth: AuthTokenSessionService,
+                public _authSession: AuthTokenSessionService,
                 public fn: CommonFn) {
-        this.currentUser = this._auth.userValue;
         this.post = {
             post_user_id: '',
             timeline_user_id: '',
@@ -82,6 +86,11 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
                 this.friends = friends;
                 // this.doUpdateTimeLineUser();
             });
+        this._authSession.authUserOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((authUser) => {
+            this.authUser = authUser;
+        });
     }
 
     /**
@@ -98,8 +107,9 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
      }
 
     isAuth(): boolean {
-        return this._auth.isLoggedIn();
+        return this._authSession.isLoggedIn();
     }
+
 
 
     /**
@@ -115,16 +125,38 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
      * Post message on timeline
      */
     doPostMessage(): void {
+
+        const doTidyUp = () => {
+            if (this.myUploadPostImageFileInput) {
+                this.myUploadPostImageFileInput.nativeElement.value = '';
+            }
+            this.post.medias = [];
+            this.post.message = '';
+            this._profileService.doLoadUserProfile();
+
+        }
         this.isPostEmojiPickerVisible = false;
 
         this.post.message = this.post.message.trim();
         if (this.post.message.length > 0) {
             this.post.timeline_user_id = this._profileService.user.id;
-            this.post.post_user_id = this._auth.userValue.id;
+            this.post.post_user_id = this._authSession.currentAuthUser.id;
             this._timelineService.doPostToTimeline(this.post)
-            .then(() => {
-                this.post.message = '';
-                this._profileService.doLoadUserProfile();
+            .then((postDTO) => {
+                const promiseList: Promise<any>[] = [];
+                this.post.medias.forEach((media) => {
+                    promiseList.push(this._timelineService.doPostMedia(this._authSession.currentAuthUser.id,
+                        postDTO.id,
+                        media));
+                });
+
+                if (promiseList.length === 0) {
+                    doTidyUp();
+                } else {
+                    Promise.all(promiseList).finally (() => {
+                        doTidyUp();
+                    })
+                }
             })
             .catch(() => {
             });
@@ -166,14 +198,15 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
         }
 
         this._timelineService.doPostCommentToTimeline(
-            this._auth.userValue.id,
+            this._authSession.currentAuthUser.id,
             timeline.id,
             timeline.post.id,
             timeline.newComment
         )
         .then(() => {
             timeline.newComment = '';
-            this._profileService.doLoadUserProfile();
+            this._profileService.doGetPostComments(timeline);
+            this._profileService.getActivities();
             this.commentSubmitted = false;
         })
         .catch(() => {
@@ -189,7 +222,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
 
         this._timelineService.doToggleTimelineLike(
             this._profileService.user.id,
-            this.currentUser.id,
+            this._authSession.currentAuthUser.id,
             timeline.id
         )
         .then(() => {
@@ -200,4 +233,24 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
 
     }
 
+
+
+    fileChangeEvent(event: any): void {
+      this.imageChangedEvent = event;
+    }
+
+    imageCropped(event: CroppedEvent): void {
+        this.fn.resizeImage (event.base64, 0.15, 128).then((resizedImg) => {
+            const picture = {
+                type: 'image',
+                preview: resizedImg
+            };
+            if (this.post.medias.length > 0) {
+              this.post.medias[0] = picture;
+            } else {
+              this.post.medias.push(picture);
+            }
+            this.showImageEditor = false;
+        });
+    }
 }

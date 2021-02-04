@@ -12,7 +12,7 @@ import { LoggerService } from '../logger/logger.service';
     providedIn: 'root',
 })
 export class AuthenticationService {
-    private userSubject: BehaviorSubject<any>;
+    public authUserOnChange: BehaviorSubject<any>;
     rememberMe: boolean;
 
 
@@ -24,20 +24,20 @@ export class AuthenticationService {
         private _logger: LoggerService,
     ) {
         this.rememberMe = true;
-        this.userSubject = new BehaviorSubject<any>(undefined);
+        this.authUserOnChange = new BehaviorSubject<any>(undefined);
         const usr = JSON.parse(localStorage.getItem(LocalStoreVarEnum.USER));
         if (usr && usr !== null) {
-            this.userSubject.next(usr);
+            this.authUserOnChange.next(usr);
         }
     }
 
-    public get userValue(): any {
-        return this.userSubject.value;
+    public get currentAuthUser(): any {
+        return this.authUserOnChange.value;
     }
 
     resetAuthUser = () => {
         localStorage.removeItem(LocalStoreVarEnum.USER);
-        this.userSubject.next(undefined);
+        this.authUserOnChange.next(undefined);
     }
 
     registerNewUser = (registerDTO: RegisterDTO): Promise<boolean> => {
@@ -54,7 +54,7 @@ export class AuthenticationService {
                         LocalStoreVarEnum.USER,
                         JSON.stringify(responseBody.data)
                     );
-                    this.userSubject.next(responseBody.data);
+                    this.authUserOnChange.next(responseBody.data);
                     resolve(true);
                 })
                 .catch((res: HttpErrorResponse) => {
@@ -76,7 +76,7 @@ export class AuthenticationService {
                         LocalStoreVarEnum.USER,
                         JSON.stringify(responseBody.data)
                     );
-                    this.userSubject.next(responseBody.data);
+                    this.authUserOnChange.next(responseBody.data);
                     resolve(responseBody);
                 })
                 .catch((res: HttpErrorResponse) => {
@@ -101,7 +101,7 @@ export class AuthenticationService {
                         LocalStoreVarEnum.USER,
                         JSON.stringify(responseBody.data)
                     );
-                    this.userSubject.next(responseBody.data);
+                    this.authUserOnChange.next(responseBody.data);
                     resolve(responseBody);
                 })
                 .catch((res: HttpErrorResponse) => {
@@ -214,5 +214,10 @@ export class AuthenticationService {
                     reject();
                 });
         });
+    }
+
+    setAuthUserAvatar(avatar: string): void {
+        this.currentAuthUser.avatar = avatar;
+        this.authUserOnChange.next(this.currentAuthUser);
     }
 }

@@ -19,9 +19,9 @@ import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 })
 export class NavbarVerticalStyle1Component implements OnInit, OnDestroy
 {
+    currentUser: any;
     fuseConfig: any;
     navigation: any;
-    user: any;
 
     // Private
     private _fusePerfectScrollbar: FusePerfectScrollbarDirective;
@@ -40,11 +40,10 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy
         private _fuseNavigationService: FuseNavigationService,
         private _fuseSidebarService: FuseSidebarService,
         private _router: Router,
-        private _auth: AuthTokenSessionService,
+        private _authSession: AuthTokenSessionService,
         public  fn: CommonFn
     )
     {
-        this.user = this._auth.userValue;
         // Set the private defaults
         this._unsubscribeAll = new Subject();
     }
@@ -126,6 +125,11 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy
             .subscribe(() => {
                 this.navigation = this._fuseNavigationService.getCurrentNavigation();
             });
+        this._authSession.authUserOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((authUser) => {
+            this.currentUser = authUser;
+        });
     }
 
     /**
@@ -159,6 +163,6 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy
     }
 
     isAuth(): boolean {
-        return this._auth.isLoggedIn();
+        return this._authSession.isLoggedIn();
     }
 }

@@ -35,6 +35,7 @@ import { ResetPasswordComponent } from './main/pages/authentication/reset-passwo
 import { AuthTokenSessionService } from './services/auth-token-session/auth-token-session.service';
 import { ProfileService } from './main/pages/profile/profile.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 const appRoutes: Routes = [
     {
@@ -103,7 +104,8 @@ const appRoutes: Routes = [
 
         // App modules
         LayoutModule,
-        PagesModule
+        PagesModule,
+        NgbModule
     ],
     providers: [
         SrvHttpService,

@@ -32,10 +32,10 @@
                     <span class="username mr-12" fxHide fxShow.gt-sm>Anonymous</span>
                     <mat-icon class="s-16" fxHide.xs>keyboard_arrow_down</mat-icon>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="center center" *ngIf="user && isAuth()">
-                    <img [hidden]="fn.showGenericAvatar(user.avatar)" class="avatar mr-0 mr-sm-16" src="{{user.avatar}}">
-                    <ngx-avatar [hidden]="!fn.showGenericAvatar(user.avatar)" name="{{user.user_name}}"></ngx-avatar>
-                    <span class="username mr-12" fxHide fxShow.gt-sm>{{user.user_name}}</span>
+                <div fxLayout="row" fxLayoutAlign="center center" *ngIf="currentUser && isAuth()">
+                    <img [hidden]="fn.showGenericAvatar(currentUser.avatar)" class="avatar mr-0 mr-sm-16" src="{{currentUser.avatar}}">
+                    <ngx-avatar [hidden]="!fn.showGenericAvatar(currentUser.avatar)" name="{{currentUser.user_name}}"></ngx-avatar>
+                    <span class="username mr-12" fxHide fxShow.gt-sm>{{currentUser.user_name}}</span>
                     <mat-icon class="s-16" fxHide.xs>keyboard_arrow_down</mat-icon>
                 </div>
             </button>

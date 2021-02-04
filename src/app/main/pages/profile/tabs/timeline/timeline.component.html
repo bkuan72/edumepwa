@@ -6,47 +6,58 @@
 
             <div class="form" fxFlex>
                 <div class="emoji-container">
-                    <textarea matInput matTextareaAutosize   placeholder="Write something.." [(ngModel)]="post.message"></textarea>
+                    <textarea matInput matTextareaAutosize placeholder="Write something.."
+                        [(ngModel)]="post.message"></textarea>
                 </div>
 
                 <div class="content" *ngIf="post.medias.length > 0">
-    
-                    <div *ngIf="post.medias[0].type !== ''" class="media">
-                        <img *ngIf="post.medias[0].type === 'image'" [src]="post.medias[0].preview">
-                        <div *ngIf="post.medias[0].type === 'video'" [innerHtml]="post.medias[0].embed"></div>
+
+                    <div class="media" *ngFor="let media of post.medias">
+                        <img *ngIf="media.type === 'image'" [src]="media.preview">
+                        <div *ngIf="media.type === 'video'" [innerHtml]="media.embed"></div>
                     </div>
                 </div>
                 <footer fxLayout="row" fxLayoutAlign="space-between center">
-                    <emoji-mart class="emoji-mart" *ngIf="isPostEmojiPickerVisible" (emojiSelect)="addPostEmoji($event)" title="Choose your emoji"></emoji-mart>
+                    <emoji-mart class="emoji-mart" *ngIf="isPostEmojiPickerVisible" (emojiSelect)="addPostEmoji($event)"
+                        title="Choose your emoji"></emoji-mart>
 
-                    <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!isPostEmojiPickerVisible" >
 
-                        <button mat-icon-button aria-label="Add photo" matTooltip="Add Photo">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+
+                        <button mat-icon-button aria-label="Add photo" matTooltip="Add Photo"
+                            (click)="showImageEditor = !showImageEditor">
                             <mat-icon>photo</mat-icon>
                         </button>
+                        <div *ngIf="showImageEditor" fxLayout="row" fxLayoutAlign="start center">
+                            <div><input #uploadPostImageFileInput type="file" accept=".jpg,.png"
+                                    (change)="fileChangeEvent($event)" /></div>
 
-                        <button mat-icon-button aria-label="Mention somebody" matTooltip="Mention somebody">
-                            <mat-icon>person</mat-icon>
-                        </button>
+                            <ngx-photo-editor #postPhotoEditor [imageChanedEvent]="imageChangedEvent"
+                                (imageCropped)="imageCropped($event)" [aspectRatio]="4/3" [viewMode]="1"
+                                [darkTheme]="false" [mask]="false"></ngx-photo-editor>
 
-                        <button mat-icon-button aria-label="emoji" matTooltip="Insert Emoji"
-                        (click)="isPostEmojiPickerVisible = !isPostEmojiPickerVisible;">
-                            <mat-icon>insert_emoticon</mat-icon>
-                        </button>
-
+                        </div>
+                        <div *ngIf="!isPostEmojiPickerVisible && !showImageEditor">
+                            <button mat-icon-button aria-label="Mention somebody" matTooltip="Mention somebody">
+                                <mat-icon>person</mat-icon>
+                            </button>
+                            <button mat-icon-button aria-label="emoji" matTooltip="Insert Emoji"
+                                (click)="isPostEmojiPickerVisible = !isPostEmojiPickerVisible;">
+                                <mat-icon>insert_emoticon</mat-icon>
+                            </button>
+                        </div>
                         <!-- <button mat-icon-button aria-label="Add location" matTooltip="Add location">
                             <mat-icon>location_on</mat-icon>
                         </button> -->
 
                     </div>
                     <button mat-icon-button aria-label="close emoji" matTooltip="Close Emoji"
-                    *ngIf="isPostEmojiPickerVisible"
-                    (click)="isPostEmojiPickerVisible = !isPostEmojiPickerVisible;">
+                        *ngIf="isPostEmojiPickerVisible"
+                        (click)="isPostEmojiPickerVisible = !isPostEmojiPickerVisible;">
                         <mat-icon>close</mat-icon>
                     </button>
                     <button mat-raised-button color="accent" class="post-button" aria-label="POST"
-                    *ngIf="!isPostEmojiPickerVisible"
-                    (click)="doPostMessage()">POST</button>
+                        *ngIf="!isPostEmojiPickerVisible" (click)="doPostMessage()">POST</button>
 
                 </footer>
 
@@ -61,13 +72,16 @@
             <header fxLayout="row" fxLayoutAlign="space-between start">
 
                 <div class="user" fxLayout="row" fxLayoutAlign="start center">
-                    <ngx-avatar [hidden]="!fn.showGenericAvatar(timeline.user.avatar)" name="{{timeline.user.user_name}}" size="40"></ngx-avatar>
-                    <img [hidden]="fn.showGenericAvatar(timeline.user.avatar)" class="avatar" [src]="timeline.user.avatar">
+                    <ngx-avatar [hidden]="!fn.showGenericAvatar(timeline.user.avatar)"
+                        name="{{timeline.user.user_name}}" size="40"></ngx-avatar>
+                    <img [hidden]="fn.showGenericAvatar(timeline.user.avatar)" class="avatar"
+                        [src]="timeline.user.avatar">
 
                     <div fxLayout="column">
                         <div class="title">
-                            <span class="username" *ngIf="currentUser.id != timeline.user.id">{{timeline.user.user_name}}</span>
-                            <span class="username" *ngIf="currentUser.id == timeline.user.id">&nbsp;YOU</span>
+                            <span class="username"
+                                *ngIf="authUser.id != timeline.user.id">{{timeline.user.user_name}}</span>
+                            <span class="username" *ngIf="authUser.id == timeline.user.id">&nbsp;YOU</span>
                             <span *ngIf="timeline.post.post_type === 'post'">posted on your timeline</span>
                             <span *ngIf="timeline.post.post_type === 'something'">shared something with you</span>
                             <span *ngIf="timeline.post.post_type === 'video'">shared a video with you</span>
@@ -84,13 +98,17 @@
             </header>
 
             <div class="content">
-                <div *ngIf="timeline.post.message" class="message">
-                    {{timeline.post.message}}
-                </div>
+                <pre *ngIf="timeline.post.message" class="message">{{timeline.post.message}}</pre>
 
-                <div *ngIf="timeline.media.type !== ''" class="media">
+                <!-- <div *ngIf="timeline.media.type !== ''" class="media">
                     <img *ngIf="timeline.media.type === 'image'" [src]="timeline.media.preview">
                     <div *ngIf="timeline.media.type === 'video'" [innerHtml]="timeline.media.embed"></div>
+                </div> -->
+                <div class="content" *ngIf="timeline.medias.length > 0">
+                    <div class="media" *ngFor="let media of timeline.medias">
+                        <img *ngIf="media.type === 'image'" [src]="media.preview">
+                        <div *ngIf="media.type === 'video'" [innerHtml]="media.embed"></div>
+                    </div>
                 </div>
 
                 <div *ngIf="timeline.article.media.type !== ''" fxLayout="column" class="article">
@@ -103,8 +121,7 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start center">
-                    <button mat-button class="like-button"
-                        (click)="doToggleTimelineLike(timeline)">
+                    <button mat-button class="like-button" (click)="doToggleTimelineLike(timeline)">
                         <span fxLayout="row" fxLayoutAlign="start center">
                             <mat-icon class="s-16">favorite</mat-icon>
                             <span>Like</span>&nbsp;<span>({{timeline.likes}})</span>
@@ -125,18 +142,19 @@
                     <mat-icon class="s-16">keyboard_arrow_down</mat-icon>
                 </div>
 
-                <div class="comment" fxLayout="row" fxFlexFill *ngFor="let comment of timeline.comments;  let i = index; trackBy: trackByUuid">
-                    <ngx-avatar [hidden]="!fn.showGenericAvatar(comment.user.avatar)" name="{{comment.user.user_name}}" size="20"></ngx-avatar>
-                    <img [hidden]="fn.showGenericAvatar(comment.user.avatar)" class="avatar" [src]="comment.user.avatar">
+                <div class="comment" fxLayout="row" fxFlexFill
+                    *ngFor="let comment of timeline.comments; let i = index; trackBy: trackByUuid">
+                    <ngx-avatar [hidden]="!fn.showGenericAvatar(comment.user.avatar)" name="{{comment.user.user_name}}"
+                        size="20"></ngx-avatar>
+                    <img [hidden]="fn.showGenericAvatar(comment.user.avatar)" class="avatar"
+                        [src]="comment.user.avatar">
 
                     <div fxLayout="column" fxFlex>
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <span class="username">{{comment.user.user_name}}</span>
                             <span class="time">{{ comment.date_comment | dateSinceNow }}</span>
                         </div>
-                        <div class="message">
-                            {{comment.message}}
-                        </div>
+                        <pre class="message">{{comment.message}}</pre>
                         <!-- <div class="actions" fxLayout="row" fxLayoutAlign="space-between center">
                             <a href="#comment" class="reply-button">Reply</a>
                             <mat-icon fxFlex class="report-button s-16">flag</mat-icon>
@@ -145,28 +163,31 @@
                 </div>
 
                 <div class="reply" fxLayout="row" fxFlexFill>
-                    <img [hidden]="currentUser && isAuth() && fn.showGenericAvatar(currentUser.avatar)" class="profile-image avatar huge" src="{{currentUser.avatar}}">
-                    <ngx-avatar size="40" [hidden]="currentUser && isAuth() && !fn.showGenericAvatar(currentUser.avatar)" name="{{currentUser.user_name}}"></ngx-avatar>
+                    <img [hidden]="authUser && isAuth() && fn.showGenericAvatar(authUser.avatar)" class="avatar"
+                        src="{{authUser.avatar}}">
+                    <ngx-avatar size="40" [hidden]="authUser && isAuth() && !fn.showGenericAvatar(authUser.avatar)"
+                        name="{{authUser.user_name}}"></ngx-avatar>
                     <div class="form" fxFlex>
                         <div class="emoji-container">
-                            <textarea matInput matTextareaAutosize   placeholder="Add a comment..." [(ngModel)]="timeline.newComment"></textarea>
+                            <textarea matInput matTextareaAutosize placeholder="Add a comment..."
+                                [(ngModel)]="timeline.newComment"></textarea>
                         </div>
                         <footer fxLayout="row" fxLayoutAlign="space-between center">
-                            <emoji-mart class="emoji-mart" *ngIf="emojiPickerVisible(timeline)" (emojiSelect)="addCommentEmoji(timeline, $event)" title="Choose your emoji"></emoji-mart>
+                            <emoji-mart class="emoji-mart" *ngIf="emojiPickerVisible(timeline)"
+                                (emojiSelect)="addCommentEmoji(timeline, $event)" title="Choose your emoji">
+                            </emoji-mart>
                             <button mat-icon-button aria-label="emoji" matTooltip="Insert Emoji"
-                            *ngIf="!emojiPickerVisible(timeline)" 
-                            (click)="toggleCommentEmojiPicker(timeline)">
+                                *ngIf="!emojiPickerVisible(timeline)" (click)="toggleCommentEmojiPicker(timeline)">
                                 <mat-icon>insert_emoticon</mat-icon>
                             </button>
                             <button mat-icon-button aria-label="close emoji" matTooltip="Close Emoji"
-                            *ngIf="emojiPickerVisible(timeline)"
-                            (click)="timeline.isCommentEmojiPickerVisible = !timeline.isCommentEmojiPickerVisible;">
+                                *ngIf="emojiPickerVisible(timeline)"
+                                (click)="timeline.isCommentEmojiPickerVisible = !timeline.isCommentEmojiPickerVisible;">
                                 <mat-icon>close</mat-icon>
                             </button>
                             <button mat-raised-button color="accent" class="submit-button" aria-label="Post Comment"
-                            *ngIf="!emojiPickerVisible(timeline)"
-                            [disabled]="emptyComment(timeline)"
-                            (click)="doPostComments(timeline)">
+                                *ngIf="!emojiPickerVisible(timeline)" [disabled]="emptyComment(timeline)"
+                                (click)="doPostComments(timeline)">
                                 Post Comment
                             </button>
                         </footer>
@@ -189,10 +210,12 @@
             <div class="content" fxLayout="row wrap">
                 <div class="activities">
                     <div class="activity" fxLayout="row" fxLayoutAlign="start start"
-                         *ngFor="let activity of activities">
+                        *ngFor="let activity of activities; let i = index; trackBy: trackByUuid">
                         <!-- <img [src]="activity.user.avatar" class="avatar" alt="{{activity.user.user_name}}"/> -->
-                        <ngx-avatar [hidden]="!fn.showGenericAvatar(activity.user.avatar)" name="{{activity.user.user_name}}" size="40"></ngx-avatar>
-                        <img [hidden]="fn.showGenericAvatar(activity.user.avatar)" class="avatar" [src]="activity.user.avatar">
+                        <ngx-avatar [hidden]="!fn.showGenericAvatar(activity.user.avatar)"
+                            name="{{activity.user.user_name}}" size="40"></ngx-avatar>
+                        <img [hidden]="fn.showGenericAvatar(activity.user.avatar)" class="avatar"
+                            [src]="activity.user.avatar">
 
                         <div fxLayout="column">
                             <div>
@@ -208,4 +231,3 @@
     </div>
 
 </div>
-

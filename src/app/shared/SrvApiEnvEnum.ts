@@ -8,10 +8,13 @@ export enum SrvApiEnvEnum {
     properties = '/api/properties',
     advertisementSearch = '/api/advertisements/search/',
     advertisements = '/api/advertisements',
+
     userDTO= '/api/users/DTO',
     insUserDTO= '/api/users/insDTO',
     updUserDTO= '/api/users/updDTO',
     userSchema= '/api/users/schema',
+    updateUserAvatar= '/api/users/updateAvatar',
+
     about = '/api/users/profile-about/byUserId',
     friends = '/api/friends/friendList/byUserId',
     groups = '/api/groups/byUserId',
@@ -37,6 +40,12 @@ export enum SrvApiEnvEnum {
     postDTO= '/api/posts/DTO',
     updPostDTO= '/api/posts/updDTO',
     postSchema= '/api/posts/schema',
+
+    postMedia= '/api/postMedias',
+    postMediaDTO= '/api/postMedias/DTO',
+    postMediaSchema= '/api/postMedias/schema',
+    postMediaByPostId= '/api/postMedias/byPostId',
+
 
     userActivitiesLikes= '/api/activities/likes',
     findUserTimelineLikeActivity= '/api/activities/likes/byTimelineIdUserId',

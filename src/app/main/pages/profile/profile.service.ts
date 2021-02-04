@@ -25,6 +25,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     postDTO: any;
     updPostDTO: any;
     postSchema: any;
+    postMediaDTO: any;
+    postMediaSchema: any;
 
     userTimelineCommentDTO: any;
     updUserTimelineCommentDTO: any;
@@ -42,6 +44,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     groups: any[];
     countries: any[];
     titles: any[];
+    postMedias: any[];
 
     userTimelineOnChanged: BehaviorSubject<any>;
     aboutOnChanged: BehaviorSubject<any>;
@@ -61,6 +64,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     postDTOOnChanged: BehaviorSubject<any>;
     updPostDTOOnChanged: BehaviorSubject<any>;
     postSchemaOnChanged: BehaviorSubject<any>;
+    postMediaDTOOnChanged: BehaviorSubject<any>;
+    postMediaSchemaOnChanged: BehaviorSubject<any>;
 
     userTimelineCommentDTOOnChanged: BehaviorSubject<any>;
     updUserTimelineCommentDTOOnChanged: BehaviorSubject<any>;
@@ -91,6 +96,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         this.groups = [];
         this.countries = [];
         this.titles = [];
+        this.postMedias = [];
 
         // Set the defaults
         this.userTimelineOnChanged = new BehaviorSubject(this.userTimeline);
@@ -111,13 +117,15 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         this.postDTOOnChanged = new BehaviorSubject(this.postDTO);
         this.updPostDTOOnChanged = new BehaviorSubject(this.updPostDTO);
         this.postSchemaOnChanged = new BehaviorSubject(this.postSchema);
+        this.postMediaDTOOnChanged = new BehaviorSubject(this.postMediaDTO);
+        this.postMediaSchemaOnChanged = new BehaviorSubject(this.postMediaSchema);
         this.userTimelineCommentDTOOnChanged = new BehaviorSubject(this.userTimelineCommentDTO);
         this.updUserTimelineCommentDTOOnChanged = new BehaviorSubject(this.updUserTimelineCommentDTO);
         this.userTimelineCommentSchemaOnChanged = new BehaviorSubject(this.userTimelineCommentSchema);
 
         // Set the private defaults
         this._unsubscribeAll = new Subject();
-        this._session.userProfileSubject
+        this._session.userProfileOnChange
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe(user => {
             this.user = user;
@@ -128,6 +136,10 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+    }
+
+    updateSessionProfileAvatar(avatar: string): void {
+        this._session.setProfileAvatar(avatar);
     }
 
     doLoadUserProfile(): Observable<any> | Promise<any> | any {
@@ -152,6 +164,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.getPostDTO();
                     this.getUpdPostDTO();
                     this.getPostSchema();
+                    this.getPostMediaDTO();
+                    this.getPostMediaSchema();
                     this.getUserTimelineCommentDTO();
                     this.getUpdUserTimelineCommentDTO();
                     this.getUserTimelineCommentSchema();
@@ -164,6 +178,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.postDTO = undefined;
                     this.updPostDTO = undefined;
                     this.postSchema = undefined;
+                    this.postMediaDTO = undefined;
+                    this.postMediaSchema = undefined;
                     this.userDTOOnChanged.next(this.userDTO);
                     this.updUserDTOOnChanged.next(this.updUserDTO);
                     this.insUserDTOOnChanged.next(this.insUserDTO);
@@ -172,6 +188,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.postDTOOnChanged.next(this.postDTO);
                     this.updPostDTOOnChanged.next(this.updPostDTO);
                     this.postSchemaOnChanged.next(this.postSchema);
+                    this.postMediaDTOOnChanged.next(this.postMediaDTO);
+                    this.postMediaSchemaOnChanged.next(this.postMediaSchema);
                     this.userTimelineCommentDTOOnChanged.next(this.userTimelineCommentDTO);
                     this.updUserTimelineCommentDTOOnChanged.next(this.updUserTimelineCommentDTO);
                     this.userTimelineCommentSchemaOnChanged.next(this.userTimelineCommentSchema);
@@ -194,29 +212,33 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         return this.doLoadUserProfile();
     }
 
+    getUserFromCache(userId: string): any {
+        let fr: any;
+        this.friends.some((friend) => {
+            if (friend.id === userId) {
+                fr = friend;
+                return true;
+            }
+        });
+        if (fr === undefined) {
+            this.strangers.some((stranger) => {
+                if (stranger.id === userId) {
+                    fr = stranger;
+                    return true;
+                }
+            });
+        }
+        return fr;
+    }
+
     /**
      * Get basic information for userId
      * @param userId - uuid of user
      */
     getUser(userId: string): Promise<any> {
         return new Promise ((resolve) => {
-            let fr: any;
-            this.friends.some((friend) => {
-                if (friend.id === userId) {
-                    fr = friend;
-                    resolve(fr);
-                    return true;
-                }
-            });
-            if (fr === undefined) {
-                this.strangers.some((stranger) => {
-                    if (stranger.id === userId) {
-                        fr = stranger;
-                        resolve(fr);
-                        return true;
-                    }
-                });
-            }
+            const fr = this.getUserFromCache(userId);
+
             if (fr === undefined) {
 
                 this.getBasicUserData(userId).then((userData) => {
@@ -226,6 +248,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 .catch(() => {
                     resolve({ id: '', name: '', avatar: ''});
                 });
+            } else {
+                resolve(fr);
             }
         });
     }
@@ -242,9 +266,10 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             this._http.GetObs(httpConfig, true).subscribe((userTimeline: any) => {
                 this._authTokenSession.checkAuthTokenStatus();
                 this.userTimeline = userTimeline;
+                this.getTimelinePostMedias ();
                 this.getTimelineComments ();
                 this.getTimelinePostUser ();
-                this.userTimelineOnChanged.next(this.userTimeline);
+                // this.userTimelineOnChanged.next(this.userTimeline);
                 resolve(this.userTimeline);
             }, reject);
         });
@@ -253,63 +278,142 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     /**
      * populate comment users with user data
      */
-    doPopulateCommentUser(comment: any): Promise<void>{
+
+    doPopulateCommentUserFromCache(comment: any): void {
+        const user = this.getUserFromCache(comment.user_id);
+        if (user) {
+            comment.user = user;
+        }
+    }
+
+/**
+ * This function populates the timeline comments
+ * @param timelinePost - timeline post
+ */
+    doGetPostComments(timelinePost): Promise<void> {
         return new Promise((resolve) => {
-            this.getUser(comment.user_id).then((user) => {
-                comment.user = user;
-                resolve();
-            })
-            .catch(() => {
-                resolve();
+            const promiseList: Promise<any>[] = [];
+            const userIdList: string[] = [];
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.userTimelineCommentsByTimelineId,
+                [timelinePost.id]
+            );
+            this._http.Get(httpConfig, true).then((comments: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                timelinePost.newComment = '';
+                timelinePost.comments = comments;
+
+                timelinePost.comments.forEach(async (comment) => {
+                    comment.isCommentEmojiPickerVisible = false;
+                    comment.time = moment(comment.date_comment).fromNow();
+                    const found = userIdList.includes(comment.user_id);
+                    if (!found) {
+                        userIdList.push(comment.user_id);
+                    }
+                });
+                userIdList.forEach((id) => {
+                    promiseList.push(this.getUser(id));
+                });
+                if (promiseList.length > 0) {
+                    Promise.all(promiseList).finally(() => {
+                        timelinePost.comments.forEach(async (comment) => {
+                            this.doPopulateCommentUserFromCache(comment);
+                        });
+                        this.userTimelineOnChanged.next(this.userTimeline);
+                        resolve();
+                    });
+                } else {
+                    timelinePost.comments.forEach(async (comment) => {
+                        this.doPopulateCommentUserFromCache(comment);
+                    });
+                    resolve();
+                }
             });
+
         });
     }
+
 
     /**
      * Get timeline comments
      */
     getTimelineComments(): Promise<void> {
         return new Promise((resolve) => {
-
+            const promiseList: Promise<any>[] = [];
             this.userTimeline.forEach((timelinePost) => {
+                promiseList.push(this.doGetPostComments(timelinePost));
+            });
+            if (promiseList.length > 0) {
+                Promise.all(promiseList).finally(() => {
+                    this.userTimelineOnChanged.next(this.userTimeline);
+                    resolve();
+                });
+            } else {
+                resolve();
+           }
+        });
+    }
+
+    getPostMedia(timelinePost: any): Promise<void> {
+        return new Promise((resolve, reject) => {
+            let doFindPostMedia = true;
+            this.postMedias.some((medias) => {
+                if (medias.length > 0 && medias[0].post_id === timelinePost.id) {
+                    timelinePost.medias = medias;
+                    doFindPostMedia = false;
+                }
+
+            });
+            if (doFindPostMedia) {
                 const httpConfig = this._http.getSrvHttpConfig(
-                    SrvApiEnvEnum.userTimelineCommentsByTimelineId,
+                    SrvApiEnvEnum.postMediaByPostId,
                     [timelinePost.id]
                 );
-                this._http.Get(httpConfig, true).then((comments: any) => {
-                    this._authTokenSession.checkAuthTokenStatus();
-                    const promiseList: Promise<any>[] = [];
-                    timelinePost.newComment = '';
-                    timelinePost.comments = comments;
-                    timelinePost.comments.forEach(async (comment) => {
-                        comment.isCommentEmojiPickerVisible = false;
-                        comment.time = moment(comment.date_comment).fromNow();
-                        promiseList.push(this.doPopulateCommentUser(comment));
-                    });
-                    if (promiseList.length > 0) {
-                        Promise.all(promiseList).finally(() => {
-                            this.userTimelineOnChanged.next(this.userTimeline);
-                        });
-                    }
+                this._http.Get(httpConfig, true).then((medias: any[]) => {
+                    this.postMedias.push(medias);
+                    timelinePost.medias = medias;
+                    resolve();
+                })
+                .catch(() => {
+                    reject();
                 });
-            });
-            resolve();
-
+            } else { 
+                resolve();
+            }
         });
     }
 
     /**
-     * populate timeline post user with user data
+     * Get timeline comments
      */
-    doPopulatePostUser(timeline: any): Promise<void>{
+    getTimelinePostMedias(): Promise<void> {
         return new Promise((resolve) => {
-            this.getUser(timeline.post_user_id).then((user) => {
-                timeline.user = user;
-                resolve();
-            })
-            .catch(() => {
-                resolve();
+            const promiseList: Promise<any>[] = [];
+            this.userTimeline.forEach((timelinePost) => {
+                promiseList.push(this.getPostMedia(timelinePost));
             });
+            if (promiseList.length > 0) {
+                Promise.all(promiseList).finally(() => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    this.userTimelineOnChanged.next(this.userTimeline);
+                    resolve();
+                });
+            } else {
+                resolve();
+            }
+
+        });
+    }
+
+/**
+ * populate the timeline post user data
+ */
+    doPopulateTimelineUserFromCache( ): void {
+        this.userTimeline.forEach((timeline) => {
+            const user = this.getUserFromCache(timeline.post_user_id);
+            if (user) {
+                timeline.user = user;
+            }
         });
     }
 
@@ -318,14 +422,25 @@ export class ProfileService implements Resolve<any>, OnDestroy {
      */
     getTimelinePostUser(): void {
         const promiseList: Promise<any>[] = [];
+        const userIdList: string[] = [];
         this.userTimeline.forEach((timeline) => {
             timeline.time = timeline.post_date;
-            promiseList.push(this.doPopulatePostUser(timeline));
+            const found = userIdList.includes(timeline.post_user_id);
+            if (!found) {
+                userIdList.push(timeline.post_user_id);
+            }
+        });
+        userIdList.forEach((id) => {
+            promiseList.push(this.getUser(id));
         });
         if (promiseList.length > 0) {
             Promise.all(promiseList).finally(() => {
+                this.doPopulateTimelineUserFromCache();
                 this.userTimelineOnChanged.next(this.userTimeline);
             });
+        } else {
+            this.doPopulateTimelineUserFromCache();
+            this.userTimelineOnChanged.next(this.userTimeline);
         }
     }
 
@@ -369,32 +484,40 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     }
 
     /**
-     * populate comment users with user data
+     * populate activity users with user data
      */
-    doPopulateActivityUser(activity: any): Promise<void>{
-        return new Promise((resolve) => {
-            this.getUser(activity.user_id).then((user) => {
+    doPopulateActivityUserFromCache( ): void {
+        this.activities.forEach((activity) => {
+            const user = this.getUserFromCache(activity.user_id);
+            if (user) {
                 activity.user = user;
-                resolve();
-            })
-            .catch(() => {
-                resolve();
-            });
+            }
         });
     }
-
     /**
      * populate activities user with user data
      */
     getActivitiesUser(): void {
         const promiseList: Promise<any>[] = [];
+        const userIdList: string[] = [];
         this.activities.forEach((activity) => {
-            promiseList.push(this.doPopulateActivityUser(activity));
+            const found = userIdList.includes(activity.user_id);
+            if (!found) {
+                userIdList.push(activity.user_id);
+            }
         });
+        userIdList.forEach((id) => {
+            promiseList.push(this.getUser(id));
+        });
+
         if (promiseList.length > 0) {
             Promise.all(promiseList).finally(() => {
+                this.doPopulateActivityUserFromCache();
                 this.activitiesOnChanged.next(this.activities);
             });
+        } else {
+            this.doPopulateActivityUserFromCache();
+            this.activitiesOnChanged.next(this.activities);
         }
     }
 
@@ -578,7 +701,9 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 }, reject);
         });
     }
-
+/**
+ * Update the user profile data
+ */
     updateUserData(userId: string, updateDTO: any): Promise<void>  {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
@@ -662,7 +787,39 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             }, reject);
         });
     }
+    /**
+     * Get post media DTO
+     */
+    getPostMediaDTO(): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.postMediaDTO
+            );
+            this._http.GetObs(httpConfig, true).subscribe((postMediaDTO: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                this.postMediaDTO = postMediaDTO;
+                this.postMediaDTOOnChanged.next(this.postMediaDTO);
+                resolve(this.postMediaDTO);
+            }, reject);
+        });
+    }
 
+    /**
+     * Get post media schema
+     */
+    getPostMediaSchema(): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.postMediaSchema
+            );
+            this._http.GetObs(httpConfig, true).subscribe((postMediaSchema: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                this.postMediaSchema = postMediaSchema;
+                this.postMediaSchemaOnChanged.next(this.postMediaSchema);
+                resolve(this.postMediaSchema);
+            }, reject);
+        });
+    }
 
     /**
      * Get basic user data
@@ -730,6 +887,44 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 this.userTimelineCommentSchemaOnChanged.next(this.userTimelineCommentSchema);
                 resolve(this.userTimelineCommentSchema);
             }, reject);
+        });
+    }
+
+    /**
+     * Update User Profile Avatar
+     */
+    updateUserAvatar(userId: string, avatar: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.updateUserAvatar,
+                [userId],
+                {
+                    avatar: avatar
+                }
+            );
+            this._http.Put(httpConfig, true).then(() => {
+                this.updateSessionProfileAvatar(avatar);
+                this.friends.some((fr) => {
+                    if (fr.id === userId) {
+                        fr.avatar = avatar;
+                        return true;
+                    }
+                });
+                this.strangers.some((fr) => {
+                    if (fr.id === userId) {
+                        fr.avatar = avatar;
+                        return true;
+                    }
+                })
+                this._authTokenSession.checkAuthTokenStatus();
+
+                this.getActivitiesUser();
+                this.getTimelinePostUser();
+                resolve();
+            })
+            .catch(() => {
+                reject();
+            });
         });
     }
 }

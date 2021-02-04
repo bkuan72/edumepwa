@@ -177,4 +177,71 @@ export class CommonFn {
         }
         return mapObj;
     }
+
+
+/**
+ * This function compress the image
+ * @param base64Src - image data
+ * @param newX  - new width in px
+ * @param newY  - new height in px
+ */
+    private compressImage(base64Src: string, newX: number, newY: number): Promise<string> {
+        return new Promise((res, rej) => {
+          const img = new Image();
+          img.src = base64Src;
+
+          img.onload = () => {
+            const elem = document.createElement('canvas');
+            elem.width = newX;
+            elem.height = newY;
+            const ctx = elem.getContext('2d');
+
+            ctx.drawImage(img, 0, 0, newX, newY);
+            const data = ctx.canvas.toDataURL();
+            res(data);
+          }
+          img.onerror = error => rej('Failed To Compress Image');
+        });
+      }
+
+/**
+ * This function resize an image to a standard avatar image that is H128 px * W128 px
+ * @param base64Src - image data
+ */
+    public toAvatarDataURL(base64Src: string): Promise<string> {
+        return this.compressImage(base64Src, 128, 128);
+    }
+
+/**
+ * This function resize image
+ * @param base64Src - source data for image
+ * @param resizePercent - resize to percentage of original image size
+ * @param minPixel - minimum pixel length
+ */
+    public resizeImage(base64Src: string, resizePercent: number, minPixel: number): Promise<string> {
+        return new Promise((res, rej) => {
+            const img = new Image();
+            img.src = base64Src;
+
+
+            img.onload = () => {
+              let newX = img.width * resizePercent;
+              let newY = img.height * resizePercent;
+              if (minPixel > 0) {
+                  if (newX < minPixel || newY < minPixel) {
+                    newX = img.width * (minPixel / img.width);
+                    newY = img.height * (minPixel / img.height);
+                  }
+              }
+              const elem = document.createElement('canvas');
+              elem.width = newX;
+              elem.height = newY;
+              const ctx = elem.getContext('2d');
+              ctx.drawImage(img, 0, 0, newX, newY);
+              const data = ctx.canvas.toDataURL();
+              res(data);
+            }
+            img.onerror = error => rej(error);
+          });
+    }
 }

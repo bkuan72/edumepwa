@@ -1,58 +1,42 @@
 <div id="profile" class="page-layout simple tabbed">
     <!-- HEADER -->
-    <div
-        class="header p-24"
-        fxLayout="column"
-        fxLayoutAlign="center center"
-        fxLayout.gt-sm="row"
-        fxLayoutAlign.gt-sm="space-between end"
-    >
-        <div
-            class="user-info"
-            fxLayout="column"
-            fxLayoutAlign="center center"
-            fxLayout.gt-sm="row"
-            fxLayoutAlign.gt-sm="start center"
-        >
-            <img
-                *ngIf="!isAuth()"
-                class="profile-image avatar huge"
-                src="assets/images/avatars/profile.jpg"
-                [@animate]="{
+    <div class="header p-24" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-sm="row"
+        fxLayoutAlign.gt-sm="space-between end">
+        <div class="user-info" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-sm="row"
+            fxLayoutAlign.gt-sm="start center">
+            <button *ngIf="ownerOfProfile" mat-icon-button color="accent" aria-label="Change avatar"
+                (click)="showAvatarEditor = !showAvatarEditor">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <img *ngIf="!isAuth()" class="profile-image avatar huge" src="assets/images/avatars/profile.jpg" [@animate]="{
                     value: '*',
                     params: { delay: '50ms', scale: '0.2' }
-                }"
-            />
-            <img
-                [hidden]="user && isAuth() && fn.showGenericAvatar(user.avatar)"
-                class="profile-image avatar huge"
-                src="{{ user.avatar }}"
-            />
-            <ngx-avatar
-                size="80"
-                [hidden]="
+                }" />
+            <img [hidden]="user && isAuth() && fn.showGenericAvatar(user.avatar)" class="profile-image avatar huge"
+                src="{{ user.avatar }}" />
+            <ngx-avatar size="80" [hidden]="
                     user && isAuth() && !fn.showGenericAvatar(user.avatar)
-                "
-                name="{{ user.user_name }}"
-            ></ngx-avatar>
-            <div
-                class="name"
-                [@animate]="{
+                " name="{{ user.user_name }}"></ngx-avatar>
+
+            <div *ngIf="showAvatarEditor" fxLayout="row" fxLayoutAlign="start center">
+                <div>
+                    <input #uploadAvatarFileInput type="file" accept=".jpg,.png" (change)="fileChangeEvent($event)" />
+                </div>
+
+                <ngx-photo-editor #avatarPhotoEditor [imageChanedEvent]="avatarChangedEvent"
+                    (imageCropped)="avatarCropped($event)" [aspectRatio]="1 / 1" [viewMode]="1" [darkTheme]="false"
+                    [mask]="false" ></ngx-photo-editor>
+            </div>
+            <div class="name" [@animate]="{
                     value: '*',
                     params: { delay: '100ms', x: '-25px' }
-                }"
-            >
+                }">
                 {{ user.user_name }}
             </div>
         </div>
 
-        <div
-            *ngIf="allowFollow"
-            class="actions"
-            fxLayout="row"
-            fxLayoutAlign="end center"
-            [@animate]="{ value: '*', params: { delay: '200ms' } }"
-        >
+        <div *ngIf="!ownerOfProfile" class="actions" fxLayout="row" fxLayoutAlign="end center"
+            [@animate]="{ value: '*', params: { delay: '200ms' } }">
             <button mat-raised-button color="accent" aria-label="Follow">
                 Follow
             </button>
@@ -72,13 +56,8 @@
             <mat-tab label="About">
                 <ng-template mat-tab-label>
                     About&nbsp;&nbsp;
-                    <mat-icon
-                        *ngIf="!allowFollow"
-                        matSuffix
-                        class="primary-text"
-                        (click)="doMaintain()"
-                        >edit</mat-icon
-                    >
+                    <mat-icon *ngIf="ownerOfProfile" matSuffix class="primary-text" (click)="doMaintain()">edit
+                    </mat-icon>
                 </ng-template>
                 <profile-about></profile-about>
             </mat-tab>
@@ -87,67 +66,46 @@
                 <profile-photos-videos></profile-photos-videos>
             </mat-tab>
             <mat-tab label="DTOs">
-                <div
-                    class="mb-24"
-                    fxLayout="column"
-                    fxLayoutAlign="start"
-                    fxLayout.gt-md="row"
-                >
-                    <div
-                        class="mat-card form-errors-model p-24 mat-elevation-z4"
-                        *ngIf="userTimelineDTO"
-                    >
+                <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userTimelineDTO">
                         <div class="h2 mb-24">Timeline DTO</div>
                         <pre><code>{{userTimelineDTO | json}}</code></pre>
                     </div>
-                    <div
-                        class="mat-card form-errors-model p-24 mat-elevation-z4"
-                        *ngIf="postDTO"
-                    >
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postDTO">
                         <div class="h2 mb-24">Post DTO</div>
                         <pre><code>{{postDTO | json}}</code></pre>
                     </div>
-                    <div
-                        class="mat-card form-errors-model p-24 mat-elevation-z4"
-                        *ngIf="updPostDTO"
-                    >
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updPostDTO">
                         <div class="h2 mb-24">Update Post DTO</div>
                         <pre><code>{{updPostDTO | json}}</code></pre>
                     </div>
-                    <div
-                        class="mat-card form-errors-model p-24 mat-elevation-z4"
-                        *ngIf="postSchema"
-                    >
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postSchema">
                         <div class="h2 mb-24">Post Schema</div>
                         <pre><code>{{postSchema | json}}</code></pre>
                     </div>
                 </div>
-                <div
-                    class="mb-24"
-                    fxLayout="column"
-                    fxLayoutAlign="start"
-                    fxLayout.gt-md="row"
-                >
-                    <div
-                        class="mat-card form-errors-model p-24 mat-elevation-z4"
-                        *ngIf="userTimelineCommentDTO"
-                    >
+                <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userTimelineCommentDTO">
                         <div class="h2 mb-24">Comment DTO</div>
                         <pre><code>{{userTimelineCommentDTO | json}}</code></pre>
                     </div>
-                    <div
-                        class="mat-card form-errors-model p-24 mat-elevation-z4"
-                        *ngIf="updUserTimelineCommentDTO"
-                    >
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updUserTimelineCommentDTO">
                         <div class="h2 mb-24">Update Comment DTO</div>
                         <pre><code>{{updUserTimelineCommentDTO | json}}</code></pre>
                     </div>
-                    <div
-                        class="mat-card form-errors-model p-24 mat-elevation-z4"
-                        *ngIf="postSchema"
-                    >
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userTimelineCommentSchema">
                         <div class="h2 mb-24">Comment Schema</div>
                         <pre><code>{{userTimelineCommentSchema | json}}</code></pre>
+                    </div>
+                </div>
+                <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postMediaDTO">
+                        <div class="h2 mb-24">Post Media DTO</div>
+                        <pre><code>{{postMediaDTO | json}}</code></pre>
+                    </div>
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postMediaSchema">
+                        <div class="h2 mb-24">Post Media Schema</div>
+                        <pre><code>{{postMediaSchema | json}}</code></pre>
                     </div>
                 </div>
             </mat-tab>

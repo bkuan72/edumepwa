@@ -29,7 +29,7 @@ export class ToolbarComponent implements OnInit, OnDestroy
     navigation: any;
     selectedLanguage: any;
     userStatusOptions: any[];
-    user: any;
+    currentUser: any;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -45,13 +45,12 @@ export class ToolbarComponent implements OnInit, OnDestroy
         private _fuseConfigService: FuseConfigService,
         private _fuseSidebarService: FuseSidebarService,
         private _translateService: TranslateService,
-        private _auth: AuthTokenSessionService,
+        public _authSession: AuthTokenSessionService,
         private router: Router,
         public  fn: CommonFn,
         private _session: SessionService
     )
     {
-        this.user = this._auth.userValue;
         // Set the defaults
         this.userStatusOptions = [
             {
@@ -120,6 +119,12 @@ export class ToolbarComponent implements OnInit, OnDestroy
 
         // Set the selected language from default languages
         this.selectedLanguage = _.find(this.languages, {id: this._translateService.currentLang});
+
+        this._authSession.authUserOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((authUser) => {
+            this.currentUser = authUser;
+        });
     }
 
     /**
@@ -172,19 +177,19 @@ export class ToolbarComponent implements OnInit, OnDestroy
     }
 
     isAuth(): boolean {
-        return this._auth.isLoggedIn();
+        return this._authSession.isLoggedIn();
     }
 
     doLogin(): void {
         this.router.navigateByUrl('pages/auth/login');
     }
     doLogout(): void {
-        this._auth.logout().finally(() => {
-            this.router.navigateByUrl('pages/search/modern');
+        this.router.navigateByUrl('pages/search/modern').finally(() => {
+            this._authSession.logout();
         });
     }
     goToUserProfile(): void {
-        this._session.goToUserProfile(this.user.id);
+        this._session.goToUserProfile(this._authSession.currentAuthUser.id);
     }
 
 }

@@ -12,16 +12,24 @@ import { AuthTokenSessionService } from '../auth-token-session/auth-token-sessio
     providedIn: 'root',
 })
 export class SessionService {
-    userProfileSubject: BehaviorSubject<any>;
+    userProfileOnChange: BehaviorSubject<any>;
     constructor(
         private _http: SrvHttpService,
         private router: Router,
         private _authTokenSession: AuthTokenSessionService
     ) {
-        this.userProfileSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem(LocalStoreVarEnum.SESSION_USER_PROFILE)));
+        this.userProfileOnChange = new BehaviorSubject<any>(JSON.parse(localStorage.getItem(LocalStoreVarEnum.SESSION_USER_PROFILE)));
     }
     public get userProfileValue(): any {
-        return this.userProfileSubject.value;
+        return this.userProfileOnChange.value;
+    }
+
+    setProfileAvatar (avatar: string): void {
+        if (this.userProfileValue) {
+            this.userProfileValue.avatar = avatar;
+            localStorage.setItem(LocalStoreVarEnum.SESSION_USER_PROFILE, JSON.stringify(this.userProfileValue));
+            this.userProfileOnChange.next(this.userProfileValue);
+        }
     }
 
     goToUserProfile(userId: string): void {
@@ -35,7 +43,7 @@ export class SessionService {
                 this._authTokenSession.checkAuthTokenStatus();
 
                 localStorage.setItem(LocalStoreVarEnum.SESSION_USER_PROFILE, JSON.stringify(user));
-                this.userProfileSubject.next(user);
+                this.userProfileOnChange.next(user);
                 this.router.navigate(['/pages/profile']);
             })
             .catch(() => {

@@ -25,6 +25,13 @@ export interface TimelinePostIfc  {
     comment: string;
 }
 
+export interface PostMediaIfc {
+    type: string;
+    preview: string;
+    embed: string;
+    post_id: string;
+}
+
 @Injectable()
 export class TimelineService implements OnDestroy {
     // Private
@@ -41,7 +48,7 @@ export class TimelineService implements OnDestroy {
     }
 
 
-    doPostToTimeline(post: TimelinePostIfc): Promise<void> {
+    doPostToTimeline(post: TimelinePostIfc): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
             const postDate = new Date();
             const postDTO = {
@@ -76,12 +83,42 @@ export class TimelineService implements OnDestroy {
                 );
                 this._http.Post(userTimelineHttpConfig, true)
                 .then((respUserTimelineDTO: any) => {
-                    resolve();
+                    resolve(respUserTimelineDTO);
                 })
                 .catch (() => {
                     reject();
                 });
 
+            })
+            .catch(() => {
+                reject();
+            });
+
+
+        });
+    }
+
+    doPostMedia(postUserId: string,
+                postId: string,
+                media: TimelinePostMediaIfc): Promise<any | undefined> {
+        return new Promise((resolve, reject) => {
+            const postMediaDTO = {
+                id: '',
+                type: media.type,
+                preview: media.preview,
+                post_id: postId,
+                user_id: postUserId,
+                status: 'OK'
+            };
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.postMedia,
+                undefined,
+                postMediaDTO
+            );
+            this._http.Post(httpConfig, true)
+            .then((respPostMediaDTO: any) => {
+                this._auth.checkAuthTokenStatus();
+                resolve(respPostMediaDTO);
             })
             .catch(() => {
                 reject();

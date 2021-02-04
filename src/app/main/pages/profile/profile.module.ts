@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { FuseSharedModule } from '@fuse/shared.module';
 
@@ -17,6 +18,7 @@ import { ProfileTimelineComponent } from 'app/main/pages/profile/tabs/timeline/t
 import { ProfileAboutComponent } from 'app/main/pages/profile/tabs/about/about.component';
 import { ProfilePhotosVideosComponent } from 'app/main/pages/profile/tabs/photos-videos/photos-videos.component';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import {NgxPhotoEditorModule} from 'ngx-photo-editor';
 
 
 
@@ -41,6 +43,8 @@ const routes = [
     imports     : [
         RouterModule.forChild(routes),
         PickerModule,
+        NgxPhotoEditorModule,
+        MatProgressSpinnerModule,
 
         MatButtonModule,
         MatDividerModule,
