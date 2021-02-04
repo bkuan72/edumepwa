@@ -41,7 +41,9 @@ export class LockComponent implements OnInit
         public fn: CommonFn
     )
     {
-        this.currentUser = _authSession.currentAuthUser();
+        if (this._authSession.currentAuthUser) {
+            this.currentUser = this._authSession.currentAuthUser;
+        }
         this.email = '';
         this._authSession.resetAuthUser();
 
