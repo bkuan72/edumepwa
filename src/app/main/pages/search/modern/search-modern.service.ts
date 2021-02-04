@@ -72,7 +72,7 @@ export class SearchModernService implements Resolve<any>
                 resolve(this.data);
                 }, () => {
                     this.router.navigateByUrl('maintenance');
-                    reject();
+                    resolve([]);
                 });
     });
     }
