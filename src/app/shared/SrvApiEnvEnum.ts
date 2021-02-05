@@ -19,7 +19,7 @@ export enum SrvApiEnvEnum {
     friends = '/api/friends/friendList/byUserId',
     groups = '/api/groups/byUserId',
     activities = '/api/activities/activityList/byTimelineUserIdOffSetDays',
-    media = '/api/medias/byUserId',
+    media = '/api/userMedias/byUserId',
     increment_likes = '/api/posts/likes',
     increment_share = '/api/posts/share',
     userGroups = '/api/userGroups/byUserId',
