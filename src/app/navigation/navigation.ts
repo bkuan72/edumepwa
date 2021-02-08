@@ -1,4 +1,4 @@
-import { FuseNavigation } from '@fuse/types';
+import { FuseNavigation, FuseNavigationItem } from '@fuse/types';
 
 export const navigation: FuseNavigation[] = [
     {
@@ -11,95 +11,76 @@ export const navigation: FuseNavigation[] = [
                 id: 'home',
                 title: 'Home',
                 type: 'item',
+                icon: 'home',
                 url: 'search/modern'
-            }
+            },
         ]
-        // children : [
-        //     {
-        //         id   : 'login',
-        //         title: 'Login',
-        //         type : 'item',
-        //         url  : '/pages/authentication/login'
-        //     },
-
-        //     {
-        //         id   : 'reset-password',
-        //         title: 'Reset Password',
-        //         type : 'item',
-        //         url  : '/pages/authentication/reset-password'
-        //     },
-        //     {
-        //         id   : 'lock-screen',
-        //         title: 'Lock Screen',
-        //         type : 'item',
-        //         url  : '/pages/auth/lock'
-        //     },
-        //     {
-        //         id   : 'mail-confirmation',
-        //         title: 'Mail Confirmation',
-        //         type : 'item',
-        //         url  : '/pages/auth/mail-confirm'
-        //     },
-        //     {
-        //         id   : 'forgot-password',
-        //         title: 'Forgot Password',
-        //         type : 'item',
-        //         url  : '/pages/auth/forgot-password'
-        //     }
-        // ]
     },
-    // {
-    //     id   : 'coming-soon',
-    //     title: 'Coming Soon',
-    //     type : 'item',
-    //     icon : 'alarm',
-    //     url  : '/pages/coming-soon'
-    // },
-    // {
-    //     id      : 'errors',
-    //     title   : 'Errors',
-    //     type    : 'collapsable',
-    //     icon    : 'error',
-    //     children: [
-    //         {
-    //             id   : '404',
-    //             title: '404',
-    //             type : 'item',
-    //             url  : '/pages/errors/error-404'
-    //         },
-    //         {
-    //             id   : '500',
-    //             title: '500',
-    //             type : 'item',
-    //             url  : '/pages/errors/error-500'
-    //         }
-    //     ]
-    // },
-    // {
-    //     id   : 'profile',
-    //     title: 'Profile',
-    //     type : 'item',
-    //     icon : 'person',
-    //     url  : '/pages/profile'
-    // },
-    // {
-    //     id      : 'search',
-    //     title   : 'Search',
-    //     type    : 'collapsable',
-    //     icon    : 'search',
-    //     children: [
-    //         // {
-    //         //     id   : 'search-classic',
-    //         //     title: 'Classic',
-    //         //     type : 'item',
-    //         //     url  : '/pages/search/classic'
-    //         // },
-    //         {
-    //             id   : 'search-modern',
-    //             title: 'Modern',
-    //             type : 'item',
-    //             url  : '/pages/search/modern'
-    //         }
-    //     ]
-    // },
+];
+
+export const adminNavigation: FuseNavigation[] = [
+    {
+        id: 'user.profile',
+        title: 'Maintain Profile',
+        type: 'item',
+        icon: 'account_circle',
+        url: 'maintain/profile'
+    },
+    {
+        id      : 'admin.maintenance',
+        title   : 'Maintenance',
+        type    : 'collapsable',
+        icon    : 'web',
+        children: [
+            {
+                id: 'maintainCategories',
+                title: 'Maintain Categories',
+                type: 'item',
+                icon: 'category',
+                url: 'maintain/categories'
+            },
+        ]
+    }
+];
+export const devNavigation: FuseNavigation[] = [
+    {
+        id: 'user.profile',
+        title: 'Maintain Profile',
+        type: 'item',
+        icon: 'account_circle',
+        url: 'maintain/profile'
+    },
+    {
+        id      : 'admin.maintenance',
+        title   : 'Maintenance',
+        type    : 'collapsable',
+        icon    : 'web',
+        children: [
+            {
+                id: 'maintainCategories',
+                title: 'Maintain Categories',
+                type: 'item',
+                icon: 'category',
+                url: 'maintain/categories'
+            },
+        ]
+    }
+];
+export const bizNavigation: FuseNavigation[] = [
+    {
+        id: 'user.profile',
+        title: 'Maintain Profile',
+        type: 'item',
+        icon: 'account_circle',
+        url: 'maintain/profile'
+    },
+];
+export const userNavigation: FuseNavigation[] = [
+    {
+        id: 'user.profile',
+        title: 'Maintain Profile',
+        type: 'item',
+        icon: 'account_circle',
+        url: 'maintain/profile'
+    },
 ];

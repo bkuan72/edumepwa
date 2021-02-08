@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { FuseMatchMediaService } from '@fuse/services/match-media.service';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 
 @Component({
     selector   : 'fuse-shortcuts',
@@ -19,6 +20,9 @@ export class FuseShortcutsComponent implements OnInit, AfterViewInit, OnDestroy
     filteredNavigationItems: any[];
     searching: boolean;
     mobileShortcutsPanelActive: boolean;
+    authUser: any;
+    cookieName: string;
+    defaultCookieName: string;
 
     @Input()
     navigation: any;
@@ -46,13 +50,16 @@ export class FuseShortcutsComponent implements OnInit, AfterViewInit, OnDestroy
         private _fuseMatchMediaService: FuseMatchMediaService,
         private _fuseNavigationService: FuseNavigationService,
         private _mediaObserver: MediaObserver,
-        private _renderer: Renderer2
+        private _renderer: Renderer2,
+        private _authSession: AuthTokenSessionService
     )
     {
         // Set the defaults
         this.shortcutItems = [];
         this.searching = false;
         this.mobileShortcutsPanelActive = false;
+        this.defaultCookieName = 'FUSE2.shortcuts';
+        this.cookieName = this.defaultCookieName;
 
         // Set the private defaults
         this._unsubscribeAll = new Subject();
@@ -67,41 +74,56 @@ export class FuseShortcutsComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this._authSession.authUserOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((authUser) => {
+            this.authUser = authUser;
+
+            if (this.authUser) {
+                this.cookieName += authUser.id;
+            } else {
+                this.cookieName = this.defaultCookieName;
+            }
+            if ( this._authTokenService.check(this.cookieName) )
+            {
+                this.shortcutItems = JSON.parse(this._authTokenService.get(this.cookieName));
+            }
+        });
         // Get the navigation items and flatten them
         this.filteredNavigationItems = this.navigationItems = this._fuseNavigationService.getFlatNavigation(this.navigation);
 
-        if ( this._authTokenService.check('FUSE2.shortcuts') )
+        if ( this._authTokenService.check(this.cookieName) )
         {
-            this.shortcutItems = JSON.parse(this._authTokenService.get('FUSE2.shortcuts'));
+            this.shortcutItems = JSON.parse(this._authTokenService.get(this.cookieName));
         }
         else
         {
             // User's shortcut items
             this.shortcutItems = [
-                {
-                    title: 'Calendar',
-                    type : 'item',
-                    icon : 'today',
-                    url  : '/apps/calendar'
-                },
-                {
-                    title: 'Mail',
-                    type : 'item',
-                    icon : 'email',
-                    url  : '/apps/mail'
-                },
-                {
-                    title: 'Contacts',
-                    type : 'item',
-                    icon : 'account_box',
-                    url  : '/apps/contacts'
-                },
-                {
-                    title: 'To-Do',
-                    type : 'item',
-                    icon : 'check_box',
-                    url  : '/apps/todo'
-                }
+                // {
+                //     title: 'Calendar',
+                //     type : 'item',
+                //     icon : 'today',
+                //     url  : '/apps/calendar'
+                // },
+                // {
+                //     title: 'Mail',
+                //     type : 'item',
+                //     icon : 'email',
+                //     url  : '/apps/mail'
+                // },
+                // {
+                //     title: 'Contacts',
+                //     type : 'item',
+                //     icon : 'account_box',
+                //     url  : '/apps/contacts'
+                // },
+                // {
+                //     title: 'To-Do',
+                //     type : 'item',
+                //     icon : 'check_box',
+                //     url  : '/apps/todo'
+                // }
             ];
         }
 
@@ -175,7 +197,7 @@ export class FuseShortcutsComponent implements OnInit, AfterViewInit, OnDestroy
                 this.shortcutItems.splice(i, 1);
 
                 // Save to the cookies
-                this._authTokenService.set('FUSE2.shortcuts', JSON.stringify(this.shortcutItems));
+                this._authTokenService.set(this.cookieName, JSON.stringify(this.shortcutItems));
 
                 return;
             }
@@ -184,7 +206,7 @@ export class FuseShortcutsComponent implements OnInit, AfterViewInit, OnDestroy
         this.shortcutItems.push(itemToToggle);
 
         // Save to the cookies
-        this._authTokenService.set('FUSE2.shortcuts', JSON.stringify(this.shortcutItems));
+        this._authTokenService.set(this.cookieName, JSON.stringify(this.shortcutItems));
     }
 
     /**

@@ -1,8 +1,11 @@
+import { FuseNavigation } from './../../types/fuse-navigation';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { merge, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
+import { devNavigation, adminNavigation, bizNavigation, userNavigation } from 'app/navigation/navigation';
 
 @Component({
     selector       : 'fuse-navigation',
@@ -18,6 +21,8 @@ export class FuseNavigationComponent implements OnInit
 
     @Input()
     navigation: any;
+    authUser: any;
+    lastNavigation: any;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -29,7 +34,8 @@ export class FuseNavigationComponent implements OnInit
      */
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
-        private _fuseNavigationService: FuseNavigationService
+        private _fuseNavigationService: FuseNavigationService,
+        private _auth: AuthTokenSessionService
     )
     {
         // Set the private defaults
@@ -71,5 +77,74 @@ export class FuseNavigationComponent implements OnInit
              // Mark for check
              this._changeDetectorRef.markForCheck();
          });
+
+        this._auth.authUserOnChanged
+         .pipe(takeUntil(this._unsubscribeAll))
+         .subscribe((authUser) => {
+             this.authUser = authUser;
+             if (authUser) {
+                 this.setAuthUserNavigation(true);
+             } else {
+                 this.setAuthUserNavigation(false);
+             }
+         });
+    }
+
+    private updateNavigation(nav: FuseNavigation, add: boolean): void {
+        const mainNav = this._fuseNavigationService.getNavigation('main');
+        if (mainNav) {
+            const fuseNav = this._fuseNavigationService.getNavigationItem(nav.id, mainNav);
+            if (add) {
+                if (fuseNav !== false) {
+                    this._fuseNavigationService.updateNavigationItem(nav.id, nav);
+                } else {
+                    this._fuseNavigationService.addNavigationItem(nav, 'end');
+                }
+            } else {
+                if (fuseNav) {
+                    this._fuseNavigationService.removeNavigationItem(nav.id);
+                }
+            }
+        }
+
+    }
+
+
+    setAuthUserNavigation(add: boolean): void {
+        if (add) {
+            if (this._auth.devUser) {
+                devNavigation.forEach((nav) => {
+                    this.updateNavigation(nav, add);
+                });
+                this.lastNavigation = devNavigation;
+            } else {
+                if (this._auth.adminUser) {
+                    adminNavigation.forEach((nav) => {
+                        this.updateNavigation(nav, add);
+                    });
+                    this.lastNavigation = adminNavigation;
+                } else {
+                    if (this._auth.bizUser) {
+                        bizNavigation.forEach((nav) => {
+                            this.updateNavigation(nav, add);
+                        });
+                        this.lastNavigation = bizNavigation;
+                    } else {
+                        userNavigation.forEach((nav) => {
+                            this.updateNavigation(nav, add);
+                        });
+                        this.lastNavigation = userNavigation;
+                    }
+                }
+            }
+        } else {
+            if (this.lastNavigation) {
+                this.lastNavigation.forEach((nav) => {
+                    this.updateNavigation(nav, add);
+                });
+                this.lastNavigation = undefined;
+            }
+        }
+        this._fuseNavigationService.setCurrentNavigation('main');
     }
 }
