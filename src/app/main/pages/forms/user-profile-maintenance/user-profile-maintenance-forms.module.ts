@@ -14,7 +14,7 @@ import { CommonComponentModule } from 'app/components/component.module';
 
 const routes: Routes = [
     {
-        path     : 'user-profile-maintenance-forms',
+        path     : 'maintain/profile',
         component: UserProfileMaintenanceFormsComponent
     }
 ];

@@ -132,7 +132,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         return this._auth.isLoggedIn();
     }
     doMaintain(): void {
-        this.router.navigateByUrl('pages/forms/user-profile-maintenance-forms');
+        this.router.navigateByUrl('maintain/profile');
     }
 
     fileChangeEvent(event: any): void {
