@@ -1,3 +1,4 @@
+import { AdCategoriesFormModule } from './forms/ad-categories-maintenance/ad-categories-maintenance-form.module';
 import { UserProfileMaintenanceFormsModule } from './forms/user-profile-maintenance/user-profile-maintenance-forms.module';
 import { MaintenanceModule } from './errors/maintenance/maintenance.module';
 import { ResetPasswordConfirmModule } from './authentication/reset-password-confirm/reset-password-confirm.module';
@@ -66,7 +67,8 @@ import { NgModule } from '@angular/core';
         TermsAndConditionsModule,
 
         // User Profile Maintenance form
-        UserProfileMaintenanceFormsModule
+        UserProfileMaintenanceFormsModule,
+        AdCategoriesFormModule
     ]
 })
 export class PagesModule

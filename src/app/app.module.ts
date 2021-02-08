@@ -1,3 +1,6 @@
+import { AdCategoryService } from './services/ad-category/ad-category.service';
+import { AdminAuthGuard } from './main/guards/adminAuth.guard';
+import { AdCategoriesFormComponent } from './main/pages/forms/ad-categories-maintenance/ad-categories-maintenance-form.component';
 import { UserProfileMaintenanceFormsComponent } from './main/pages/forms/user-profile-maintenance/user-profile-maintenance-forms.component';
 import { AuthGuard } from './main/guards/auth.guard';
 import { ProfileComponent } from './main/pages/profile/profile.component';
@@ -57,9 +60,17 @@ const appRoutes: Routes = [
         }
     },
     {
-        path        : 'pages/forms/user-profile-maintenance-forms',
+        path        : 'maintain/profile',
         component   : UserProfileMaintenanceFormsComponent,
         canActivate : [AuthGuard]
+    },
+    {
+        path        : 'maintain/categories',
+        component   : AdCategoriesFormComponent,
+        canActivate : [AdminAuthGuard],
+        resolve     : {
+            any: AdCategoryService
+        }
     },
     {
         path        : 'pages',

@@ -1,0 +1,77 @@
+<div id="forms" class="page-layout simple fullwidth" fxLayout="column">
+
+    <!-- HEADER -->
+    <div class="header accent p-24 h-160" fxLayout="row" fxLayoutAlign="start center">
+        <div fxLayout="column" fxLayoutAlign="center start">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="secondary-text s-18">home</mat-icon>
+                <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+                <span class="secondary-text">User Interface</span>
+            </div>
+            <div class="h1 mt-16">Category Maintenance</div>
+        </div>
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <div class="content p-24">
+
+        <div class="h1">
+            Categories
+        </div>
+
+        <p class="pt-16 pb-32">
+            Categories Used In Classifying Groups And Advertisements
+        </p>
+
+        <!-- <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row"> -->
+            <ngx-datatable
+            #mydatatable
+            class="material"
+            [headerHeight]="50"
+            [limit]="5"
+            [columnMode]="ColumnMode.force"
+            [footerHeight]="50"
+            rowHeight="auto"
+            [rows]="rows"
+          >
+            <ngx-datatable-column name="Category">
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                <span
+                  title="Double click to edit"
+                  (dblclick)="editing[rowIndex + '-adCategory_code'] = true"
+                  *ngIf="!editing[rowIndex + '-adCategory_code']"
+                >
+                  {{ value }}
+                </span>
+                <input
+                  autofocus
+                  (blur)="updateValue($event, 'adCategory_code', rowIndex)"
+                  *ngIf="editing[rowIndex + '-adCategory_code']"
+                  type="text"
+                  [value]="value"
+                />
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+        <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="categoriesDTO">
+                <div class="h2 mb-24">Categories DTO</div>
+                <pre><code>{{categoriesDTO | json}}</code></pre>
+            </div>
+            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updCategoriesDTO">
+                <div class="h2 mb-24">Update Categories DTO</div>
+                <pre><code>{{updCategoriesDTO | json}}</code></pre>
+            </div>
+            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="categoriesSchema">
+                <div class="h2 mb-24">Categories Schema</div>
+                <pre><code>{{categoriesSchema | json}}</code></pre>
+            </div>
+        </div>
+    <!-- </div> -->
+    <!-- / CONTENT -->
+
+</div>
+
+

@@ -57,6 +57,10 @@ export enum SrvApiEnvEnum {
     userTimelineCommentSchema= '/api/userTimelineComments/schema',
     userTimelineCommentsByTimelineId= '/api/userTimelineComments/byTimelineId',
 
+    adCategories= '/api/adCategories',
+    adCategoriesDTO= '/api/adCategories/DTO',
+    adCategoriesUpdDTO= '/api/adCategories/updDTO',
+    adCategoriesSchema= '/api/adCategories/schema',
 
     // local web server path
     SETTINGS_JSON_LOCATION = 'assets/app-settings.json',
