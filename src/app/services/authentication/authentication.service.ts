@@ -28,6 +28,8 @@ export class AuthenticationService {
         const usr = JSON.parse(localStorage.getItem(LocalStoreVarEnum.USER));
         if (usr && usr !== null) {
             this.authUserOnChange.next(usr);
+        } else {
+            this.authUserOnChange.next(undefined);
         }
     }
 
