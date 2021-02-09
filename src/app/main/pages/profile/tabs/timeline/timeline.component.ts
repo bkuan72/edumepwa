@@ -1,3 +1,4 @@
+import { AlertService } from 'app/services/alert/alert.service';
 import { CommonFn } from './../../../../../shared/common-fn';
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, ElementRef } from '@angular/core';
 
@@ -44,7 +45,8 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
     constructor(private _profileService: ProfileService,
                 private _timelineService: TimelineService,
                 public _authSession: AuthTokenSessionService,
-                public fn: CommonFn) {
+                public fn: CommonFn,
+                private alert: AlertService) {
         this.post = {
             post_user_id: '',
             timeline_user_id: '',
@@ -136,13 +138,15 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
             }
             this.post.medias = [];
             this.post.message = '';
+            this.isPostEmojiPickerVisible = false;
             this._profileService.doLoadUserProfile();
 
         }
         this.isPostEmojiPickerVisible = false;
 
         this.post.message = this.post.message.trim();
-        if (this.post.message.length > 0) {
+        if (this.post.message.length > 0 ||
+            this.post.medias.length > 0) {
             this.post.timeline_user_id = this._profileService.user.id;
             this.post.post_user_id = this._authSession.currentAuthUser.id;
             this._timelineService.doPostToTimeline(this.post)
@@ -169,7 +173,8 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
     }
 
     emptyComment(timeline: any): boolean {
-        if (timeline.newComment && timeline.newComment !== '') {
+        if (timeline.newComment && 
+            timeline.newComment !== '') {
             return false;
         }
         return true;
@@ -194,7 +199,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
             return;
         }
         this.commentSubmitted = true;
-        timeline.isCommentEmojiPickerVisible = false;
+        this.toggleCommentEmojiPicker(timeline);
 
         // stop here if form is invalid
         if (this.emptyComment(timeline)) {
@@ -241,6 +246,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
 
     fileChangeEvent(event: any): void {
       this.imageChangedEvent = event;
+      this.showImageEditor = !this.showImageEditor;
     }
 
     imageCropped(event: CroppedEvent): void {
@@ -256,5 +262,8 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
             }
             this.showImageEditor = false;
         });
+    }
+    imageLoadFail(): void {
+        this.alert.error('Invalid Image File');
     }
 }

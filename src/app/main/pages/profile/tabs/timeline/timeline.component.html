@@ -17,47 +17,48 @@
                         <div *ngIf="media.type === 'video'" [innerHtml]="media.embed"></div>
                     </div>
                 </div>
-                <footer fxLayout="row" fxLayoutAlign="space-between center">
-                    <emoji-mart class="emoji-mart" *ngIf="isPostEmojiPickerVisible" (emojiSelect)="addPostEmoji($event)"
-                        title="Choose your emoji"></emoji-mart>
-
-
-                    <div fxLayout="row" fxLayoutAlign="start center">
-
-                        <button mat-icon-button aria-label="Add photo" matTooltip="Add Photo"
-                            (click)="showImageEditor = !showImageEditor">
-                            <mat-icon>photo</mat-icon>
-                        </button>
-                        <div *ngIf="showImageEditor" fxLayout="row" fxLayoutAlign="start center">
-                            <div><input #uploadPostImageFileInput type="file" accept=".jpg,.png"
-                                    (change)="fileChangeEvent($event)" /></div>
-
-                            <ngx-photo-editor #postPhotoEditor [imageChanedEvent]="imageChangedEvent"
-                                (imageCropped)="imageCropped($event)" [aspectRatio]="4/3" [viewMode]="1"
-                                [darkTheme]="false" [mask]="false"></ngx-photo-editor>
-
-                        </div>
-                        <div *ngIf="!isPostEmojiPickerVisible && !showImageEditor">
-                            <button mat-icon-button aria-label="Mention somebody" matTooltip="Mention somebody">
-                                <mat-icon>person</mat-icon>
-                            </button>
-                            <button mat-icon-button aria-label="emoji" matTooltip="Insert Emoji"
-                                (click)="isPostEmojiPickerVisible = !isPostEmojiPickerVisible;">
-                                <mat-icon>insert_emoticon</mat-icon>
-                            </button>
-                        </div>
-                        <!-- <button mat-icon-button aria-label="Add location" matTooltip="Add location">
-                            <mat-icon>location_on</mat-icon>
-                        </button> -->
-
-                    </div>
+                <div fxLayout="row" *ngIf="isPostEmojiPickerVisible"  fxLayoutAlign="start center">
+                    <emoji-mart class="emoji-mart" (emojiSelect)="addPostEmoji($event)"
+                        title="Choose emoji" perLine="8" sheetSize="32" totalFrequentLines="2" showSingleCategory
+                        set="google">
+                    </emoji-mart>
                     <button mat-icon-button aria-label="close emoji" matTooltip="Close Emoji"
-                        *ngIf="isPostEmojiPickerVisible"
                         (click)="isPostEmojiPickerVisible = !isPostEmojiPickerVisible;">
                         <mat-icon>close</mat-icon>
                     </button>
-                    <button mat-raised-button color="accent" class="post-button" aria-label="POST"
-                        *ngIf="!isPostEmojiPickerVisible" (click)="doPostMessage()">POST</button>
+                </div>
+                <div *ngIf="showImageEditor" fxLayout="row" fxLayoutAlign="start center">
+                    <ngx-photo-editor #postPhotoEditor [imageChanedEvent]="imageChangedEvent"
+                        (imageCropped)="imageCropped($event)" (loadImageFailed)="imageLoadFail()"
+                        [aspectRatio]="4/3" [viewMode]="1"
+                        [darkTheme]="false" [mask]="false">
+                    </ngx-photo-editor>
+                </div>
+                <footer fxLayout="row" fxLayoutAlign="space-between center">
+
+
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <input hidden #uploadPostImageFileInput type="file" accept=".jpg,.png"
+                        (change)="fileChangeEvent($event)"/>
+                        <button mat-icon-button aria-label="Add photo" matTooltip="Add Photo"
+                            (click)="uploadPostImageFileInput.click()">
+                            <mat-icon>photo</mat-icon>
+                        </button>
+                        <button mat-icon-button aria-label="Mention somebody" matTooltip="Mention somebody">
+                            <mat-icon>person</mat-icon>
+                        </button>
+                        <button mat-icon-button aria-label="emoji" matTooltip="Insert Emoji"
+                            (click)="isPostEmojiPickerVisible = !isPostEmojiPickerVisible;">
+                            <mat-icon>insert_emoticon</mat-icon>
+                        </button>
+                        <!-- <button mat-icon-button aria-label="Add location" matTooltip="Add location">
+                            <mat-icon>location_on</mat-icon>
+                        </button> -->
+                        <button mat-raised-button color="accent" class="post-button" aria-label="POST"
+                        (click)="doPostMessage()">POST</button>
+                    </div>
+
+
 
                 </footer>
 
@@ -172,21 +173,26 @@
                             <textarea matInput matTextareaAutosize placeholder="Add a comment..."
                                 [(ngModel)]="timeline.newComment"></textarea>
                         </div>
-                        <footer fxLayout="row" fxLayoutAlign="space-between center">
-                            <emoji-mart class="emoji-mart" *ngIf="emojiPickerVisible(timeline)"
-                                (emojiSelect)="addCommentEmoji(timeline, $event)" title="Choose your emoji">
+                        <div fxLayout="row" *ngIf="emojiPickerVisible(timeline)"  fxLayoutAlign="start center">
+                            <emoji-mart class="emoji-mart" 
+                                (emojiSelect)="addCommentEmoji(timeline, $event)" title="Choose emoji"
+                                perLine="8" sheetSize="32" totalFrequentLines="2" showSingleCategory
+                                set="google">
                             </emoji-mart>
-                            <button mat-icon-button aria-label="emoji" matTooltip="Insert Emoji"
-                                *ngIf="!emojiPickerVisible(timeline)" (click)="toggleCommentEmojiPicker(timeline)">
-                                <mat-icon>insert_emoticon</mat-icon>
-                            </button>
                             <button mat-icon-button aria-label="close emoji" matTooltip="Close Emoji"
                                 *ngIf="emojiPickerVisible(timeline)"
                                 (click)="timeline.isCommentEmojiPickerVisible = !timeline.isCommentEmojiPickerVisible;">
                                 <mat-icon>close</mat-icon>
                             </button>
+                        </div>
+
+                        <footer fxLayout="row" fxLayoutAlign="space-between center">
+                            <button mat-icon-button aria-label="emoji" matTooltip="Insert Emoji"
+                                *ngIf="!emojiPickerVisible(timeline)" (click)="toggleCommentEmojiPicker(timeline)">
+                                <mat-icon>insert_emoticon</mat-icon>
+                            </button>
                             <button mat-raised-button color="accent" class="submit-button" aria-label="Post Comment"
-                                *ngIf="!emojiPickerVisible(timeline)" [disabled]="emptyComment(timeline)"
+                                [disabled]="emptyComment(timeline)"
                                 (click)="doPostComments(timeline)">
                                 Post Comment
                             </button>

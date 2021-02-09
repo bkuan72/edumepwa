@@ -137,6 +137,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     fileChangeEvent(event: any): void {
         this.avatarChangedEvent = event;
+        this.showAvatarEditor = !this.showAvatarEditor;
     }
 
     avatarCropped(event: CroppedEvent): void {

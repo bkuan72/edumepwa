@@ -4,8 +4,9 @@
         fxLayoutAlign.gt-sm="space-between end">
         <div class="user-info" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-sm="row"
             fxLayoutAlign.gt-sm="start center">
+            <input hidden #uploadAvatarFileInput type="file" accept=".jpg,.png" (change)="fileChangeEvent($event)" />
             <button *ngIf="ownerOfProfile" mat-icon-button color="accent" aria-label="Change avatar"
-                (click)="showAvatarEditor = !showAvatarEditor">
+                (click)="uploadAvatarFileInput.click();">
                 <mat-icon>edit</mat-icon>
             </button>
             <img *ngIf="!isAuth()" class="profile-image avatar huge" src="assets/images/avatars/profile.jpg" [@animate]="{
@@ -19,10 +20,6 @@
                 " name="{{ user.user_name }}"></ngx-avatar>
 
             <div *ngIf="showAvatarEditor" fxLayout="row" fxLayoutAlign="start center">
-                <div>
-                    <input #uploadAvatarFileInput type="file" accept=".jpg,.png" (change)="fileChangeEvent($event)" />
-                </div>
-
                 <ngx-photo-editor #avatarPhotoEditor [imageChanedEvent]="avatarChangedEvent"
                     (imageCropped)="avatarCropped($event)" [aspectRatio]="1 / 1" [viewMode]="1" [darkTheme]="false"
                     [mask]="false" ></ngx-photo-editor>
