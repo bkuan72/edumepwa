@@ -65,6 +65,14 @@ export enum SrvApiEnvEnum {
     adCategoriesSchema= '/api/adCategories/schema',
     deleteAdCategories= '/api/adCategories/delete',
 
+    adKeywords= '/api/adKeywords',
+    patchAdKeywords= '/api/adKeywords',
+    findAdKeywordCode= '/api/adKeywords/byKeywordCode',
+    adKeywordsDTO= '/api/adKeywords/DTO',
+    adKeywordsUpdDTO= '/api/adKeywords/updDTO',
+    adKeywordsSchema= '/api/adKeywords/schema',
+    deleteAdKeywords= '/api/adKeywords/delete',
+
     // local web server path
     SETTINGS_JSON_LOCATION = 'assets/app-settings.json',
     COUNTRIES_JSON = 'assets/data/countries.json',

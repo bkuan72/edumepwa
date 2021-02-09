@@ -1,3 +1,4 @@
+import { AdKeywordService } from './services/ad-keyword/ad-keyword.service';
 import { AdCategoryService } from './services/ad-category/ad-category.service';
 import { AdminAuthGuard } from './main/guards/adminAuth.guard';
 import { AdCategoriesFormComponent } from './main/pages/forms/ad-categories-maintenance/ad-categories-maintenance-form.component';
@@ -39,6 +40,7 @@ import { AuthTokenSessionService } from './services/auth-token-session/auth-toke
 import { ProfileService } from './main/pages/profile/profile.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AdKeywordsFormComponent } from './main/pages/forms/ad-keywords-maintenance/ad-keywords-maintenance-form.component';
 
 const appRoutes: Routes = [
     {
@@ -70,6 +72,14 @@ const appRoutes: Routes = [
         canActivate : [AdminAuthGuard],
         resolve     : {
             any: AdCategoryService
+        }
+    },
+    {
+        path        : 'maintain/keywords',
+        component   : AdKeywordsFormComponent,
+        canActivate : [AdminAuthGuard],
+        resolve     : {
+            any: AdKeywordService
         }
     },
     {

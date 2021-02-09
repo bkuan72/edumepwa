@@ -39,6 +39,13 @@ export const adminNavigation: FuseNavigation[] = [
                 icon: 'category',
                 url: 'maintain/categories'
             },
+            {
+                id: 'maintainKeywords',
+                title: 'Maintain Keywords',
+                type: 'item',
+                icon: 'subject',
+                url: 'maintain/keywords'
+            },
         ]
     }
 ];
@@ -62,6 +69,13 @@ export const devNavigation: FuseNavigation[] = [
                 type: 'item',
                 icon: 'category',
                 url: 'maintain/categories'
+            },
+            {
+                id: 'maintainKeywords',
+                title: 'Maintain Keywords',
+                type: 'item',
+                icon: 'subject',
+                url: 'maintain/keywords'
             },
         ]
     }

@@ -1,3 +1,4 @@
+import { AdKeywordsFormModule } from './forms/ad-keywords-maintenance/ad-keywords-maintenance-form.module';
 import { AdCategoriesFormModule } from './forms/ad-categories-maintenance/ad-categories-maintenance-form.module';
 import { UserProfileMaintenanceFormsModule } from './forms/user-profile-maintenance/user-profile-maintenance-forms.module';
 import { MaintenanceModule } from './errors/maintenance/maintenance.module';
@@ -68,7 +69,8 @@ import { NgModule } from '@angular/core';
 
         // User Profile Maintenance form
         UserProfileMaintenanceFormsModule,
-        AdCategoriesFormModule
+        AdCategoriesFormModule,
+        AdKeywordsFormModule
     ]
 })
 export class PagesModule
