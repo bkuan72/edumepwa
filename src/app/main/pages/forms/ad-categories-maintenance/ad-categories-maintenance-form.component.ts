@@ -1,9 +1,12 @@
+import { CommonFn } from './../../../../shared/common-fn';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 import { takeUntil } from 'rxjs/operators';
 import { AdCategoryService } from './../../../../services/ad-category/ad-category.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { Subject } from 'rxjs';
+import { AlertService } from 'app/services/alert/alert.service';
 
 @Component({
     selector   : 'ad-categories-maintenance-form',
@@ -15,6 +18,7 @@ export class AdCategoriesFormComponent implements OnInit, OnDestroy
     form: FormGroup;
     editing = {};
     rows = [];
+    submitted = false;
 
     categoriesDTO: any;
     updCategoriesDTO: any;
@@ -26,23 +30,17 @@ export class AdCategoriesFormComponent implements OnInit, OnDestroy
     private _unsubscribeAll: Subject<any>;
 
 
-    updateValue(event, cell, rowIndex): void {
-      console.log('inline editing rowIndex', rowIndex);
-      this.editing[rowIndex + '-' + cell] = false;
-      this.rows[rowIndex][cell] = event.target.value;
-      this.rows = [...this.rows];
-      console.log('UPDATED!', this.rows[rowIndex][cell]);
-    }
-
-
-
 /**
- * Constructor 
- * 
+ * Constructor
+ *
  * @param adCategories adCategory Service
  */
     constructor(
-        private adCategories: AdCategoryService
+        private _formBuilder: FormBuilder,
+        private adCategories: AdCategoryService,
+        private _authSession: AuthTokenSessionService,
+        private _fn: CommonFn,
+        private _alertService: AlertService
     )
     {
         this.rows = this.adCategories.categories;
@@ -50,6 +48,10 @@ export class AdCategoriesFormComponent implements OnInit, OnDestroy
         this.updCategoriesDTO = this.adCategories.categoriesUpdDTO;
         this.categoriesSchema = this.adCategories.categoriesSchema;
         this._unsubscribeAll = new Subject();
+        // this.fetch(data => {
+        //         // push our inital complete list
+        //     this.rows = data;
+        //   });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -81,7 +83,28 @@ export class AdCategoriesFormComponent implements OnInit, OnDestroy
         .subscribe((adCategoriesSchema) => {
             this.categoriesSchema = adCategoriesSchema;
         });
+        this.form = this._formBuilder.group({
+            category   : ['', [Validators.maxLength(30)]]
+        });
+        this.adCategories.doLoadCategories();
+        if (this._authSession.devUser) {
+            this.adCategories.getCategoriesDTO();
+            this.adCategories.getCategoriesUpdDTO();
+            this.adCategories.getCategoriesSchema();
+        }
     }
+
+
+    // fetch(cb) {
+    //     const req = new XMLHttpRequest();
+    //     req.open('GET', `assets/data/company.json`);
+    
+    //     req.onload = () => {
+    //       cb(JSON.parse(req.response));
+    //     };
+    
+    //     req.send();
+    //   }
 
     /**
      * On destroy
@@ -112,4 +135,50 @@ export class AdCategoriesFormComponent implements OnInit, OnDestroy
     {
         alert('You have finished the vertical stepper!');
     }
+
+    onSubmit(): void {
+        if (this.submitted) {
+            return;
+        }
+        const category = this.form.controls['category'].value;
+        if (this._fn.emptyStr(category)) {
+            return;
+        }
+        this.submitted = true;
+        this.adCategories.exist(category).then(() => {
+            this.adCategories.doLoadCategories().finally(() => {
+                this._alertService.error('Category Code Already Exist');
+                this.submitted = false;
+            });
+        })
+        .catch(() => {
+            this.adCategories.addCategory(category).then(() => {
+                this.form.reset();
+                this.adCategories.doLoadCategories();
+                this.submitted = false;
+            })
+            .catch(() => {
+                this.submitted = false;
+            });
+        });
+    }
+
+    updateCategory(event, cell, rowIndex): void {
+        console.log('inline editing rowIndex', rowIndex);
+        this.editing[rowIndex + '-' + cell] = false;
+        if (event.target.value !== this.rows[rowIndex][cell]) {
+          this.rows[rowIndex][cell] = event.target.value;
+          this.rows = [...this.rows];
+          console.log('UPDATED!', this.rows[rowIndex][cell]);
+          this.adCategories.updateCategory(this.rows[rowIndex].id, this.rows[rowIndex][cell]).finally(() => {
+            this.adCategories.doLoadCategories();
+        });
+        }
+      }
+      deleteCategory(event, rowIndex): void {
+          const id = this.rows[rowIndex].id;
+          this.adCategories.deleteCategory(id).finally(() => {
+            this.adCategories.doLoadCategories();
+          });
+      }
 }

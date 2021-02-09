@@ -1,3 +1,4 @@
+import { isString } from 'lodash';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 import { SessionService } from './../session/session.service';
 import { SrvHttpService } from './../http-connect/srv-http.service';
@@ -5,6 +6,7 @@ import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Injectable, OnDestroy } from '@angular/core';
 import { SrvApiEnvEnum } from 'app/shared/SrvApiEnvEnum';
+import { AlertService } from '../alert/alert.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +25,8 @@ export class AdCategoryService implements Resolve<any[]>, OnDestroy {
 
 constructor(
     private _http: SrvHttpService,
-    private _authTokenSession: AuthTokenSessionService
+    private _authTokenSession: AuthTokenSessionService,
+    private _alertService: AlertService
 ) {
     this.categories = [];
     this.categoriesOnChanged = new BehaviorSubject(this.categories);
@@ -48,6 +51,7 @@ doLoadCategories(): Promise<any[]> {
         this._http.GetObs(httpConfig, true).subscribe((adCategories: any) => {
             this._authTokenSession.checkAuthTokenStatus();
             this.categories = adCategories;
+            this.categoriesOnChanged.next(this.categories);
             resolve(this.categories);
         }, reject);
     });
@@ -91,7 +95,7 @@ doLoadCategories(): Promise<any[]> {
         });
     }
 
-    
+
     /**
      * Get categories Update DTO
      */
@@ -124,5 +128,81 @@ doLoadCategories(): Promise<any[]> {
                 resolve(this.categoriesSchema);
             }, reject);
         });
+    }
+
+    exist(category: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.findAdCategoryCode,
+                [category]
+            );
+            this._http.GetObs(httpConfig, true).subscribe((adCategoriesUpdDTOArray: any[]) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                if (adCategoriesUpdDTOArray.length > 0) {
+                    resolve();
+                } else {
+                    reject();
+                }
+            }, reject);
+        });
+
+    }
+
+    addCategory(category: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.adCategories,
+                undefined,
+                {adCategory_code: category}
+            );
+            this._http.PostObs(httpConfig, true).subscribe((adCategoriesUpdDTOArray: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                if (adCategoriesUpdDTOArray) {
+                    resolve();
+                } else {
+                    this._alertService.error('Error Adding Category Code');
+                    reject();
+                }
+            }, reject);
+        });
+
+    }
+    updateCategory(id: string, category: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.patchAdCategories,
+                [id],
+                {adCategory_code: category}
+            );
+            this._http.PatchObs(httpConfig, true).subscribe((adCategoriesUpdDTOArray: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                if (adCategoriesUpdDTOArray) {
+                    resolve();
+                } else {
+                    this._alertService.error('Error Adding Category Code');
+                    reject();
+                }
+            }, reject);
+        });
+
+    }
+
+    deleteCategory(id: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.deleteAdCategories,
+                [id]
+            );
+            this._http.Put(httpConfig, true).then((res) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                if (!isString(res)) {
+                    resolve();
+                } else {
+                    this._alertService.error(res);
+                    reject();
+                }
+            }, reject);
+        });
+
     }
 }

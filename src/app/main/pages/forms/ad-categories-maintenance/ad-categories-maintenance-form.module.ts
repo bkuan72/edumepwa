@@ -10,6 +10,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 
 import { FuseSharedModule } from '@fuse/shared.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { CommonComponentModule } from 'app/components/component.module';
 
 
 const routes: Routes = [
@@ -34,7 +35,8 @@ const routes: Routes = [
         MatStepperModule,
 
         FuseSharedModule,
-        NgxDatatableModule
+        NgxDatatableModule,
+        CommonComponentModule
     ]
 })
 export class AdCategoriesFormModule

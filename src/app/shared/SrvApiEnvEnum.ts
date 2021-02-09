@@ -58,13 +58,16 @@ export enum SrvApiEnvEnum {
     userTimelineCommentsByTimelineId= '/api/userTimelineComments/byTimelineId',
 
     adCategories= '/api/adCategories',
+    patchAdCategories= '/api/adCategories',
+    findAdCategoryCode= '/api/adCategories/byCategoryCode',
     adCategoriesDTO= '/api/adCategories/DTO',
     adCategoriesUpdDTO= '/api/adCategories/updDTO',
     adCategoriesSchema= '/api/adCategories/schema',
+    deleteAdCategories= '/api/adCategories/delete',
 
     // local web server path
     SETTINGS_JSON_LOCATION = 'assets/app-settings.json',
-    COUNTRIES_JSON = 'assets/countries.json',
-    TITLES_JSON = 'assets/titles.json'
+    COUNTRIES_JSON = 'assets/data/countries.json',
+    TITLES_JSON = 'assets/data/titles.json'
 
 }
