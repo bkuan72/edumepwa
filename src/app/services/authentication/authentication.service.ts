@@ -54,9 +54,9 @@ export class AuthenticationService {
                 .then((responseBody) => {
                     localStorage.setItem(
                         LocalStoreVarEnum.USER,
-                        JSON.stringify(responseBody.data)
+                        JSON.stringify(responseBody)
                     );
-                    this.authUserOnChange.next(responseBody.data);
+                    this.authUserOnChange.next(responseBody);
                     resolve(true);
                 })
                 .catch((res: HttpErrorResponse) => {
@@ -76,9 +76,9 @@ export class AuthenticationService {
                 .then((responseBody) => {
                     localStorage.setItem(
                         LocalStoreVarEnum.USER,
-                        JSON.stringify(responseBody.data)
+                        JSON.stringify(responseBody)
                     );
-                    this.authUserOnChange.next(responseBody.data);
+                    this.authUserOnChange.next(responseBody);
                     resolve(responseBody);
                 })
                 .catch((res: HttpErrorResponse) => {
@@ -101,9 +101,9 @@ export class AuthenticationService {
                 .then((responseBody) => {
                     localStorage.setItem(
                         LocalStoreVarEnum.USER,
-                        JSON.stringify(responseBody.data)
+                        JSON.stringify(responseBody)
                     );
-                    this.authUserOnChange.next(responseBody.data);
+                    this.authUserOnChange.next(responseBody);
                     resolve(responseBody);
                 })
                 .catch((res: HttpErrorResponse) => {

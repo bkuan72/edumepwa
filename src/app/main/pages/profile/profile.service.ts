@@ -129,6 +129,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe(user => {
             this.user = user;
+            this.doLoadUserProfile();
         });
     }
 
@@ -670,7 +671,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getHttpConfig(
                 SrvApiEnvEnum.TITLES_JSON,
-                [],
+                undefined,
                 undefined
             );
             this._http.GetObs(httpConfig, true).subscribe((titles: any) => {
@@ -695,7 +696,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 .GetObs(httpConfig, true)
                 .subscribe((userData: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
-                    this.userData = userData.data;
+                    this.userData = userData;
                     this.userDataOnChanged.next(this.userData);
                     resolve(this.userData);
                 }, reject);

@@ -24,7 +24,7 @@ export class SessionService {
         return this.userProfileOnChange.value;
     }
 
-    setProfileAvatar (avatar: string): void {
+    setProfileAvatar(avatar: string): void {
         if (this.userProfileValue) {
             this.userProfileValue.avatar = avatar;
             localStorage.setItem(LocalStoreVarEnum.SESSION_USER_PROFILE, JSON.stringify(this.userProfileValue));

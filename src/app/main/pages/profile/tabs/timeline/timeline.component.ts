@@ -119,7 +119,11 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
      * @param item  - array item
      */
     trackByUuid(index: number, item: any): string {
-        return item.id;
+        if (item !== null) {
+            return item.id;
+        } else {
+            return '';
+        }
     }
     /**
      * Post message on timeline
