@@ -1,3 +1,4 @@
+import { isString } from 'lodash';
 export enum DateAddIntervalEnum {
     YEAR,
     QUARTER,
@@ -243,5 +244,25 @@ export class CommonFn {
             }
             img.onerror = error => rej(error);
           });
+    }
+
+    emptyStr(val: string): boolean {
+        let empty = false;
+        if (val === undefined) {
+            empty = true;
+        } else {
+            if (val === null) {
+                empty = true;
+            } else {
+                if (isString(val)) {
+                    if (val.trim().length === 0) {
+                        empty = true;
+                    }
+                } else {
+                    empty = true;
+                }
+            }
+        }
+        return empty;
     }
 }
