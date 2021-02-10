@@ -33,6 +33,13 @@ export const adminNavigation: FuseNavigation[] = [
         icon    : 'web',
         children: [
             {
+                id: 'maintainAgeGroups',
+                title: 'Maintain Age Groups',
+                type: 'item',
+                icon: 'people',
+                url: 'maintain/ageGroups'
+            },
+            {
                 id: 'maintainCategories',
                 title: 'Maintain Categories',
                 type: 'item',
@@ -63,6 +70,13 @@ export const devNavigation: FuseNavigation[] = [
         type    : 'collapsable',
         icon    : 'web',
         children: [
+            {
+                id: 'maintainAgeGroups',
+                title: 'Maintain Age Groups',
+                type: 'item',
+                icon: 'people',
+                url: 'maintain/ageGroups'
+            },
             {
                 id: 'maintainCategories',
                 title: 'Maintain Categories',
