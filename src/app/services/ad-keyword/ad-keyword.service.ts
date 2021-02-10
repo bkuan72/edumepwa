@@ -1,7 +1,6 @@
 import { SrvApiEnvEnum } from './../../shared/SrvApiEnvEnum';
 import { AuthTokenSessionService } from './../auth-token-session/auth-token-session.service';
 import { isString } from 'lodash';
-import { SessionService } from './../session/session.service';
 import { SrvHttpService } from './../http-connect/srv-http.service';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
@@ -130,11 +129,11 @@ doLoadKeywords(): Promise<any[]> {
         });
     }
 
-    exist(category: string): Promise<void> {
+    exist(keyword: string): Promise<void> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.findAdKeywordCode,
-                [category]
+                [keyword]
             );
             this._http.GetObs(httpConfig, true).subscribe((adKeywordsUpdDTOArray: any[]) => {
                 this._authTokenSession.checkAuthTokenStatus();
@@ -148,12 +147,12 @@ doLoadKeywords(): Promise<any[]> {
 
     }
 
-    addKeyword(category: string): Promise<void> {
+    addKeyword(keyword: string): Promise<void> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.adKeywords,
                 undefined,
-                {adKeyword_code: category}
+                {adKeyword_code: keyword}
             );
             this._http.PostObs(httpConfig, true).subscribe((adKeywordsUpdDTOArray: any) => {
                 this._authTokenSession.checkAuthTokenStatus();
@@ -167,12 +166,12 @@ doLoadKeywords(): Promise<any[]> {
         });
 
     }
-    updateKeyword(id: string, category: string): Promise<void> {
+    updateKeyword(id: string, keyword: string): Promise<void> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.patchAdKeywords,
                 [id],
-                {adKeyword_code: category}
+                {adKeyword_code: keyword}
             );
             this._http.PatchObs(httpConfig, true).subscribe((adKeywordsUpdDTOArray: any) => {
                 this._authTokenSession.checkAuthTokenStatus();
