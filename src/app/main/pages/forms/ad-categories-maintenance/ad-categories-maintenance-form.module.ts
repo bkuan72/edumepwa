@@ -1,3 +1,4 @@
+import { AdCategoryService } from './../../../../services/ad-category/ad-category.service';
 import { AdCategoriesFormComponent } from './ad-categories-maintenance-form.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -15,8 +16,11 @@ import { CommonComponentModule } from 'app/components/component.module';
 
 const routes: Routes = [
     {
-        path     : 'maintain/categories',
-        component: AdCategoriesFormComponent
+        path     : 'categories',
+        component: AdCategoriesFormComponent,
+        resolve  : {
+            any: AdCategoryService
+        }
     }
 ];
 

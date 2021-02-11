@@ -1,3 +1,4 @@
+import { ProfileService } from './../../profile/profile.service';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,8 +15,11 @@ import { CommonComponentModule } from 'app/components/component.module';
 
 const routes: Routes = [
     {
-        path     : 'maintain/profile',
-        component: UserProfileMaintenanceFormsComponent
+        path     : 'profile',
+        component: UserProfileMaintenanceFormsComponent,
+        resolve  : {
+            any: ProfileService
+        }
     }
 ];
 

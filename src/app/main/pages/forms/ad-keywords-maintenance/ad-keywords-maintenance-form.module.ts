@@ -11,12 +11,16 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { FuseSharedModule } from '@fuse/shared.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CommonComponentModule } from 'app/components/component.module';
+import { AdKeywordService } from 'app/services/ad-keyword/ad-keyword.service';
 
 
 const routes: Routes = [
     {
-        path     : 'maintain/keywords',
-        component: AdKeywordsFormComponent
+        path     : 'keywords',
+        component: AdKeywordsFormComponent,
+        resolve: {
+            any: AdKeywordService
+        }
     }
 ];
 

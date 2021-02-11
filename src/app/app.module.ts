@@ -1,3 +1,5 @@
+import { AdAgeGroupService } from './services/ad-age-group.service.ts/ad-age-group.service';
+import { AdAgeGroupsFormComponent } from './main/pages/forms/ad-ageGroups-maintenance/ad-ageGroups-maintenance-form.component';
 import { AdKeywordService } from './services/ad-keyword/ad-keyword.service';
 import { AdCategoryService } from './services/ad-category/ad-category.service';
 import { AdminAuthGuard } from './main/guards/adminAuth.guard';
@@ -80,6 +82,14 @@ const appRoutes: Routes = [
         canActivate : [AdminAuthGuard],
         resolve     : {
             any: AdKeywordService
+        }
+    },
+    {
+        path        : 'maintain/ageGroups',
+        component   : AdAgeGroupsFormComponent,
+        canActivate : [AdminAuthGuard],
+        resolve     : {
+            any: AdAgeGroupService
         }
     },
     {

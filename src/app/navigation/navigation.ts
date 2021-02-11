@@ -12,7 +12,8 @@ export const navigation: FuseNavigation[] = [
                 title: 'Home',
                 type: 'item',
                 icon: 'home',
-                url: 'search/modern'
+                url: 'search/modern',
+                externalUrl: false
             },
         ]
     },
@@ -24,7 +25,8 @@ export const adminNavigation: FuseNavigation[] = [
         title: 'Maintain Profile',
         type: 'item',
         icon: 'account_circle',
-        url: 'maintain/profile'
+        url: 'maintain/profile',
+        externalUrl: false
     },
     {
         id      : 'admin.maintenance',
@@ -37,21 +39,24 @@ export const adminNavigation: FuseNavigation[] = [
                 title: 'Maintain Age Groups',
                 type: 'item',
                 icon: 'people',
-                url: 'maintain/ageGroups'
+                url: 'maintain/ageGroups',
+                externalUrl: false
             },
             {
                 id: 'maintainCategories',
                 title: 'Maintain Categories',
                 type: 'item',
                 icon: 'category',
-                url: 'maintain/categories'
+                url: 'maintain/categories',
+                externalUrl: false
             },
             {
                 id: 'maintainKeywords',
                 title: 'Maintain Keywords',
                 type: 'item',
                 icon: 'subject',
-                url: 'maintain/keywords'
+                url: 'maintain/keywords',
+                externalUrl: false
             },
         ]
     }

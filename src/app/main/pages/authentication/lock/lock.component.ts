@@ -43,6 +43,9 @@ export class LockComponent implements OnInit
     {
         if (this._authSession.currentAuthUser) {
             this.currentUser = this._authSession.currentAuthUser;
+        } else {
+            this.router.navigateByUrl('home');
+            return;
         }
         this.email = '';
         this._authSession.resetAuthUser();
