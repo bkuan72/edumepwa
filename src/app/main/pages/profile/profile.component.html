@@ -58,11 +58,16 @@
                 </ng-template>
                 <profile-about></profile-about>
             </mat-tab>
-
             <mat-tab label="Photos & Videos">
                 <profile-photos-videos></profile-photos-videos>
             </mat-tab>
-            <mat-tab label="DTOs">
+
+            <mat-tab label="Accounts">
+                <div *ngFor="let account of accounts">
+                    <profile-account [account]="account"></profile-account>
+                </div>
+            </mat-tab>
+            <mat-tab *ngIf="canDev" label="DTOs">
                 <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
                     <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userTimelineDTO">
                         <div class="h2 mb-24">Timeline DTO</div>
@@ -103,6 +108,20 @@
                     <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postMediaSchema">
                         <div class="h2 mb-24">Post Media Schema</div>
                         <pre><code>{{postMediaSchema | json}}</code></pre>
+                    </div>
+                </div>
+                <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="accountDTO">
+                        <div class="h2 mb-24">User Account DTO</div>
+                        <pre><code>{{accountDTO | json}}</code></pre>
+                    </div>
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updAccountDTO">
+                        <div class="h2 mb-24">Update Account DTO</div>
+                        <pre><code>{{updAccountDTO | json}}</code></pre>
+                    </div>
+                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="accountsSchema">
+                        <div class="h2 mb-24">Accounts Schema</div>
+                        <pre><code>{{accountsSchema| json}}</code></pre>
                     </div>
                 </div>
             </mat-tab>

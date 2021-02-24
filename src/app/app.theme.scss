@@ -95,7 +95,7 @@ $typography: mat-typography-config(
 @import "src/app/main/pages/profile/tabs/photos-videos/photos-videos.theme";
 @import "src/app/main/pages/profile/tabs/timeline/timeline.theme";
 @import "src/app/main/pages/errors/maintenance/maintenance.theme";
-
+@import "src/app/main/pages/profile/tabs/account/account.theme";
 
 
 // Define a mixin for easier access
@@ -115,8 +115,10 @@ $typography: mat-typography-config(
     @include coming-soon-theme($theme);
     @include error-404-theme($theme);
     @include error-500-theme($theme);
+    @include profile-about-theme($theme);
     @include profile-photos-videos-theme($theme);
     @include profile-timeline-theme($theme);
+    @include profile-account-theme($theme);
     @include maintenance-theme($theme);
 }
 

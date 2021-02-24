@@ -6,8 +6,10 @@ export enum SrvApiEnvEnum {
     log = '/api/logs',
     renewToken = '/api/auth/renew/token',
     properties = '/api/properties',
+
     advertisementSearch = '/api/advertisements/search',
     advertisements = '/api/advertisements',
+    advertisementsFilterDTO = '/api/advertisements/filterDTO',
 
     userDTO= '/api/users/DTO',
     insUserDTO= '/api/users/insDTO',
@@ -80,6 +82,20 @@ export enum SrvApiEnvEnum {
     adAgeGroupsUpdDTO= '/api/adAgeGroups/updDTO',
     adAgeGroupsSchema= '/api/adAgeGroups/schema',
     deleteAdAgeGroups= '/api/adAgeGroups/delete',
+
+    accounts= '/api/accounts',
+    patchAccounts= '/api/accounts/byAccountId',
+    findAccountCode= '/api/accounts/byAccountCode',
+    accountsDTO= '/api/accounts/DTO',
+    accountsUpdDTO= '/api/accounts/updDTO',
+    accountsSchema= '/api/accounts/schema',
+
+    userAccounts= '/api/userAccounts',
+    userAccountsByUserId= '/api/userAccounts/byUserId',
+    patchUserAccounts= '/api/userAccounts/byAccountId',
+    userAccountsDTO= '/api/userAccounts/DTO',
+    userAccountsUpdDTO= '/api/userAccounts/updDTO',
+    userAccountsSchema= '/api/userAccounts/schema',
 
     // local web server path
     SETTINGS_JSON_LOCATION = 'assets/app-settings.json',

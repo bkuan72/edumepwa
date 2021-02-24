@@ -15,6 +15,7 @@ import { ProfileService } from './profile.service';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 import { Subject } from 'rxjs';
 import { CroppedEvent } from 'ngx-photo-editor';
+import { ModuleCodeEnum } from 'app/shared/module-code-enum';
 
 @Component({
     selector: 'profile',
@@ -25,15 +26,23 @@ import { CroppedEvent } from 'ngx-photo-editor';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
     @ViewChild('uploadAvatarFileInput') myUploadAvatarFileInput: ElementRef;
+
+    canDev: boolean;
     userTimelineDTO: any;
     postDTO: any;
     updPostDTO: any;
     postSchema: any;
     postMediaDTO: any;
     postMediaSchema: any;
+
     userTimelineCommentDTO: any;
     updUserTimelineCommentDTO: any;
     userTimelineCommentSchema: any;
+
+    accounts: any[];
+    accountDTO: any;
+    updAccountDTO: any;
+    accountsSchema: any;
 
     user: any;
     ownerOfProfile: boolean;
@@ -53,6 +62,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         private _profileService: ProfileService,
         private router: Router
     ) {
+        this.canDev = this._auth.canDev(ModuleCodeEnum.Maintenance);
         this.userTimelineDTO = this._profileService.userTimelineDTO;
         this.postDTO = this._profileService.postDTO;
         this.updPostDTO = this._profileService.updPostDTO;
@@ -62,6 +72,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.userTimelineCommentDTO = this._profileService.userTimelineCommentDTO;
         this.updUserTimelineCommentDTO = this._profileService.updUserTimelineCommentDTO;
         this.userTimelineCommentSchema = this._profileService.userTimelineCommentSchema;
+        this.accountDTO = this._profileService.accountDTO;
+        this.updAccountDTO = this._profileService.updAccountDTO;
+        this.accountsSchema = this._profileService.accountsSchema;
         this.user = this._profileService.user;
         this.ownerOfProfile = false;
         if (
@@ -70,6 +83,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         ) {
             this.ownerOfProfile = true;
         }
+        this.accounts = this._profileService.accounts;
         // Set the private defaults
         this._unsubscribeAll = new Subject();
     }
@@ -120,6 +134,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
             .subscribe((userTimelineCommentSchema) => {
                 this.userTimelineCommentSchema = userTimelineCommentSchema;
             });
+        this._profileService.accountsOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((accounts) => {
+            this.accounts = accounts;
+        });
+        this._profileService.accountDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((accountDTO) => {
+            this.accountDTO = accountDTO;
+        });
+        this._profileService.updAccountDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((updAccountDTO) => {
+            this.updAccountDTO = updAccountDTO;
+        });
+        this._profileService.accountSchemaOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((accountsSchema) => {
+            this.accountsSchema = accountsSchema;
+        });
     }
 
     ngOnDestroy(): void {

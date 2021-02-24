@@ -19,6 +19,8 @@ import { ProfileAboutComponent } from 'app/main/pages/profile/tabs/about/about.c
 import { ProfilePhotosVideosComponent } from 'app/main/pages/profile/tabs/photos-videos/photos-videos.component';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import {NgxPhotoEditorModule} from 'ngx-photo-editor';
+import { AccountsComponent } from 'app/main/pages/profile/tabs/account/account.component';
+import { AccountsService } from 'app/services/account/account.service';
 
 
 
@@ -38,7 +40,8 @@ const routes = [
         ProfileTimelineComponent,
         ProfileAboutComponent,
         ProfilePhotosVideosComponent,
-        DateSinceNowPipe
+        DateSinceNowPipe,
+        AccountsComponent
     ],
     imports     : [
         RouterModule.forChild(routes),
@@ -57,7 +60,8 @@ const routes = [
     ],
     providers   : [
         ProfileService,
-        TimelineService
+        TimelineService,
+        AccountsService
     ]
 })
 export class ProfileModule

@@ -1,4 +1,5 @@
-import { AdAgeGroupService } from './services/ad-age-group.service.ts/ad-age-group.service';
+import { AccountsService } from './services/account/account.service';
+import { AdAgeGroupService } from './services/ad-age-group/ad-age-group.service';
 import { AdAgeGroupsFormComponent } from './main/pages/forms/ad-ageGroups-maintenance/ad-ageGroups-maintenance-form.component';
 import { AdKeywordService } from './services/ad-keyword/ad-keyword.service';
 import { AdCategoryService } from './services/ad-category/ad-category.service';
@@ -146,6 +147,7 @@ const appRoutes: Routes = [
         AppSettingsService,
         AlertService,
         SessionService,
+        AccountsService,
         CommonFn
     ],
     bootstrap   : [

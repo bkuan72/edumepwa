@@ -1,5 +1,4 @@
 import { takeUntil } from 'rxjs/operators';
-import { SessionService } from './../../../services/session/session.service';
 import { Injectable, OnDestroy } from '@angular/core';
 import {
     ActivatedRouteSnapshot,
@@ -12,6 +11,8 @@ import { SrvApiEnvEnum } from 'app/shared/SrvApiEnvEnum';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 import { Moment } from 'moment';
 import * as moment from 'moment';
+import { AccountsService } from 'app/services/account/account.service';
+import { SessionService } from 'app/services/session/session.service';
 
 
 @Injectable()
@@ -38,6 +39,11 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     about: any;
     photosVideos: any[];
 
+    accounts: any[];
+    accountDTO: any;
+    updAccountDTO: any;
+    accountsSchema: any;
+
     activities: any[];
     friends: any[];
     strangers: any[];
@@ -45,6 +51,10 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     countries: any[];
     titles: any[];
     postMedias: any[];
+    accountsOnChanged: BehaviorSubject<any>;
+    accountDTOOnChanged: BehaviorSubject<any>;
+    updAccountDTOOnChanged: BehaviorSubject<any>;
+    accountSchemaOnChanged: BehaviorSubject<any>;
 
     userTimelineOnChanged: BehaviorSubject<any>;
     aboutOnChanged: BehaviorSubject<any>;
@@ -83,7 +93,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     constructor(
         private _http: SrvHttpService,
         private _session: SessionService,
-        private _authTokenSession: AuthTokenSessionService
+        private _authTokenSession: AuthTokenSessionService,
+        private _accounts: AccountsService
     ) {
         this.user = this._session.userProfileValue;
         this.userData = undefined;
@@ -97,8 +108,13 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         this.countries = [];
         this.titles = [];
         this.postMedias = [];
+        this.accounts = [];
 
         // Set the defaults
+        this.accountsOnChanged = new BehaviorSubject(this._accounts.accounts);
+        this.accountDTOOnChanged = new BehaviorSubject(this._accounts.accountsDTO);
+        this.updAccountDTOOnChanged = new BehaviorSubject(this._accounts.accountsUpdDTO);
+        this.accountSchemaOnChanged = new BehaviorSubject(this._accounts.accountsSchema);
         this.userTimelineOnChanged = new BehaviorSubject(this.userTimeline);
         this.aboutOnChanged = new BehaviorSubject(this.about);
         this.photosVideosOnChanged = new BehaviorSubject(this.photosVideos);
@@ -131,6 +147,30 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             this.user = user;
             this.doLoadUserProfile();
         });
+        this._accounts.accountsOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((accounts) => {
+            this.accounts = accounts;
+            this.accountsOnChanged.next(this.accounts);
+        });
+        this._accounts.accountsDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((accountDTO) => {
+            this.accountDTO = accountDTO;
+            this.accountDTOOnChanged.next(this.accountDTO);
+        });
+        this._accounts.accountsUpdDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((updAccountDTO) => {
+            this.updAccountDTO = updAccountDTO;
+            this.updAccountDTOOnChanged.next(this.updAccountDTO);
+        });
+        this._accounts.accountsSchemaOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((accountsSchema) => {
+            this.accountsSchema = accountsSchema;
+            this.accountSchemaOnChanged.next(this.accountsSchema);
+        });
     }
 
     ngOnDestroy(): void {
@@ -154,7 +194,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 this.getFriends(),
                 this.getGroups(),
                 this.getCountries(),
-                this.getTitles()
+                this.getTitles(),
+                this._accounts.doLoadAccounts(this.user.id)
             ]).then(() => {
                 if (this._authTokenSession.devUser) {
                     this.getUserDTO();
@@ -170,6 +211,9 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.getUserTimelineCommentDTO();
                     this.getUpdUserTimelineCommentDTO();
                     this.getUserTimelineCommentSchema();
+                    this._accounts.getAccountsDTO();
+                    this._accounts.getAccountsSchema();
+                    this._accounts.getAccountsUpdDTO();
                 } else {
                     this.userDTO = undefined;
                     this.updUserDTO = undefined;
@@ -181,6 +225,9 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.postSchema = undefined;
                     this.postMediaDTO = undefined;
                     this.postMediaSchema = undefined;
+                    this.accountDTO = undefined;
+                    this.updAccountDTO = undefined;
+                    this.accountsSchema = undefined;
                     this.userDTOOnChanged.next(this.userDTO);
                     this.updUserDTOOnChanged.next(this.updUserDTO);
                     this.insUserDTOOnChanged.next(this.insUserDTO);
@@ -194,6 +241,9 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.userTimelineCommentDTOOnChanged.next(this.userTimelineCommentDTO);
                     this.updUserTimelineCommentDTOOnChanged.next(this.updUserTimelineCommentDTO);
                     this.userTimelineCommentSchemaOnChanged.next(this.userTimelineCommentSchema);
+                    this.accountDTOOnChanged.next(this.accountDTO);
+                    this.updAccountDTOOnChanged.next(this.updAccountDTO);
+                    this.accountSchemaOnChanged.next(this.accountsSchema);
                 }
                 resolve();
             }, reject);
@@ -462,6 +512,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             }, reject);
         });
     }
+
 
     /**
      * Get photos & videos
@@ -890,6 +941,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             }, reject);
         });
     }
+
 
     /**
      * Update User Profile Avatar

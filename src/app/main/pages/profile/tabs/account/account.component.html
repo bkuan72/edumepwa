@@ -1,0 +1,124 @@
+<div id="account" class="p-24" fxLayout="row wrap">
+
+    <div class="account-content" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="65">
+
+        <div class="profile-box info-box general" fxLayout="column">
+            <ngx-avatar [hidden]="!fn.showGenericAvatar(account.avatar)"
+            name="{{account.account_name}}" size="40"></ngx-avatar>
+            <img [hidden]="fn.showGenericAvatar(account.avatar)" class="avatar"
+                [src]="account.avatar">
+            <header class="accent">
+                <div class="title">General Information</div>
+                <div class="info">{{account.account_name}}</div>
+            </header>
+
+            <div class="content">
+                <div class="info-line">
+                    <div class="title">Description</div>
+                    <div class="info">{{account.description}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">About Business</div>
+                    <div class="info">{{account.about_me}}</div>
+                </div>
+                 <div class="info-line">
+                    <div class="title">Locations</div>
+                    <mat-icon class="s-16 ml-4">location_on</mat-icon>
+                    <div class="info">{{account.suburb}}</div>
+                    <div class="info">{{account.city}}</div>
+                    <div class="info">{{account.country}}</div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="profile-box info-box contact" fxLayout="column">
+
+            <header class="accent">
+                <div class="title">Contact</div>
+            </header>
+
+            <div class="content">
+                <div class="info-line">
+                    <div class="title">Address</div>
+                    <div class="info">{{account.address}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">Mobile No.</div>
+                    <div class="info">{{account.mobile_no}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">Phone No.</div>
+                    <div class="info">{{account.phone_no}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">Website</div>
+                    <div class="info">{{account.website}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">Email</div>
+                    <div class="info">{{account.email}}</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="account-sidebar" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="35">
+
+        <div class="profile-box members" fxLayout="column">
+
+            <header class="accent" fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="title">Members</div>
+                <div class="more secondary-text">
+                    <span>See {{members.length}} more...</span>
+                </div>
+            </header>
+
+            <div class="content" fxLayout="row wrap">
+                <div class="member" fxFlex="20" *ngFor="let member of members">
+                    <img [src]="member.avatar">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="profile-box groups" fxLayout="column">
+
+            <header class="accent" fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="title">Groups</div>
+                <div class="more secondary-text">
+                    <span>See {{groups.length}} more...</span>
+                </div>
+            </header>
+
+            <div class="content">
+
+                <div class="group" *ngFor="let group of groups" fxLayout="row"
+                     fxLayoutAlign="space-between center">
+
+                    <div fxLayout="row" fxLayoutAlign="start center">
+
+                        <div class="logo">{{group.name.substring(0,1)}}</div>
+
+                        <div>
+                            <div class="name">{{group.name}}</div>
+                            <div class="category">{{group.category}}</div>
+                            <div class="members">{{group.members}} people</div>
+                        </div>
+                    </div>
+
+                    <button mat-icon-button aria-label="More">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
