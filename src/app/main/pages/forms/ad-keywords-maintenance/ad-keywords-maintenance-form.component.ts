@@ -7,6 +7,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { Subject } from 'rxjs';
+import { ModuleCodeEnum } from 'app/shared/module-code-enum';
 
 @Component({
     selector   : 'ad-keywords-maintenance-form',
@@ -15,6 +16,10 @@ import { Subject } from 'rxjs';
 })
 export class AdKeywordsFormComponent implements OnInit, OnDestroy
 {
+    canEdit: boolean;
+    canAdd: boolean;
+    canDelete: boolean;
+    canDev: boolean;
     form: FormGroup;
     editing = {};
     rows = [];
@@ -63,6 +68,10 @@ export class AdKeywordsFormComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this.canEdit = this._authSession.canEdit(ModuleCodeEnum.Maintenance);
+        this.canAdd = this._authSession.canEdit(ModuleCodeEnum.Maintenance);
+        this.canDelete = this._authSession.canDelete(ModuleCodeEnum.Maintenance);
+        this.canDev = this._authSession.canDev(ModuleCodeEnum.Maintenance);
         this.adKeywords.keywordsOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((adKeywords) => {

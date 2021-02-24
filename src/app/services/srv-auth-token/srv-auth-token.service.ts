@@ -28,6 +28,7 @@ interface DataStoredInToken {
     site_code: string;
     createTimeStamp: string;
     expiryInSec: number;
+    roles: any[];
 }
 
 @Injectable({
@@ -186,4 +187,37 @@ export class SrvAuthTokenService {
         }
         return biz;
     }
+
+    private checkAccess(moduleCode: string,
+                        accessType: string): boolean {
+        let accessOk = false;
+        if (this.tokenData && 
+            !this.isExpired()) {
+            this.tokenData.roles.some(role => {
+                if (role.module.modules_code === 'ALL' ||
+                    role.module.modules_code === moduleCode) {
+                        accessOk = role.role[accessType];
+                        return true;
+                }
+            });
+        }
+        return accessOk;
+    }
+
+    canEdit(moduleCode: string): boolean {
+        return this.checkAccess(moduleCode, 'edit_ok');
+    }
+    canAdd(moduleCode: string): boolean {
+        return this.checkAccess(moduleCode, 'add_ok');
+    }
+    canDelete(moduleCode: string): boolean {
+        return this.checkAccess(moduleCode, 'delete_ok');
+    }
+    canConfigure(moduleCode: string): boolean {
+        return this.checkAccess(moduleCode, 'configure_ok');
+    }
+    canDev(moduleCode: string): boolean {
+        return this.checkAccess(moduleCode, 'dev_ok');
+    }
 }
+

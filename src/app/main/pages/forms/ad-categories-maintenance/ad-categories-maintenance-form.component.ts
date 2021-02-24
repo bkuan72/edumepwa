@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { Subject } from 'rxjs';
 import { AlertService } from 'app/services/alert/alert.service';
+import { ModuleCodeEnum } from 'app/shared/module-code-enum';
 
 @Component({
     selector   : 'ad-categories-maintenance-form',
@@ -15,6 +16,10 @@ import { AlertService } from 'app/services/alert/alert.service';
 })
 export class AdCategoriesFormComponent implements OnInit, OnDestroy
 {
+    canEdit: boolean;
+    canAdd: boolean;
+    canDelete: boolean;
+    canDev: boolean;
     form: FormGroup;
     editing = {};
     rows = [];
@@ -63,6 +68,10 @@ export class AdCategoriesFormComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this.canEdit = this._authSession.canEdit(ModuleCodeEnum.Maintenance);
+        this.canAdd = this._authSession.canEdit(ModuleCodeEnum.Maintenance);
+        this.canDelete = this._authSession.canDelete(ModuleCodeEnum.Maintenance);
+        this.canDev = this._authSession.canDev(ModuleCodeEnum.Maintenance);
         this.adCategories.categoriesOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((adCategories) => {

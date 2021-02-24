@@ -95,6 +95,23 @@ export class AuthTokenSessionService implements OnDestroy {
         return this._authToken.isBizUser();
     }
 
+    canEdit(moduleCode: string): boolean {
+        return this._authToken.canEdit(moduleCode);
+    }
+    canAdd(moduleCode: string): boolean {
+        return this._authToken.canAdd(moduleCode);
+    }
+    canDelete(moduleCode: string): boolean {
+        return this._authToken.canDelete(moduleCode);
+    }
+    canDev(moduleCode: string): boolean {
+        return this._authToken.canDev(moduleCode);
+    }
+    canConfigure(moduleCode: string): boolean {
+        return this._authToken.canConfigure(moduleCode);
+    }
+
+
     isLoggedIn = (): boolean => {
         if (
             this.authUser &&

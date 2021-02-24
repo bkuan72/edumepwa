@@ -1,3 +1,4 @@
+import { ModuleCodeEnum } from './../../../../shared/module-code-enum';
 import { CrossFieldErrorMatcher } from './../../../../shared/cross-field-error-matcher';
 import { AgeValidators } from './../../../validators/age.validator';
 import { AlertService } from '../../../../services/alert/alert.service';
@@ -7,7 +8,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { Subject } from 'rxjs';
-import { AdAgeGroupService } from '../../../../services/ad-age-group.service.ts/ad-age-group.service';
+import { AdAgeGroupService } from '../../../../services/ad-age-group/ad-age-group.service';
 import { AuthTokenSessionService } from '../../../../services/auth-token-session/auth-token-session.service';
 
 
@@ -19,6 +20,11 @@ import { AuthTokenSessionService } from '../../../../services/auth-token-session
 })
 export class AdAgeGroupsFormComponent implements OnInit, OnDestroy
 {
+    canEdit = false;
+    canAdd = false;
+    canDelete = false;
+    canDev = false;
+    
     errorMatcher = new CrossFieldErrorMatcher();
     form: FormGroup;
     editing = {};
@@ -64,6 +70,10 @@ export class AdAgeGroupsFormComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this.canEdit = this._authSession.canEdit(ModuleCodeEnum.Maintenance);
+        this.canAdd = this._authSession.canEdit(ModuleCodeEnum.Maintenance);
+        this.canDelete = this._authSession.canDelete(ModuleCodeEnum.Maintenance);
+        this.canDev = this._authSession.canDev(ModuleCodeEnum.Maintenance);
         this.adAgeGroups.ageGroupsOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((adAgeGroups) => {

@@ -11,7 +11,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { FuseSharedModule } from '@fuse/shared.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CommonComponentModule } from 'app/components/component.module';
-import { AdAgeGroupService } from 'app/services/ad-age-group.service.ts/ad-age-group.service';
+import { AdAgeGroupService } from 'app/services/ad-age-group/ad-age-group.service';
 
 
 const routes: Routes = [
