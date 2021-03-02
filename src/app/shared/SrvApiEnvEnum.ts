@@ -96,6 +96,7 @@ export enum SrvApiEnvEnum {
     accountsDTO= '/api/accounts/DTO',
     accountsUpdDTO= '/api/accounts/updDTO',
     accountsSchema= '/api/accounts/schema',
+    basicAccountByAccountId = '/api/accounts/basicInfo/byAccountId',
 
     userAccounts= '/api/userAccounts',
     userAccountsByUserId= '/api/userAccounts/byUserId',

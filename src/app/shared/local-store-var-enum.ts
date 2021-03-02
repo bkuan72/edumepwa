@@ -3,4 +3,5 @@ export enum LocalStoreVarEnum {
     SETTINGS = 'configuration',
     LOGGING = 'logging',
     SESSION_USER_PROFILE = 'session_user_profile',
+    SESSION_ACCOUNT_PROFILE = 'session_account_profile',
 }

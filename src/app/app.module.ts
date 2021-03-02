@@ -1,4 +1,4 @@
-import { AccountSessionService } from './services/session/account-session.service';
+import { AccountProfileSessionService } from './services/session/account-profile-session.service';
 import { CurrentUserLoadedGuard } from './main/guards/currentUserLoaded.guard';
 import { LockComponent } from 'app/main/pages/authentication/lock/lock.component';
 import { AccountLoadedGuard } from './main/guards/accountLoaded.gaurd';
@@ -164,7 +164,7 @@ const appRoutes: Routes = [
         AlertService,
         UserProfileSessionService,
         AccountsService,
-        AccountSessionService,
+        AccountProfileSessionService,
         CommonFn
     ],
     bootstrap   : [
