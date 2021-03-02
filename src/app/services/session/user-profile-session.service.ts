@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
-import { SrvHttpService } from './../http-connect/srv-http.service';
-import { SrvApiEnvEnum } from './../../shared/SrvApiEnvEnum';
-import { LocalStoreVarEnum } from './../../shared/local-store-var-enum';
+import { SrvHttpService } from '../http-connect/srv-http.service';
+import { SrvApiEnvEnum } from '../../shared/SrvApiEnvEnum';
+import { LocalStoreVarEnum } from '../../shared/local-store-var-enum';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AppSettings } from '../../shared/app-settings';
@@ -11,7 +11,7 @@ import { AuthTokenSessionService } from '../auth-token-session/auth-token-sessio
 @Injectable({
     providedIn: 'root',
 })
-export class SessionService {
+export class UserProfileSessionService {
     userProfileOnChange: BehaviorSubject<any>;
     constructor(
         private _http: SrvHttpService,

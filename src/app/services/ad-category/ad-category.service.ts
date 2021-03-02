@@ -1,6 +1,5 @@
 import { isString } from 'lodash';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
-import { SessionService } from './../session/session.service';
 import { SrvHttpService } from './../http-connect/srv-http.service';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';

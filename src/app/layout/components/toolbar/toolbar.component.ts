@@ -1,5 +1,3 @@
-import { SessionService } from './../../../services/session/session.service';
-import { CommonFn } from './../../../shared/common-fn';
 import { Router } from '@angular/router';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subject } from 'rxjs';
@@ -12,6 +10,8 @@ import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
 import { navigation } from 'app/navigation/navigation';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
+import { UserProfileSessionService } from 'app/services/session/user-profile-session.service';
+import { CommonFn } from 'app/shared/common-fn';
 
 @Component({
     selector     : 'toolbar',
@@ -48,7 +48,7 @@ export class ToolbarComponent implements OnInit, OnDestroy
         public _authSession: AuthTokenSessionService,
         private router: Router,
         public  fn: CommonFn,
-        private _session: SessionService
+        private _session: UserProfileSessionService
     )
     {
         // Set the defaults

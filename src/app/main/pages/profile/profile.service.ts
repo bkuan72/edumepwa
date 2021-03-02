@@ -12,7 +12,7 @@ import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-to
 import { Moment } from 'moment';
 import * as moment from 'moment';
 import { AccountsService } from 'app/services/account/account.service';
-import { SessionService } from 'app/services/session/session.service';
+import { UserProfileSessionService } from 'app/services/session/user-profile-session.service';
 
 
 @Injectable()
@@ -108,7 +108,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
      */
     constructor(
         private _http: SrvHttpService,
-        private _session: SessionService,
+        private _session: UserProfileSessionService,
         private _authTokenSession: AuthTokenSessionService,
         public _accountService: AccountsService
     ) {

@@ -1,3 +1,6 @@
+import { AccountSessionService } from './services/session/account-session.service';
+import { CurrentUserLoadedGuard } from './main/guards/currentUserLoaded.guard';
+import { LockComponent } from 'app/main/pages/authentication/lock/lock.component';
 import { AccountLoadedGuard } from './main/guards/accountLoaded.gaurd';
 import { AccountProfileMaintenanceFormsComponent } from './main/pages/forms/account-profile-maintenance/account-profile-maintenance-form.component';
 import { AdAgeGroupService } from './services/ad-age-group/ad-age-group.service';
@@ -9,7 +12,6 @@ import { AdCategoriesFormComponent } from './main/pages/forms/ad-categories-main
 import { UserProfileMaintenanceFormsComponent } from './main/pages/forms/user-profile-maintenance/user-profile-maintenance-forms.component';
 import { AuthGuard } from './main/guards/auth.guard';
 import { ProfileComponent } from './main/pages/profile/profile.component';
-import { SessionService } from './services/session/session.service';
 import { CommonComponentModule } from './components/component.module';
 import { PagesModule } from './main/pages/pages.module';
 import { CommonFn } from './shared/common-fn';
@@ -46,8 +48,15 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdKeywordsFormComponent } from './main/pages/forms/ad-keywords-maintenance/ad-keywords-maintenance-form.component';
 import { AccountsService } from './services/account/account.service';
+import { UserProfileSessionService } from './services/session/user-profile-session.service';
 
 const appRoutes: Routes = [
+    {
+        path        : 'lock',
+        component   : LockComponent,
+        canActivate : [CurrentUserLoadedGuard],
+        pathMatch   : 'full'
+    },
     {
         path        : 'auth/confirmMail',
         component   : MailConfirmationComponent,
@@ -153,8 +162,9 @@ const appRoutes: Routes = [
         LogPublishersService,
         AppSettingsService,
         AlertService,
-        SessionService,
+        UserProfileSessionService,
         AccountsService,
+        AccountSessionService,
         CommonFn
     ],
     bootstrap   : [
