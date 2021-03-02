@@ -1,4 +1,5 @@
-import { AccountsService } from './services/account/account.service';
+import { AccountLoadedGuard } from './main/guards/accountLoaded.gaurd';
+import { AccountProfileMaintenanceFormsComponent } from './main/pages/forms/account-profile-maintenance/account-profile-maintenance-form.component';
 import { AdAgeGroupService } from './services/ad-age-group/ad-age-group.service';
 import { AdAgeGroupsFormComponent } from './main/pages/forms/ad-ageGroups-maintenance/ad-ageGroups-maintenance-form.component';
 import { AdKeywordService } from './services/ad-keyword/ad-keyword.service';
@@ -44,6 +45,7 @@ import { ProfileService } from './main/pages/profile/profile.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdKeywordsFormComponent } from './main/pages/forms/ad-keywords-maintenance/ad-keywords-maintenance-form.component';
+import { AccountsService } from './services/account/account.service';
 
 const appRoutes: Routes = [
     {
@@ -68,6 +70,11 @@ const appRoutes: Routes = [
         path        : 'maintain/profile',
         component   : UserProfileMaintenanceFormsComponent,
         canActivate : [AuthGuard]
+    },
+    {
+        path        : 'maintain/account-profile',
+        component   : AccountProfileMaintenanceFormsComponent,
+        canActivate : [AuthGuard, AccountLoadedGuard]
     },
     {
         path        : 'maintain/categories',

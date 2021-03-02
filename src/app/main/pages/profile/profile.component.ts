@@ -1,3 +1,4 @@
+import { AccountsService } from 'app/services/account/account.service';
 import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { CommonFn } from './../../../shared/common-fn';
@@ -26,7 +27,9 @@ import { ModuleCodeEnum } from 'app/shared/module-code-enum';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
     @ViewChild('uploadAvatarFileInput') myUploadAvatarFileInput: ElementRef;
-
+    panelOpenState = false;
+    canAddAccount: boolean;
+    canEditAccount: boolean;
     canDev: boolean;
     userTimelineDTO: any;
     postDTO: any;
@@ -40,11 +43,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
     userTimelineCommentSchema: any;
 
     accounts: any[];
+
     accountDTO: any;
     updAccountDTO: any;
     accountsSchema: any;
 
+    userAccountDTO: any;
+    updUserAccountDTO: any;
+    userAccountsSchema: any;
+    userAccountDataDTO: any;
+
     user: any;
+    userFullData: any;
     ownerOfProfile: boolean;
 
     showAvatarEditor = false;
@@ -63,6 +73,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         private router: Router
     ) {
         this.canDev = this._auth.canDev(ModuleCodeEnum.Maintenance);
+        this.canAddAccount = this._auth.canAdd(ModuleCodeEnum.Account);
+        this.canEditAccount = this._auth.canEdit(ModuleCodeEnum.Account);
         this.userTimelineDTO = this._profileService.userTimelineDTO;
         this.postDTO = this._profileService.postDTO;
         this.updPostDTO = this._profileService.updPostDTO;
@@ -75,6 +87,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.accountDTO = this._profileService.accountDTO;
         this.updAccountDTO = this._profileService.updAccountDTO;
         this.accountsSchema = this._profileService.accountsSchema;
+
+        this.userAccountDTO = this._profileService.userAccountDTO;
+        this.updUserAccountDTO = this._profileService.updUserAccountDTO;
+        this.userAccountsSchema = this._profileService.userAccountsSchema;
+
+        this.userAccountDataDTO = this._profileService.userAccountDataDTO;
+
         this.user = this._profileService.user;
         this.ownerOfProfile = false;
         if (
@@ -154,6 +173,28 @@ export class ProfileComponent implements OnInit, OnDestroy {
         .subscribe((accountsSchema) => {
             this.accountsSchema = accountsSchema;
         });
+
+        this._profileService.userAccountDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((userAccountDTO) => {
+            this.userAccountDTO = userAccountDTO;
+        });
+        this._profileService.updUserAccountDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((updUserAccountDTO) => {
+            this.updUserAccountDTO = updUserAccountDTO;
+        });
+        this._profileService.userAccountSchemaOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((userAccountsSchema) => {
+            this.userAccountsSchema = userAccountsSchema;
+        });
+
+        this._profileService.userAccountDataDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((userAccountDataDTO) => {
+            this.userAccountDataDTO = userAccountDataDTO;
+        });
     }
 
     ngOnDestroy(): void {
@@ -167,6 +208,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
     doMaintain(): void {
         this.router.navigateByUrl('maintain/profile');
+    }
+
+    doMaintainAccount(account: any): void {
+        this._profileService._accountService.getAccountById(account.account_id).then(() => {
+            this._profileService.getFullUserData().then(() => {
+                this.router.navigateByUrl('maintain/account-profile');
+            });
+        });
+    }
+    addNewAccount(): void {
+        this._profileService.getFullUserData().then(() => {
+            this._profileService._accountService.initNewAccount(this.user.id).then(() => {
+                this.router.navigateByUrl('maintain/account-profile');
+            }).catch(() => {});
+        }).catch(() => {});
     }
 
     fileChangeEvent(event: any): void {

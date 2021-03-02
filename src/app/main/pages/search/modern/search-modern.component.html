@@ -2,22 +2,31 @@
 
     <!-- HEADER -->
     <div class="header accent p-24" fxLayout="row" fxLayoutAlign="start center">
-
         <div class="search-wrapper" fxFlex fxLayout="row" fxLayoutAlign="start center">
-
             <div class="search" fxLayout="row" fxLayoutAlign="start center">
                 <mat-icon>search</mat-icon>
                 <input #searchInput placeholder="Search" fxFlex>
             </div>
-
         </div>
-
     </div>
     <!-- / HEADER -->
 
     <!-- CONTENT -->
     <div class="content p-24">
+        <!-- <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-icon>filter_list</mat-icon>Filter
+            </mat-expansion-panel-header>
+            <mat-form-field>
 
+                <section>
+                    <h2><mat-label>Categories</mat-label></h2>
+                    <mat-checkbox >Checked</mat-checkbox>
+                    <mat-checkbox >Indeterminate</mat-checkbox>
+                  </section>
+              </mat-form-field>
+        </mat-expansion-panel>
+        </div> -->
         <div class="result-info" fxLayout="row" fxLayoutAlign="start center">
 
             <span class="result-count h3 secondary-text">
@@ -65,7 +74,12 @@
             </div>
 
         </div>
-
+        <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="filterDTO">
+                <div class="h2 mb-24">filter DTO</div>
+                <pre><code>{{filterDTO | json}}</code></pre>
+            </div>
+        </div>
     </div>
     <!-- / CONTENT -->
 

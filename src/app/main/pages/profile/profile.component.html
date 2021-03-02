@@ -1,4 +1,4 @@
-<div id="profile" class="page-layout simple tabbed">
+<div id="profile" class="page-layout simple fullwidth" fxLayout="column">
     <!-- HEADER -->
     <div class="header p-24" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-sm="row"
         fxLayoutAlign.gt-sm="space-between end">
@@ -6,7 +6,7 @@
             fxLayoutAlign.gt-sm="start center">
             <input hidden #uploadAvatarFileInput type="file" accept=".jpg,.png" (change)="fileChangeEvent($event)" />
             <button *ngIf="ownerOfProfile" mat-icon-button color="accent" aria-label="Change avatar"
-                (click)="uploadAvatarFileInput.click();">
+                (click)="uploadAvatarFileInput.click()">
                 <mat-icon>edit</mat-icon>
             </button>
             <img *ngIf="!isAuth()" class="profile-image avatar huge" src="assets/images/avatars/profile.jpg" [@animate]="{
@@ -15,14 +15,14 @@
                 }" />
             <img [hidden]="user && isAuth() && fn.showGenericAvatar(user.avatar)" class="profile-image avatar huge"
                 src="{{ user.avatar }}" />
-            <ngx-avatar size="80" [hidden]="
+            <ngx-avatar size=80 [hidden]="
                     user && isAuth() && !fn.showGenericAvatar(user.avatar)
                 " name="{{ user.user_name }}"></ngx-avatar>
 
             <div *ngIf="showAvatarEditor" fxLayout="row" fxLayoutAlign="start center">
                 <ngx-photo-editor #avatarPhotoEditor [imageChanedEvent]="avatarChangedEvent"
                     (imageCropped)="avatarCropped($event)" [aspectRatio]="1 / 1" [viewMode]="1" [darkTheme]="false"
-                    [mask]="false" ></ngx-photo-editor>
+                    [mask]="false"></ngx-photo-editor>
             </div>
             <div class="name" [@animate]="{
                     value: '*',
@@ -52,9 +52,11 @@
             </mat-tab>
             <mat-tab label="About">
                 <ng-template mat-tab-label>
-                    About&nbsp;&nbsp;
-                    <mat-icon *ngIf="ownerOfProfile" matSuffix class="primary-text" (click)="doMaintain()">edit
-                    </mat-icon>
+                    <button *ngIf="ownerOfProfile" mat-icon-button color="accent"
+                    aria-label="maintain user profile" (click)="doMaintain()">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                    About
                 </ng-template>
                 <profile-about></profile-about>
             </mat-tab>
@@ -63,67 +65,164 @@
             </mat-tab>
 
             <mat-tab label="Accounts">
-                <div *ngFor="let account of accounts">
-                    <profile-account [account]="account"></profile-account>
-                </div>
+                <ng-template mat-tab-label>
+                    <button *ngIf="ownerOfProfile && canAddAccount" mat-icon-button color="accent"
+                    aria-label="create new account" (click)="addNewAccount()">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                    Accounts
+                </ng-template>
+                <mat-accordion>
+                    <mat-expansion-panel *ngFor="let account of accounts">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <button *ngIf="ownerOfProfile && canEditAccount" mat-icon-button color="accent"
+                                    aria-label="maintain account" (click)="doMaintainAccount(account)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <ngx-avatar [hidden]="!fn.showGenericAvatar(account.avatar)"
+                                name="{{account.account_name}}" size=40></ngx-avatar>
+                                <img [hidden]="fn.showGenericAvatar(account.avatar)" class="avatar"
+                                    [src]="account.avatar">
+                                {{account.account_type}}
+
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{account.account_name}}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <profile-account [account]="account"></profile-account>
+                    </mat-expansion-panel>
+                </mat-accordion>
             </mat-tab>
             <mat-tab *ngIf="canDev" label="DTOs">
-                <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userTimelineDTO">
-                        <div class="h2 mb-24">Timeline DTO</div>
-                        <pre><code>{{userTimelineDTO | json}}</code></pre>
-                    </div>
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postDTO">
-                        <div class="h2 mb-24">Post DTO</div>
-                        <pre><code>{{postDTO | json}}</code></pre>
-                    </div>
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updPostDTO">
-                        <div class="h2 mb-24">Update Post DTO</div>
-                        <pre><code>{{updPostDTO | json}}</code></pre>
-                    </div>
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postSchema">
-                        <div class="h2 mb-24">Post Schema</div>
-                        <pre><code>{{postSchema | json}}</code></pre>
-                    </div>
-                </div>
-                <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userTimelineCommentDTO">
-                        <div class="h2 mb-24">Comment DTO</div>
-                        <pre><code>{{userTimelineCommentDTO | json}}</code></pre>
-                    </div>
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updUserTimelineCommentDTO">
-                        <div class="h2 mb-24">Update Comment DTO</div>
-                        <pre><code>{{updUserTimelineCommentDTO | json}}</code></pre>
-                    </div>
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userTimelineCommentSchema">
-                        <div class="h2 mb-24">Comment Schema</div>
-                        <pre><code>{{userTimelineCommentSchema | json}}</code></pre>
-                    </div>
-                </div>
-                <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postMediaDTO">
-                        <div class="h2 mb-24">Post Media DTO</div>
-                        <pre><code>{{postMediaDTO | json}}</code></pre>
-                    </div>
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postMediaSchema">
-                        <div class="h2 mb-24">Post Media Schema</div>
-                        <pre><code>{{postMediaSchema | json}}</code></pre>
-                    </div>
-                </div>
-                <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="accountDTO">
-                        <div class="h2 mb-24">User Account DTO</div>
-                        <pre><code>{{accountDTO | json}}</code></pre>
-                    </div>
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updAccountDTO">
-                        <div class="h2 mb-24">Update Account DTO</div>
-                        <pre><code>{{updAccountDTO | json}}</code></pre>
-                    </div>
-                    <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="accountsSchema">
-                        <div class="h2 mb-24">Accounts Schema</div>
-                        <pre><code>{{accountsSchema| json}}</code></pre>
-                    </div>
-                </div>
+                <mat-accordion>
+                    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Profile Timeline DTO
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                User Profile Timeline
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userTimelineDTO">
+                                <div class="h2 mb-24">Timeline DTO</div>
+                                <pre><code>{{userTimelineDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postDTO">
+                                <div class="h2 mb-24">Post DTO</div>
+                                <pre><code>{{postDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updPostDTO">
+                                <div class="h2 mb-24">Update Post DTO</div>
+                                <pre><code>{{updPostDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postSchema">
+                                <div class="h2 mb-24">Post Schema</div>
+                                <pre><code>{{postSchema | json}}</code></pre>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Profile Timeline Comment DTO
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                User Profile Timeline Comments
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4"
+                                *ngIf="userTimelineCommentDTO">
+                                <div class="h2 mb-24">Comment DTO</div>
+                                <pre><code>{{userTimelineCommentDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4"
+                                *ngIf="updUserTimelineCommentDTO">
+                                <div class="h2 mb-24">Update Comment DTO</div>
+                                <pre><code>{{updUserTimelineCommentDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4"
+                                *ngIf="userTimelineCommentSchema">
+                                <div class="h2 mb-24">Comment Schema</div>
+                                <pre><code>{{userTimelineCommentSchema | json}}</code></pre>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title> Post Media DTO </mat-panel-title>
+                            <mat-panel-description>
+                                User Profile Post Medias
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postMediaDTO">
+                                <div class="h2 mb-24">Post Media DTO</div>
+                                <pre><code>{{postMediaDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="postMediaSchema">
+                                <div class="h2 mb-24">Post Media Schema</div>
+                                <pre><code>{{postMediaSchema | json}}</code></pre>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Account DTO
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Profile Account DTO
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="accountDTO">
+                                <div class="h2 mb-24">Account DTO</div>
+                                <pre><code>{{accountDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updAccountDTO">
+                                <div class="h2 mb-24">Update Account DTO</div>
+                                <pre><code>{{updAccountDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="accountsSchema">
+                                <div class="h2 mb-24">Accounts Schema</div>
+                                <pre><code>{{accountsSchema| json}}</code></pre>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                User Account DTO
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Profile User Account DTO
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userAccountDataDTO">
+                                <div class="h2 mb-24">User Account Data DTO</div>
+                                <pre><code>{{userAccountDataDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userAccountDTO">
+                                <div class="h2 mb-24">User Account DTO</div>
+                                <pre><code>{{userAccountDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updUserAccountDTO">
+                                <div class="h2 mb-24">Update Account DTO</div>
+                                <pre><code>{{updUserAccountDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userAccountsSchema">
+                                <div class="h2 mb-24">Accounts Schema</div>
+                                <pre><code>{{userAccountsSchema| json}}</code></pre>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
             </mat-tab>
         </mat-tab-group>
     </div>

@@ -1,0 +1,33 @@
+:host {
+    #account {
+
+        .header {
+            height: 320px;
+            min-height: 320px;
+            max-height: 320px;
+            background: url('/assets/images/backgrounds/dark-material-bg.jpg') no-repeat 0 45%;
+            background-size: cover;
+
+        }
+    }
+    .content {
+
+        form {
+            width: 100%;
+            max-width: 800px !important;
+        }
+
+        .form-errors-model {
+            flex: 1;
+
+            code {
+                background: none !important;
+            }
+        }
+
+        .horizontal-stepper-wrapper,
+        .vertical-stepper-wrapper {
+            max-width: 800px;
+        }
+    }
+}

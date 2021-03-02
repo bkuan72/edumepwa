@@ -1,3 +1,4 @@
+import { AccountProfileMaintenanceFormsModule } from './forms/account-profile-maintenance/account-profile-maintenance-form.module';
 import { AdAgeGroupsFormModule } from './forms/ad-ageGroups-maintenance/ad-ageGroups-maintenance-form.module';
 import { AdKeywordsFormModule } from './forms/ad-keywords-maintenance/ad-keywords-maintenance-form.module';
 import { AdCategoriesFormModule } from './forms/ad-categories-maintenance/ad-categories-maintenance-form.module';
@@ -68,8 +69,9 @@ import { NgModule } from '@angular/core';
         // KnowledgeBaseModule
         TermsAndConditionsModule,
 
-        // User Profile Maintenance form
+        // Maintenance forms
         UserProfileMaintenanceFormsModule,
+        AccountProfileMaintenanceFormsModule,
         AdCategoriesFormModule,
         AdKeywordsFormModule,
         AdAgeGroupsFormModule

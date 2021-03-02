@@ -11,12 +11,14 @@ import { AlertService } from '../alert/alert.service';
   providedIn: 'root'
 })
 export class AdKeywordService implements Resolve<any[]>, OnDestroy {
+    keywordCodes: string[];
     keywords: any[];
     keywordsDTO: any;
     keywordsUpdDTO: any;
     keywordsSchema: any;
 
     keywordsOnChanged: BehaviorSubject<any[]>;
+    keywordCodesOnChanged: BehaviorSubject<string[]>;
     keywordsDTOOnChanged: BehaviorSubject<any[]>;
     keywordsUpdDTOOnChanged: BehaviorSubject<any[]>;
     keywordsSchemaOnChanged: BehaviorSubject<any[]>;
@@ -27,8 +29,10 @@ constructor(
     private _authTokenSession: AuthTokenSessionService,
     private _alertService: AlertService
 ) {
+    this.keywordCodes = [];
     this.keywords = [];
     this.keywordsOnChanged = new BehaviorSubject(this.keywords);
+    this.keywordCodesOnChanged = new BehaviorSubject(this.keywordCodes);
     this.keywordsDTOOnChanged = new BehaviorSubject(this.keywordsDTO);
     this.keywordsUpdDTOOnChanged = new BehaviorSubject(this.keywordsUpdDTO);
     this.keywordsSchemaOnChanged = new BehaviorSubject(this.keywordsSchema);
@@ -52,6 +56,20 @@ doLoadKeywords(): Promise<any[]> {
             this.keywords = adKeywords;
             this.keywordsOnChanged.next(this.keywords);
             resolve(this.keywords);
+        }, reject);
+    });
+}
+
+doLoadKeywordCodes(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+        const httpConfig = this._http.getSrvHttpConfig(
+            SrvApiEnvEnum.adKeywordCodes
+        );
+        this._http.GetObs(httpConfig, true).subscribe((adKeywordCodes: any) => {
+            this._authTokenSession.checkAuthTokenStatus();
+            this.keywordCodes = adKeywordCodes;
+            this.keywordCodesOnChanged.next(this.keywordCodes);
+            resolve(this.keywordCodes);
         }, reject);
     });
 }

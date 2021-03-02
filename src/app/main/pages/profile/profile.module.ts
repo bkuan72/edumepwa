@@ -21,6 +21,7 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import {NgxPhotoEditorModule} from 'ngx-photo-editor';
 import { AccountsComponent } from 'app/main/pages/profile/tabs/account/account.component';
 import { AccountsService } from 'app/services/account/account.service';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 
 
@@ -55,6 +56,7 @@ const routes = [
         MatTabsModule,
         AvatarModule,
         MatMomentDateModule,
+        MatExpansionModule,
 
         FuseSharedModule
     ],

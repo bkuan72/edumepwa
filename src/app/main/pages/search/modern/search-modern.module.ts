@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 import { FuseSharedModule } from '@fuse/shared.module';
 
@@ -36,6 +38,8 @@ const routes = [
         MatInputModule,
         MatTableModule,
         MatTabsModule,
+        MatExpansionModule,
+        MatCheckboxModule,
 
         FuseSharedModule
     ],

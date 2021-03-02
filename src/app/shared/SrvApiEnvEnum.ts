@@ -60,6 +60,7 @@ export enum SrvApiEnvEnum {
     userTimelineCommentsByTimelineId= '/api/userTimelineComments/byTimelineId',
 
     adCategories= '/api/adCategories',
+    adCategoryCodes= '/api/adCategories/codesOnly',
     patchAdCategories= '/api/adCategories',
     findAdCategoryCode= '/api/adCategories/byCategoryCode',
     adCategoriesDTO= '/api/adCategories/DTO',
@@ -68,6 +69,7 @@ export enum SrvApiEnvEnum {
     deleteAdCategories= '/api/adCategories/delete',
 
     adKeywords= '/api/adKeywords',
+    adKeywordCodes= '/api/adKeywords/codesOnly',
     patchAdKeywords= '/api/adKeywords',
     findAdKeywordCode= '/api/adKeywords/byKeywordCode',
     adKeywordsDTO= '/api/adKeywords/DTO',
@@ -76,6 +78,7 @@ export enum SrvApiEnvEnum {
     deleteAdKeywords= '/api/adKeywords/delete',
 
     adAgeGroups= '/api/adAgeGroups',
+    adAgeGroupCodes= '/api/adAgeGroups/codesOnly',
     patchAdAgeGroups= '/api/adAgeGroups',
     findAdAgeGroupCode= '/api/adAgeGroups/byAgeGroupCode',
     adAgeGroupsDTO= '/api/adAgeGroups/DTO',
@@ -84,6 +87,10 @@ export enum SrvApiEnvEnum {
     deleteAdAgeGroups= '/api/adAgeGroups/delete',
 
     accounts= '/api/accounts',
+    newServiceAccount='/api/accounts/service',
+    newNormalAccount='/api/accounts/normal',
+    accountById= '/api/accounts/byAccountId',
+    updateAccountAvatar= '/api/accounts/avatar/byAccountId',
     patchAccounts= '/api/accounts/byAccountId',
     findAccountCode= '/api/accounts/byAccountCode',
     accountsDTO= '/api/accounts/DTO',
@@ -96,6 +103,7 @@ export enum SrvApiEnvEnum {
     userAccountsDTO= '/api/userAccounts/DTO',
     userAccountsUpdDTO= '/api/userAccounts/updDTO',
     userAccountsSchema= '/api/userAccounts/schema',
+    userAccountsDataDTO= '/api/userAccounts/userAccountDTO',
 
     // local web server path
     SETTINGS_JSON_LOCATION = 'assets/app-settings.json',

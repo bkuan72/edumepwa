@@ -9,7 +9,7 @@
 
                 <div class="avatar-container">
                     <img class="avatar big" [hidden]="!currentUser || fn.showGenericAvatar(currentUser.avatar)" src="assets/images/avatars/profile.jpg">
-                    <ngx-avatar size="80" [hidden]="currentUser && !fn.showGenericAvatar(currentUser.avatar)" name="{{currentUser.user_name}}"></ngx-avatar>
+                    <ngx-avatar size=80 [hidden]="currentUser && !fn.showGenericAvatar(currentUser.avatar)" name="{{currentUser.user_name}}"></ngx-avatar>
                     <mat-icon class="s-32">lock</mat-icon>
                 </div>
 

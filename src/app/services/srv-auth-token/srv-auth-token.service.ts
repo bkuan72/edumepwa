@@ -194,8 +194,8 @@ export class SrvAuthTokenService {
         if (this.tokenData && 
             !this.isExpired()) {
             this.tokenData.roles.some(role => {
-                if (role.module.modules_code === 'ALL' ||
-                    role.module.modules_code === moduleCode) {
+                if (role.module.module_code === 'ALL' ||
+                    role.module.module_code === moduleCode) {
                         accessOk = role.role[accessType];
                         return true;
                 }

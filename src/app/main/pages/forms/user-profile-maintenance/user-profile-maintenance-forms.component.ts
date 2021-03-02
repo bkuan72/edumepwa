@@ -15,7 +15,7 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
 {
     submitted = false;
     user: any;
-    userData: any;
+    userFullData: any;
     userDTO: any;
     updUserDTO: any;
     insUserDTO: any;
@@ -47,7 +47,7 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
         this.userSchema = this._userProfile.userSchema;
         this.countries = this._userProfile.countries;
         this.titles = this._userProfile.titles;
-        this._userProfile.getUserData();
+        this._userProfile.getFullUserData();
         // Set the private defaults
         this._unsubscribeAll = new Subject();
     }
@@ -110,6 +110,8 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
             state     : ['', [Validators.maxLength(40)]],
             post_code: ['', [Validators.required, Validators.maxLength(10)]],
             country   : ['', [Validators.required, Validators.maxLength(40)]],
+            phone_no  : ['', [Validators.required, Validators.maxLength(30)]],
+            mobile_no  : ['', [Validators.required, Validators.maxLength(30)]],
             website     : ['', [Validators.maxLength(255)]],
             birthday     : [''],
             about_me     : ['', [Validators.maxLength(255)]],
@@ -118,13 +120,13 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
             jobs     : ['', [Validators.maxLength(255)]],
         });
 
-        this._userProfile.userDataOnChanged
+        this._userProfile.userFullDataOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe(userData => {
-            if (userData !== undefined) {
-                this.userData = userData;
+        .subscribe(userFullData => {
+            if (userFullData !== undefined) {
+                this.userFullData = userFullData;
 
-                const formData = this._fn.mapObj(this.form.controls, userData);
+                const formData = this._fn.mapObj(this.form.controls, userFullData);
                 this.form.setValue(formData);
             }
         });
@@ -154,7 +156,7 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
             return;
         }
         // stop if no change
-        const updUser = this._fn.mapObjChangedPropertyValue(this.form.controls, this.userData);
+        const updUser = this._fn.mapFormControlChangedPropertyValue(this.form.controls, this.userFullData);
         if (updUser === undefined) {
             this.loc.back();
             return;

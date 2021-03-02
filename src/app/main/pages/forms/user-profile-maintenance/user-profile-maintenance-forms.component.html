@@ -161,7 +161,20 @@
 
                 </div>
 
-
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field appearance="outline" fxFlex="100">
+                        <mat-label>Phone No</mat-label>
+                        <input type="tel" matInput formControlName="phone_no" required>
+                        <mat-icon matSuffix class="secondary-text">local_phone</mat-icon>
+                        <mat-error>Phone No is required!</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" fxFlex="100">
+                        <mat-label>Mobile No</mat-label>
+                        <input type="tel" matInput formControlName="mobile_no" required>
+                        <mat-icon matSuffix class="secondary-text">phone_iphone</mat-icon>
+                        <mat-error>Mobile No is required!</mat-error>
+                    </mat-form-field>
+                </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field appearance="outline" fxFlex="100">
                         <mat-label>Web Site</mat-label>

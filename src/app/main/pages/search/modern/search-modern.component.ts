@@ -1,12 +1,16 @@
-import { CommonFn } from './../../../../shared/common-fn';
-import { AppSettings } from './../../../../shared/app-settings';
+import { AdAgeGroupService } from 'app/services/ad-age-group/ad-age-group.service';
 import { isUndefined, isArray } from 'lodash';
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, ElementRef, AfterViewInit } from '@angular/core';
 import { fromEvent, Subject } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged, filter, tap } from 'rxjs/operators';
 
+
 import { SearchModernService } from 'app/main/pages/search/modern/search-modern.service';
 import { AppSettingsService } from 'app/services/app-settings/app-settings.service';
+import { AppSettings } from 'app/shared/app-settings';
+import { CommonFn } from 'app/shared/common-fn';
+import { AdCategoryService } from 'app/services/ad-category/ad-category.service';
+import { AdKeywordService } from 'app/services/ad-keyword/ad-keyword.service';
 
 enum PaginationType {
     PAGE_UP,
@@ -23,14 +27,19 @@ enum PaginationType {
 export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
 {
     @ViewChild('searchInput') searchInput: ElementRef;
-    searchItems: any[];
-    foundItems: any[];
-    currentPage: number;
+    searchItems: any[] = [];
+    foundItems: any[] = [];
+    currentPage = 0;
     settings: AppSettings;
-    maxPageNo: number;
-    pageNumbers: number[];
-    paginationStart: number;
+    maxPageNo = 0;
+    pageNumbers: number[] = [];
+    paginationStart = 1;
     paginationEnd: number;
+    filterDTO: any;
+
+    filterCategories: any[] = [];
+    filterKeywords: any[] = [];
+    filterAgeGroups: any[] = [];
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -43,19 +52,20 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
     constructor(
         private _searchModernService: SearchModernService,
         private _appSettings: AppSettingsService,
-        private _commonFn: CommonFn
+        private _commonFn: CommonFn,
+        private _adCategories: AdCategoryService,
+        private _adKeywords: AdKeywordService,
+        private _adAgeGroups: AdAgeGroupService
     )
     {
         // Set the private defaults
         this.settings = this._appSettings.settingsValue;
+        this.filterDTO = this._searchModernService.filterDTO;
         this._unsubscribeAll = new Subject();
-        this.searchItems = [];
-        this.foundItems = [];
-        this.currentPage = 0;
-        this.maxPageNo = 0;
-        this.paginationStart = 1;
         this.paginationEnd = this.paginationStart + this.settings.paginationRange;
-        this.pageNumbers = [];
+        this.filterCategories = this._adCategories.categories;
+        this.filterAgeGroups = this._adAgeGroups.ageGroups;
+        this.filterKeywords = this._adKeywords.keywords;
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -67,6 +77,21 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
      */
     ngOnInit(): void
     {
+        this._adKeywords.keywordsOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((adKeywords) => {
+            this.filterKeywords = adKeywords;
+        });
+        this._adCategories.categoriesOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((adCategories) => {
+            this.filterCategories = adCategories;
+        });
+        this._adAgeGroups.ageGroupsOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((adAgeGroups) => {
+            this.filterAgeGroups = adAgeGroups;
+        });
         this._searchModernService.dataOnChanged
             .pipe(
                 takeUntil(this._unsubscribeAll))
@@ -77,6 +102,11 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
                     this.doLoadPage(1);
                 }
             });
+        this._searchModernService.filterDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((filterDTO) => {
+            this.filterDTO = filterDTO;
+        });
     }
 
     /**

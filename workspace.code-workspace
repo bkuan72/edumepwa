@@ -10,6 +10,7 @@
 			"datatable",
 			"dtos",
 			"edume",
+			"keycodes",
 			"localstorage",
 			"sidepanel",
 			"webapi"

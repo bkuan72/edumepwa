@@ -3,10 +3,6 @@
     <div class="account-content" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="65">
 
         <div class="profile-box info-box general" fxLayout="column">
-            <ngx-avatar [hidden]="!fn.showGenericAvatar(account.avatar)"
-            name="{{account.account_name}}" size="40"></ngx-avatar>
-            <img [hidden]="fn.showGenericAvatar(account.avatar)" class="avatar"
-                [src]="account.avatar">
             <header class="accent">
                 <div class="title">General Information</div>
                 <div class="info">{{account.account_name}}</div>

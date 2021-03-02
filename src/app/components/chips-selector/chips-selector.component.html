@@ -1,0 +1,25 @@
+<mat-label>{{chipName}}</mat-label><mat-hint *ngIf="required">&nbsp;*</mat-hint>
+<mat-chip-list #chipList aria-label="Select Words">
+        <mat-chip *ngFor="let chip of chips"
+        [selectable]="selectable"
+        [removable]="canRemove" 
+        (removed)="removeChip(chip)">
+        {{chip.name}}
+        <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+        <input [hidden]="displayOnly"
+        [placeholder]="placeholder"
+        #chipInput
+        [formControl]="chipCtrl"
+        [matChipInputFor]="chipList"
+        [matAutocomplete]="auto"
+        [matChipInputAddOnBlur]="true"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        />
+        <!-- (matChipInputTokenEnd)="addChip($event)" reserve for later reference -->
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let word of filteredList | async" [value]="word">
+              {{word}}
+            </mat-option>
+          </mat-autocomplete>
+</mat-chip-list>

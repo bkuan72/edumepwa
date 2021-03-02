@@ -1,4 +1,3 @@
-import { isString } from 'lodash';
 import { SrvHttpService } from '../http-connect/srv-http.service';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import {
@@ -14,13 +13,27 @@ import { SrvApiEnvEnum } from '../../shared/SrvApiEnvEnum';
 @Injectable({
     providedIn: 'root',
 })
-export class AccountsService implements OnDestroy {
-    accounts: any[];
+export class AccountsService implements OnDestroy, Resolve<any> {
+    account: any;       // currently active account
+    accounts: any[];    // list of account own by user
+    userAccountsDTO: any;
+    userAccountsUpdDTO: any;
+    userAccountsSchema: any;
+    userAccountsDataDTO: any;
+
     accountsDTO: any;
     accountsUpdDTO: any;
     accountsSchema: any;
 
+    accountOnChanged: BehaviorSubject<any>;
     accountsOnChanged: BehaviorSubject<any[]>;
+
+    userAccountsDTOOnChanged: BehaviorSubject<any[]>;
+    userAccountsUpdDTOOnChanged: BehaviorSubject<any[]>;
+    userAccountsSchemaOnChanged: BehaviorSubject<any[]>;
+
+    userAccountsDataDTOOnChanged: BehaviorSubject<any[]>;
+
     accountsDTOOnChanged: BehaviorSubject<any[]>;
     accountsUpdDTOOnChanged: BehaviorSubject<any[]>;
     accountsSchemaOnChanged: BehaviorSubject<any[]>;
@@ -32,7 +45,15 @@ export class AccountsService implements OnDestroy {
         private _alertService: AlertService
     ) {
         this.accounts = [];
+        this.accountOnChanged = new BehaviorSubject(this.account);
         this.accountsOnChanged = new BehaviorSubject(this.accounts);
+
+        this.userAccountsDTOOnChanged = new BehaviorSubject(this.userAccountsDTO);
+        this.userAccountsUpdDTOOnChanged = new BehaviorSubject(this.userAccountsUpdDTO);
+        this.userAccountsSchemaOnChanged = new BehaviorSubject(this.userAccountsSchema);
+
+        this.userAccountsDataDTOOnChanged = new BehaviorSubject(this.userAccountsDataDTO);
+
         this.accountsDTOOnChanged = new BehaviorSubject(this.accountsDTO);
         this.accountsUpdDTOOnChanged = new BehaviorSubject(this.accountsUpdDTO);
         this.accountsSchemaOnChanged = new BehaviorSubject(this.accountsSchema);
@@ -45,6 +66,31 @@ export class AccountsService implements OnDestroy {
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
     }
+
+    checkAccountLoaded(): Observable<any> | Promise<any> | any {
+        return new Promise<void>((resolve, reject) => {
+            if (this.account !== undefined) {
+                resolve();
+            } else {
+                reject();
+            }
+        });
+    }
+
+    /**
+     * Resolver
+     *
+     * @param {ActivatedRouteSnapshot} route
+     * @param {RouterStateSnapshot} state
+     * @returns {Observable<any> | Promise<any> | any}
+     */
+    resolve(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): Observable<any> | Promise<any> | any {
+        return this.checkAccountLoaded();
+    }
+
 
 
     /**
@@ -66,13 +112,122 @@ export class AccountsService implements OnDestroy {
         });
     }
 
+
+    initNewAccount(userId: string): Promise<void> {
+        return new Promise<void>((resolve) => {
+            this.getAccountsDTO().then((newAccount) => {
+                this.account = newAccount;
+                this.accountOnChanged.next(this.account);
+                resolve();
+            })
+        });
+    }
+
+    /**
+     * Get account by ID
+     */
+    getAccountById(accountId: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.accountById,
+                [accountId]
+            );
+            this._http
+                .GetObs(httpConfig, true)
+                .subscribe((account: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    this.account = account;
+                    this.accountOnChanged.next(this.account);
+                    resolve(this.account);
+                }, reject);
+        });
+    }
+
+    /**
+     * Get user accounts accounts DTO
+     */
+    getUserAccountsDTO(): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.userAccountsDTO
+            );
+            this._http
+                .GetObs(httpConfig, true)
+                .subscribe((userAccountsDTO: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    this.userAccountsDTO = userAccountsDTO;
+                    this.userAccountsDTOOnChanged.next(this.userAccountsDTO);
+                    resolve(this.userAccountsDTO);
+                }, reject);
+        });
+    }
+
+
+    /**
+     * Get user accounts Update DTO
+     */
+    getUserAccountsUpdDTO(): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.userAccountsUpdDTO
+            );
+            this._http
+                .GetObs(httpConfig, true)
+                .subscribe((userAccountsUpdDTO: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    this.userAccountsUpdDTO = userAccountsUpdDTO;
+                    this.userAccountsUpdDTOOnChanged.next(this.userAccountsUpdDTO);
+                    resolve(this.userAccountsUpdDTO);
+                }, reject);
+        });
+    }
+
+    /**
+     * Get accounts schema
+     */
+    getUserAccountsSchema(): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.userAccountsSchema
+            );
+            this._http
+                .GetObs(httpConfig, true)
+                .subscribe((userAccountsSchema: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    this.userAccountsSchema = userAccountsSchema;
+                    this.userAccountsSchemaOnChanged.next(this.userAccountsSchema);
+                    resolve(this.userAccountsSchema);
+                }, reject);
+        });
+    }
+
+
+    /**
+     * Get user account data DTO
+     */
+    getUserAccountsDataDTO(): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.userAccountsDataDTO
+            );
+            this._http
+                .GetObs(httpConfig, true)
+                .subscribe((userAccountsDataDTO: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    this.userAccountsDataDTO = userAccountsDataDTO;
+                    this.userAccountsDataDTOOnChanged.next(this.userAccountsDataDTO);
+                    resolve(this.userAccountsDataDTO);
+                }, reject);
+        });
+    }
+
     /**
      * Get accounts DTO
      */
     getAccountsDTO(): Promise<any[]> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userAccountsDTO
+                SrvApiEnvEnum.accountsDTO
             );
             this._http
                 .GetObs(httpConfig, true)
@@ -142,19 +297,56 @@ export class AccountsService implements OnDestroy {
         });
     }
 
-    addAccount(account: string): Promise<void> {
+
+    createUserAccountHolder(userId: string, accountId: string): Promise<void> {
         return new Promise((resolve, reject) => {
+            const userAccount = {
+                user_id: userId,
+                account_id: accountId,
+                acc_type: "HOLDER",
+                allow_notification: true,
+                allow_promo: true,
+                allow_msg: true,
+                allow_friends: true,
+                public: true
+            }
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.accounts,
+                SrvApiEnvEnum.userAccounts,
                 undefined,
-                { account_code: account }
+                userAccount
             );
             this._http
                 .PostObs(httpConfig, true)
-                .subscribe((accountsUpdDTOArray: any) => {
+                .subscribe((accountDTO: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
-                    if (accountsUpdDTOArray) {
+                    if (accountDTO) {
                         resolve();
+                    } else {
+                        this._alertService.error('Error Adding Account Code');
+                        reject();
+                    }
+                }, reject);
+        })
+    }
+
+    addServiceAccount(userId: string, account: any): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.newServiceAccount,
+                undefined,
+                account
+            );
+            this._http
+                .PostObs(httpConfig, true)
+                .subscribe((accountDTO: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    if (accountDTO) {
+                        this.createUserAccountHolder(userId, accountDTO.id).then (() => {
+                            resolve();
+                        }).catch(() => {
+                            this._alertService.error('Error Adding Account Code');
+                            reject();
+                        });
                     } else {
                         this._alertService.error('Error Adding Account Code');
                         reject();
@@ -162,12 +354,39 @@ export class AccountsService implements OnDestroy {
                 }, reject);
         });
     }
-    updateAccount(id: string, account: string): Promise<void> {
+
+    addNormalAccount(userId: string, account: any): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.newNormalAccount,
+                undefined,
+                account
+            );
+            this._http
+                .PostObs(httpConfig, true)
+                .subscribe((accountDTO: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    if (accountDTO) {
+                        this.createUserAccountHolder(userId, accountDTO.id).then (() => {
+                            resolve();
+                        }).catch(() => {
+                            this._alertService.error('Error Adding Account Code');
+                            reject();
+                        });
+                    } else {
+                        this._alertService.error('Error Adding Account Code');
+                        reject();
+                    }
+                }, reject);
+        });
+    }
+
+    updateAccount(id: string, account: any): Promise<void> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.patchAccounts,
                 [id],
-                { account_code: account }
+                account
             );
             this._http
                 .PatchObs(httpConfig, true)
@@ -182,4 +401,30 @@ export class AccountsService implements OnDestroy {
                 }, reject);
         });
     }
+
+
+    
+    /**
+     * Update User Profile Avatar
+     */
+    updateAccountAvatar(accountId: string, avatar: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.updateAccountAvatar,
+                [accountId],
+                {
+                    avatar: avatar
+                }
+            );
+            this._http.Put(httpConfig, true).then(() => {
+                this._authTokenSession.checkAuthTokenStatus();
+                this.getAccountById(accountId);
+                resolve();
+            })
+            .catch(() => {
+                reject();
+            });
+        });
+    }
+
 }

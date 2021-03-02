@@ -12,11 +12,13 @@ import { AlertService } from '../alert/alert.service';
   providedIn: 'root'
 })
 export class AdCategoryService implements Resolve<any[]>, OnDestroy {
+    categoryCodes: any[];
     categories: any[];
     categoriesDTO: any;
     categoriesUpdDTO: any;
     categoriesSchema: any;
 
+    categoryCodesOnChanged: BehaviorSubject<string[]>;
     categoriesOnChanged: BehaviorSubject<any[]>;
     categoriesDTOOnChanged: BehaviorSubject<any[]>;
     categoriesUpdDTOOnChanged: BehaviorSubject<any[]>;
@@ -28,8 +30,10 @@ constructor(
     private _authTokenSession: AuthTokenSessionService,
     private _alertService: AlertService
 ) {
+    this.categoryCodes = [];
     this.categories = [];
     this.categoriesOnChanged = new BehaviorSubject(this.categories);
+    this.categoryCodesOnChanged = new BehaviorSubject(this.categoryCodes);
     this.categoriesDTOOnChanged = new BehaviorSubject(this.categoriesDTO);
     this.categoriesUpdDTOOnChanged = new BehaviorSubject(this.categoriesUpdDTO);
     this.categoriesSchemaOnChanged = new BehaviorSubject(this.categoriesSchema);
@@ -53,6 +57,20 @@ doLoadCategories(): Promise<any[]> {
             this.categories = adCategories;
             this.categoriesOnChanged.next(this.categories);
             resolve(this.categories);
+        }, reject);
+    });
+}
+
+doLoadCategoryCodes(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+        const httpConfig = this._http.getSrvHttpConfig(
+            SrvApiEnvEnum.adCategoryCodes
+        );
+        this._http.GetObs(httpConfig, true).subscribe((adCategoryCodes: any) => {
+            this._authTokenSession.checkAuthTokenStatus();
+            this.categoryCodes = adCategoryCodes;
+            this.categoryCodesOnChanged.next(this.categoryCodes);
+            resolve(this.categoryCodes);
         }, reject);
     });
 }

@@ -1,3 +1,4 @@
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { isString } from 'lodash';
 export enum DateAddIntervalEnum {
     YEAR,
@@ -158,6 +159,22 @@ export class CommonFn {
         return mapObj;
     }
 
+
+    /**
+     * This function maps obj1 property values to Form controls has matching
+     * and copy obj2 data to new object
+     * @param obj1 - object to map data to
+     * @param form - form group
+     */
+    public mapObjValueToForm = (obj1: any, form: FormGroup): any => {
+        for (const propName in obj1) {
+            if (this.hasProperty(form.controls, propName)) {
+                form.controls[propName].setValue(obj1[propName]);
+            }
+        }
+    }
+
+
     /**
      * This function create a new object that has properties that obj1 and obj2 has matching
      * and copy obj2 data to new object if the two property value does not match
@@ -179,6 +196,29 @@ export class CommonFn {
         return mapObj;
     }
 
+    /**
+     * This function create a new object that has properties that formCtrl and obj2 has matching
+     * and copy obj2 data to new object if the two property value does not match
+     * @param formCtrl - object to map data to
+     * @param obj2 - object to data
+     */
+    public mapFormControlChangedPropertyValue = (formCtrl: {
+                                                                [key: string]: AbstractControl;
+                                                            },
+                                                 obj2: any): any | undefined => {
+        let mapObj;
+        for (const propName in formCtrl) {
+            if (this.hasProperty(obj2, propName)) {
+                if (formCtrl[propName].value !== obj2[propName]) {
+                    if (mapObj === undefined) {
+                        mapObj = {};
+                    }
+                    mapObj = this.defineProperty(mapObj, propName, formCtrl[propName].value);
+                }
+            }
+        }
+        return mapObj;
+    }
 
 /**
  * This function compress the image

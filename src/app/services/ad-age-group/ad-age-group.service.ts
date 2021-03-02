@@ -11,11 +11,13 @@ import { AlertService } from '../alert/alert.service';
   providedIn: 'root'
 })
 export class AdAgeGroupService implements Resolve<any[]>, OnDestroy {
+    ageGroupCodes: string[];
     ageGroups: any[];
     ageGroupsDTO: any;
     ageGroupsUpdDTO: any;
     ageGroupsSchema: any;
 
+    ageGroupCodesOnChanged: BehaviorSubject<any[]>;
     ageGroupsOnChanged: BehaviorSubject<any[]>;
     ageGroupsDTOOnChanged: BehaviorSubject<any[]>;
     ageGroupsUpdDTOOnChanged: BehaviorSubject<any[]>;
@@ -27,7 +29,9 @@ constructor(
     private _authTokenSession: AuthTokenSessionService,
     private _alertService: AlertService
 ) {
+    this.ageGroupCodes = [];
     this.ageGroups = [];
+    this.ageGroupCodesOnChanged = new BehaviorSubject(this.ageGroupCodes);
     this.ageGroupsOnChanged = new BehaviorSubject(this.ageGroups);
     this.ageGroupsDTOOnChanged = new BehaviorSubject(this.ageGroupsDTO);
     this.ageGroupsUpdDTOOnChanged = new BehaviorSubject(this.ageGroupsUpdDTO);
@@ -52,6 +56,19 @@ doLoadAgeGroups(): Promise<any[]> {
             this.ageGroups = adAgeGroups;
             this.ageGroupsOnChanged.next(this.ageGroups);
             resolve(this.ageGroups);
+        }, reject);
+    });
+}
+doLoadAgeGroupCodes(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+        const httpConfig = this._http.getSrvHttpConfig(
+            SrvApiEnvEnum.adAgeGroupCodes
+        );
+        this._http.GetObs(httpConfig, true).subscribe((adAgeGroupCodes: any) => {
+            this._authTokenSession.checkAuthTokenStatus();
+            this.ageGroupCodes = adAgeGroupCodes;
+            this.ageGroupCodesOnChanged.next(this.ageGroupCodes);
+            resolve(this.ageGroupCodes);
         }, reject);
     });
 }

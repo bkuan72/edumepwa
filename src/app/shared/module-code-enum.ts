@@ -1,3 +1,4 @@
 export enum ModuleCodeEnum {
-    Maintenance = 'MAINTENANCE'
+    Maintenance = 'MAINTENANCE',
+    Account = 'ACCOUNT'
 }

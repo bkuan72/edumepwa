@@ -34,12 +34,20 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     userTimelineCommentSchema: any;
 
     user: any;
-    userData: any;
+    userFullData: any;
+    userBasicData: any;
     userTimeline: any[];
     about: any;
     photosVideos: any[];
 
     accounts: any[];
+
+    userAccountDTO: any;
+    updUserAccountDTO: any;
+    userAccountsSchema: any;
+
+    userAccountDataDTO: any;
+
     accountDTO: any;
     updAccountDTO: any;
     accountsSchema: any;
@@ -52,9 +60,16 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     titles: any[];
     postMedias: any[];
     accountsOnChanged: BehaviorSubject<any>;
+
     accountDTOOnChanged: BehaviorSubject<any>;
     updAccountDTOOnChanged: BehaviorSubject<any>;
     accountSchemaOnChanged: BehaviorSubject<any>;
+
+    userAccountDTOOnChanged: BehaviorSubject<any>;
+    updUserAccountDTOOnChanged: BehaviorSubject<any>;
+    userAccountSchemaOnChanged: BehaviorSubject<any>;
+
+    userAccountDataDTOOnChanged: BehaviorSubject<any>;
 
     userTimelineOnChanged: BehaviorSubject<any>;
     aboutOnChanged: BehaviorSubject<any>;
@@ -67,7 +82,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     insUserDTOOnChanged: BehaviorSubject<any>;
     userSchemaOnChanged: BehaviorSubject<any>;
     countriesOnChanged: BehaviorSubject<any>;
-    userDataOnChanged: BehaviorSubject<any>;
+    userBasicDataOnChanged: BehaviorSubject<any>;
+    userFullDataOnChanged: BehaviorSubject<any>;
     titlesOnChanged: BehaviorSubject<any>;
     userTimelineDTOOnChanged: BehaviorSubject<any>;
 
@@ -94,10 +110,11 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         private _http: SrvHttpService,
         private _session: SessionService,
         private _authTokenSession: AuthTokenSessionService,
-        private _accounts: AccountsService
+        public _accountService: AccountsService
     ) {
         this.user = this._session.userProfileValue;
-        this.userData = undefined;
+        this.userBasicData = undefined;
+        this.userFullData = undefined;
         this.userTimeline = [];
         this.about = {};
         this.photosVideos = [];
@@ -111,10 +128,18 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         this.accounts = [];
 
         // Set the defaults
-        this.accountsOnChanged = new BehaviorSubject(this._accounts.accounts);
-        this.accountDTOOnChanged = new BehaviorSubject(this._accounts.accountsDTO);
-        this.updAccountDTOOnChanged = new BehaviorSubject(this._accounts.accountsUpdDTO);
-        this.accountSchemaOnChanged = new BehaviorSubject(this._accounts.accountsSchema);
+        this.accountsOnChanged = new BehaviorSubject(this._accountService.accounts);
+
+        this.accountDTOOnChanged = new BehaviorSubject(this._accountService.accountsDTO);
+        this.updAccountDTOOnChanged = new BehaviorSubject(this._accountService.accountsUpdDTO);
+        this.accountSchemaOnChanged = new BehaviorSubject(this._accountService.accountsSchema);
+
+        this.userAccountDTOOnChanged = new BehaviorSubject(this._accountService.userAccountsDTO);
+        this.updUserAccountDTOOnChanged = new BehaviorSubject(this._accountService.userAccountsUpdDTO);
+        this.userAccountSchemaOnChanged = new BehaviorSubject(this._accountService.userAccountsSchema);
+
+        this.userAccountDataDTOOnChanged = new BehaviorSubject(this._accountService.userAccountsDataDTO);
+
         this.userTimelineOnChanged = new BehaviorSubject(this.userTimeline);
         this.aboutOnChanged = new BehaviorSubject(this.about);
         this.photosVideosOnChanged = new BehaviorSubject(this.photosVideos);
@@ -127,7 +152,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         this.userSchemaOnChanged = new BehaviorSubject(this.userSchema);
         this.countriesOnChanged = new BehaviorSubject(this.countries);
         this.titlesOnChanged = new BehaviorSubject(this.titles);
-        this.userDataOnChanged = new BehaviorSubject(this.userData);
+        this.userBasicDataOnChanged = new BehaviorSubject(this.userBasicData);
+        this.userFullDataOnChanged = new BehaviorSubject(this.userFullData);
 
         this.userTimelineDTOOnChanged = new BehaviorSubject(this.userTimelineDTO);
         this.postDTOOnChanged = new BehaviorSubject(this.postDTO);
@@ -147,29 +173,54 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             this.user = user;
             this.doLoadUserProfile();
         });
-        this._accounts.accountsOnChanged
+        this._accountService.accountsOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((accounts) => {
             this.accounts = accounts;
             this.accountsOnChanged.next(this.accounts);
         });
-        this._accounts.accountsDTOOnChanged
+        this._accountService.accountsDTOOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((accountDTO) => {
             this.accountDTO = accountDTO;
             this.accountDTOOnChanged.next(this.accountDTO);
         });
-        this._accounts.accountsUpdDTOOnChanged
+        this._accountService.accountsUpdDTOOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((updAccountDTO) => {
             this.updAccountDTO = updAccountDTO;
             this.updAccountDTOOnChanged.next(this.updAccountDTO);
         });
-        this._accounts.accountsSchemaOnChanged
+        this._accountService.accountsSchemaOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((accountsSchema) => {
             this.accountsSchema = accountsSchema;
             this.accountSchemaOnChanged.next(this.accountsSchema);
+        });
+
+        this._accountService.userAccountsDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((userAccountDTO) => {
+            this.userAccountDTO = userAccountDTO;
+            this.userAccountDTOOnChanged.next(this.userAccountDTO);
+        });
+        this._accountService.userAccountsUpdDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((updUserAccountDTO) => {
+            this.updUserAccountDTO = updUserAccountDTO;
+            this.updUserAccountDTOOnChanged.next(this.updUserAccountDTO);
+        });
+        this._accountService.userAccountsSchemaOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((userAccountsSchema) => {
+            this.userAccountsSchema = userAccountsSchema;
+            this.userAccountSchemaOnChanged.next(this.userAccountsSchema);
+        });
+        this._accountService.userAccountsDataDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((userAccountDataDTO) => {
+            this.userAccountDataDTO = userAccountDataDTO;
+            this.userAccountDataDTOOnChanged.next(this.userAccountDataDTO);
         });
     }
 
@@ -195,7 +246,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 this.getGroups(),
                 this.getCountries(),
                 this.getTitles(),
-                this._accounts.doLoadAccounts(this.user.id)
+                this._accountService.doLoadAccounts(this.user.id)
             ]).then(() => {
                 if (this._authTokenSession.devUser) {
                     this.getUserDTO();
@@ -211,9 +262,13 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.getUserTimelineCommentDTO();
                     this.getUpdUserTimelineCommentDTO();
                     this.getUserTimelineCommentSchema();
-                    this._accounts.getAccountsDTO();
-                    this._accounts.getAccountsSchema();
-                    this._accounts.getAccountsUpdDTO();
+                    this._accountService.getAccountsDTO();
+                    this._accountService.getAccountsSchema();
+                    this._accountService.getAccountsUpdDTO();
+                    this._accountService.getUserAccountsDTO();
+                    this._accountService.getUserAccountsSchema();
+                    this._accountService.getUserAccountsUpdDTO();
+                    this._accountService.getUserAccountsDataDTO();
                 } else {
                     this.userDTO = undefined;
                     this.updUserDTO = undefined;
@@ -228,6 +283,10 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.accountDTO = undefined;
                     this.updAccountDTO = undefined;
                     this.accountsSchema = undefined;
+                    this.userAccountDTO = undefined;
+                    this.updUserAccountDTO = undefined;
+                    this.userAccountsSchema = undefined;
+                    this.userAccountDataDTO = undefined;
                     this.userDTOOnChanged.next(this.userDTO);
                     this.updUserDTOOnChanged.next(this.updUserDTO);
                     this.insUserDTOOnChanged.next(this.insUserDTO);
@@ -244,6 +303,10 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.accountDTOOnChanged.next(this.accountDTO);
                     this.updAccountDTOOnChanged.next(this.updAccountDTO);
                     this.accountSchemaOnChanged.next(this.accountsSchema);
+                    this.userAccountDTOOnChanged.next(this.userAccountDTO);
+                    this.updUserAccountDTOOnChanged.next(this.updUserAccountDTO);
+                    this.userAccountSchemaOnChanged.next(this.userAccountsSchema);
+                    this.userAccountDataDTOOnChanged.next(this.userAccountDataDTO);
                 }
                 resolve();
             }, reject);
@@ -292,9 +355,9 @@ export class ProfileService implements Resolve<any>, OnDestroy {
 
             if (fr === undefined) {
 
-                this.getBasicUserData(userId).then((userData) => {
-                    this.strangers.push(userData);
-                    resolve(userData);
+                this.getBasicUserData(userId).then((userBasicData) => {
+                    this.strangers.push(userBasicData);
+                    resolve(userBasicData);
                 })
                 .catch(() => {
                     resolve({ id: '', name: '', avatar: ''});
@@ -736,7 +799,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     /**
      * Get user data
      */
-    getUserData(): Promise<any[]> {
+    getFullUserData(): Promise<any[]> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.userByUserId,
@@ -745,11 +808,11 @@ export class ProfileService implements Resolve<any>, OnDestroy {
 
             this._http
                 .GetObs(httpConfig, true)
-                .subscribe((userData: any) => {
+                .subscribe((userFullData: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
-                    this.userData = userData;
-                    this.userDataOnChanged.next(this.userData);
-                    resolve(this.userData);
+                    this.userFullData = userFullData;
+                    this.userFullDataOnChanged.next(this.userFullData);
+                    resolve(this.userFullData);
                 }, reject);
         });
     }
@@ -768,7 +831,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 .PatchObs(httpConfig, true)
                 .subscribe((resp: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
-                    this.getUserData();
+                    this.getFullUserData();
                     this.doLoadUserProfile();
                     resolve(resp);
                 }, reject);
@@ -885,9 +948,9 @@ export class ProfileService implements Resolve<any>, OnDestroy {
 
             this._http
                 .GetObs(httpConfig, true)
-                .subscribe((userData: any) => {
+                .subscribe((userBasicData: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
-                    resolve(userData);
+                    resolve(userBasicData);
                 }, reject);
         });
     }
@@ -980,4 +1043,5 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             });
         });
     }
+
 }
