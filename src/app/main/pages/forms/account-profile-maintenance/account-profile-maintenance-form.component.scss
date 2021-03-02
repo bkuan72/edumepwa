@@ -2,13 +2,18 @@
     #account {
 
         .header {
-            height: 320px;
-            min-height: 320px;
-            max-height: 320px;
+            height: 200px;
+            min-height: 200px;
+            max-height: 200px;
             background: url('/assets/images/backgrounds/dark-material-bg.jpg') no-repeat 0 45%;
             background-size: cover;
 
         }
+        .name {
+            font-size: 34px;
+            color: #FFFFFF;
+        }
+
     }
     .content {
 

@@ -3,7 +3,7 @@
     <!-- HEADER -->
     <div class="header p-24" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-sm="row"
         fxLayoutAlign.gt-sm="space-between end">
-        <div class="user-info" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-sm="row"
+        <div class="name" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-sm="row"
             fxLayoutAlign.gt-sm="start center">
             <input hidden #uploadAvatarFileInput type="file" accept=".jpg,.png"  (change)="fileChangeEvent($event)" />
             <button mat-icon-button color="accent" aria-label="Change avatar" (click)="uploadAvatarFileInput.click()">

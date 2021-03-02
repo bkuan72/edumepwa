@@ -17,7 +17,7 @@
                     <div class="title">About Business</div>
                     <div class="info">{{account.about_me}}</div>
                 </div>
-                 <div class="info-line">
+                <div class="info-line">
                     <div class="title">Locations</div>
                     <mat-icon class="s-16 ml-4">location_on</mat-icon>
                     <div class="info">{{account.suburb}}</div>
@@ -68,9 +68,18 @@
         <div class="profile-box members" fxLayout="column">
 
             <header class="accent" fxLayout="row" fxLayoutAlign="space-between center">
-                <div class="title">Members</div>
+
+                <div class="title">
+                    <button *ngIf="ownerOfProfile && canAddMember" mat-icon-button
+                    aria-label="create new member" (click)="addNewMember()">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                    Members
+                </div>
+
                 <div class="more secondary-text">
-                    <span>See {{members.length}} more...</span>
+                    <mat-icon *ngIf="members.length > 10"
+                    aria-label="show more member" >expand_more</mat-icon>
                 </div>
             </header>
 
@@ -85,16 +94,21 @@
         <div class="profile-box groups" fxLayout="column">
 
             <header class="accent" fxLayout="row" fxLayoutAlign="space-between center">
-                <div class="title">Groups</div>
+                <div class="title">
+                    <button *ngIf="ownerOfProfile && canAddGroup" mat-icon-button
+                    aria-label="create new group" (click)="addNewGroup()">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                    Groups</div>
                 <div class="more secondary-text">
-                    <span>See {{groups.length}} more...</span>
+                    <mat-icon *ngIf="groups.length > 10"
+                        aria-label="show more member" >expand_more</mat-icon>
                 </div>
             </header>
 
             <div class="content">
 
-                <div class="group" *ngFor="let group of groups" fxLayout="row"
-                     fxLayoutAlign="space-between center">
+                <div class="group" *ngFor="let group of groups" fxLayout="row" fxLayoutAlign="space-between center">
 
                     <div fxLayout="row" fxLayoutAlign="start center">
 

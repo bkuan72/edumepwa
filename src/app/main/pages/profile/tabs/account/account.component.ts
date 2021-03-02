@@ -18,6 +18,9 @@ import { AccountsService } from 'app/services/account/account.service';
 export class AccountsComponent implements OnInit, OnDestroy
 {
     @Input() account: any;
+    canAddMember = true;    // TODO: check access right
+    canAddGroup = true;    // TODO: check access right
+    ownerOfProfile = true; // TODO: check login profile
     about: any;
     members: any[];
     groups: any[];
@@ -67,5 +70,13 @@ export class AccountsComponent implements OnInit, OnDestroy
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+    }
+
+
+    addNewMember(): void {
+
+    }
+    addNewGroup(): void {
+
     }
 }
