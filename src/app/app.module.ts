@@ -1,7 +1,7 @@
 import { AccountProfileSessionService } from './services/session/account-profile-session.service';
 import { CurrentUserLoadedGuard } from './main/guards/currentUserLoaded.guard';
 import { LockComponent } from 'app/main/pages/authentication/lock/lock.component';
-import { AccountLoadedGuard } from './main/guards/accountLoaded.gaurd';
+import { AccountLoadedGuard } from './main/guards/accountLoaded.guard';
 import { AccountProfileMaintenanceFormsComponent } from './main/pages/forms/account-profile-maintenance/account-profile-maintenance-form.component';
 import { AdAgeGroupService } from './services/ad-age-group/ad-age-group.service';
 import { AdAgeGroupsFormComponent } from './main/pages/forms/ad-ageGroups-maintenance/ad-ageGroups-maintenance-form.component';
@@ -49,6 +49,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdKeywordsFormComponent } from './main/pages/forms/ad-keywords-maintenance/ad-keywords-maintenance-form.component';
 import { AccountsService } from './services/account/account.service';
 import { UserProfileSessionService } from './services/session/user-profile-session.service';
+import { AngularMaterialImageOverlayModule, AngularMaterialImageOverlayComponent } from 'angular-material-image-overlay';
+
 
 const appRoutes: Routes = [
     {
@@ -153,7 +155,8 @@ const appRoutes: Routes = [
         // App modules
         LayoutModule,
         PagesModule,
-        NgbModule
+        NgbModule,
+        AngularMaterialImageOverlayModule
     ],
     providers: [
         SrvHttpService,

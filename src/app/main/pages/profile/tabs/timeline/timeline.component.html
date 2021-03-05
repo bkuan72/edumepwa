@@ -6,8 +6,8 @@
 
             <div class="form" fxFlex>
                 <div class="emoji-container">
-                    <textarea matInput matTextareaAutosize placeholder="Write something.."
-                        [(ngModel)]="post.message"></textarea>
+                    <textarea matInput mat-autosize placeholder="Write something.."
+                        [value]="post.message"></textarea>
                 </div>
 
                 <div class="content" *ngIf="post.medias.length > 0">

@@ -1,3 +1,5 @@
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CommonComponentModule } from './../../../components/component.module';
 import { DateSinceNowPipe } from './../../../pipes/date-since-now.pipe';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { TimelineService } from './timeline.service';
@@ -22,6 +24,10 @@ import {NgxPhotoEditorModule} from 'ngx-photo-editor';
 import { AccountsComponent } from 'app/main/pages/profile/tabs/account/account.component';
 import { AccountsService } from 'app/services/account/account.service';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatInputModule } from '@angular/material/input';
+import {MatBadgeModule} from '@angular/material/badge';
+import { AngularMaterialImageOverlayComponent } from 'angular-material-image-overlay';
+
 
 
 
@@ -49,7 +55,8 @@ const routes = [
         PickerModule,
         NgxPhotoEditorModule,
         MatProgressSpinnerModule,
-
+        MatFormFieldModule,
+        MatInputModule,
         MatButtonModule,
         MatDividerModule,
         MatIconModule,
@@ -57,8 +64,10 @@ const routes = [
         AvatarModule,
         MatMomentDateModule,
         MatExpansionModule,
+        MatBadgeModule,
 
-        FuseSharedModule
+        FuseSharedModule,
+        CommonComponentModule
     ],
     providers   : [
         ProfileService,

@@ -21,7 +21,7 @@ export enum SrvApiEnvEnum {
     friends = '/api/friends/friendList/byUserId',
     groups = '/api/groups/byUserId',
     activities = '/api/activities/activityList/byTimelineUserIdOffSetDays',
-    media = '/api/userMedias/byUserId',
+
     increment_likes = '/api/posts/likes',
     increment_share = '/api/posts/share',
     userGroups = '/api/userGroups/byUserId',
@@ -105,6 +105,22 @@ export enum SrvApiEnvEnum {
     userAccountsUpdDTO= '/api/userAccounts/updDTO',
     userAccountsSchema= '/api/userAccounts/schema',
     userAccountsDataDTO= '/api/userAccounts/userAccountDTO',
+
+    userMediaPeriods= '/api/userMediaPeriods',
+    userMediaPeriodDTO= '/api/userMediaPeriods/DTO',
+    userMediaPeriodUpdDTO= '/api/userMediaPeriods/updDTO',
+    userMediaPeriodsSchema= '/api/userMediaPeriods/schema',
+    userMediaPeriodsByUserId= '/api/userMediaPeriods/byUserId',
+
+    userMedias= '/api/userMedias',
+    userMediaDTO= '/api/userMedias/DTO',
+    userMediaUpdDTO= '/api/userMedias/updDTO',
+    userMediasSchema= '/api/userMedias/schema',
+    userMediasByUserId= '/api/userMedias/byUserId',
+    userMediasByUserMediaPeriodId= '/api/userMedias/byUserMediaPeriodId',
+
+    userMediaFullImageById= '/api/userMedias/fullImage',
+    accountGroupMediaFullImageById= '/api/accountGroupMedias/fullImage',
 
     // local web server path
     SETTINGS_JSON_LOCATION = 'assets/app-settings.json',

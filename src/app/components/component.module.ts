@@ -9,10 +9,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
-
-
-
-
+import { ImageDropUploadComponent } from './image-drop-upload/image-drop-upload.component';
+import { DragDropDirective } from './image-drop-upload/appDragDrop.directive';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 @NgModule({
     imports: [
         ReactiveFormsModule,
@@ -22,14 +21,21 @@ import { ReactiveFormsModule } from '@angular/forms';
         MatButtonModule,
         MatRippleModule,
         MatChipsModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
+        MatProgressSpinnerModule,
     ],
     declarations: [
         AlertComponent,
-        ChipsSelectorComponent
+        ChipsSelectorComponent,
+        ImageDropUploadComponent,
+        DragDropDirective
     ],
-    exports: [AlertComponent,
-        ChipsSelectorComponent
+    exports: [
+        AlertComponent,
+        ChipsSelectorComponent,
+        ImageDropUploadComponent,
+        DragDropDirective
     ]
 })
+
 export class CommonComponentModule {}

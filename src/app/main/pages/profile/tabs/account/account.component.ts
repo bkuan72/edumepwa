@@ -35,8 +35,6 @@ export class AccountsComponent implements OnInit, OnDestroy
      */
     constructor(
         private _profileService: ProfileService,
-        private router: Router,
-        private _accountService: AccountsService,
         public fn: CommonFn
     )
     {

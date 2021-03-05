@@ -244,4 +244,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 .catch(() => {});
         });
     }
+    refreshPhotos(): void {
+        this._profileService._mediaService.getPhotosVideos();
+    }
 }

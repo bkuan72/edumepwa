@@ -60,13 +60,13 @@
                 </ng-template>
                 <profile-about></profile-about>
             </mat-tab>
-            <mat-tab label="Photos & Videos">
-                <profile-photos-videos></profile-photos-videos>
+            <mat-tab label="Photos">
+                <profile-photos-videos (uploadCompleted)="refreshPhotos()"></profile-photos-videos>
             </mat-tab>
 
             <mat-tab label="Accounts">
                 <ng-template mat-tab-label>
-                    <button *ngIf="ownerOfProfile && canAddAccount" mat-icon-button color="accent"
+                    <button *ngIf="ownerOfProfile" mat-icon-button color="accent"
                     aria-label="create new account" (click)="addNewAccount()">
                     <mat-icon>add_circle_outline</mat-icon>
                 </button>
@@ -76,7 +76,7 @@
                     <mat-expansion-panel *ngFor="let account of accounts">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
-                                <button *ngIf="ownerOfProfile && canEditAccount" mat-icon-button color="accent"
+                                <button *ngIf="ownerOfProfile" mat-icon-button color="accent"
                                     aria-label="maintain account" (click)="doMaintainAccount(account)">
                                     <mat-icon>edit</mat-icon>
                                 </button>

@@ -45,6 +45,7 @@
     "@types/prismjs": "1.16.1",
     "angular-calendar": "0.28.16",
     "angular-in-memory-web-api": "0.11.0",
+    "angular-material-image-overlay": "0.0.7",
     "bootstrap": "^4.5.0",
     "chart.js": "2.9.3",
     "classlist.js": "1.1.20150312",

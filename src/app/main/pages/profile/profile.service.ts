@@ -13,6 +13,9 @@ import { Moment } from 'moment';
 import * as moment from 'moment';
 import { AccountsService } from 'app/services/account/account.service';
 import { UserProfileSessionService } from 'app/services/session/user-profile-session.service';
+import { MediaService, UploadMode } from 'app/services/media/media.service';
+import { LoggerService } from 'app/services/logger/logger.service';
+import { CommonFn } from 'app/shared/common-fn';
 
 
 @Injectable()
@@ -96,6 +99,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     userTimelineCommentDTOOnChanged: BehaviorSubject<any>;
     updUserTimelineCommentDTOOnChanged: BehaviorSubject<any>;
     userTimelineCommentSchemaOnChanged: BehaviorSubject<any>;
+    _mediaService: MediaService;
 
 
     // Private
@@ -110,8 +114,17 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         private _http: SrvHttpService,
         private _session: UserProfileSessionService,
         private _authTokenSession: AuthTokenSessionService,
-        public _accountService: AccountsService
+        public _accountService: AccountsService,
+        private _logger: LoggerService,
+        private _fn: CommonFn
+
     ) {
+        this._mediaService = new MediaService(
+            this._logger,
+            this._http,
+            this._authTokenSession,
+            this._fn,
+            UploadMode.UserMedia);
         this.user = this._session.userProfileValue;
         this.userBasicData = undefined;
         this.userFullData = undefined;
@@ -126,7 +139,10 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         this.titles = [];
         this.postMedias = [];
         this.accounts = [];
-
+        this._mediaService.initMediaService(UploadMode.UserMedia,
+            this.user,
+            this._accountService.account,
+            undefined);
         // Set the defaults
         this.accountsOnChanged = new BehaviorSubject(this._accountService.accounts);
 
@@ -171,6 +187,10 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe(user => {
             this.user = user;
+            this._mediaService.initMediaService(UploadMode.UserMedia,
+                this.user,
+                this._accountService.account,
+                undefined);
             this.doLoadUserProfile();
         });
         this._accountService.accountsOnChanged
@@ -222,6 +242,12 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             this.userAccountDataDTO = userAccountDataDTO;
             this.userAccountDataDTOOnChanged.next(this.userAccountDataDTO);
         });
+        this._mediaService.photosVideosOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe(photosVideos => {
+            this.photosVideos = photosVideos;
+            this.photosVideosOnChanged.next(photosVideos);
+        });
     }
 
     ngOnDestroy(): void {
@@ -240,14 +266,15 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             Promise.all([
                 this.getTimeline(),
                 this.getAbout(),
-                this.getPhotosVideos(),
                 this.getActivities(),
                 this.getFriends(),
                 this.getGroups(),
                 this.getCountries(),
                 this.getTitles(),
-                this._accountService.doLoadAccounts(this.user.id)
+                this._accountService.doLoadAccounts(this.user.id),
             ]).then(() => {
+                this._mediaService.getPhotosVideos();
+
                 if (this._authTokenSession.devUser) {
                     this.getUserDTO();
                     this.getInsUserDTO();
@@ -577,26 +604,6 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     }
 
 
-    /**
-     * Get photos & videos
-     */
-    getPhotosVideos(): Promise<any[]> {
-        return new Promise((resolve, reject) => {
-            const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.media,
-                [this.user.id]
-            );
-
-            this._http
-                .GetObs(httpConfig, true)
-                .subscribe((photosVideos: any) => {
-                    this._authTokenSession.checkAuthTokenStatus();
-                    this.photosVideos = photosVideos;
-                    this.photosVideosOnChanged.next(this.photosVideos);
-                    resolve(this.photosVideos);
-                }, reject);
-        });
-    }
 
     /**
      * populate activity users with user data

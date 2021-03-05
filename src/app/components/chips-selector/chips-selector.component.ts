@@ -21,6 +21,7 @@ export class ChipsSelectorComponent implements OnInit {
     @Input() required: string;
     @Input() controlName: string;
     @Input() control: FormControl;
+    // tslint:disable-next-line:no-output-on-prefix
     @Output() onChange: EventEmitter<string> = new EventEmitter();
 
     @ViewChild('chipInput') chipInput: ElementRef<HTMLInputElement>;

@@ -1,0 +1,32 @@
+
+<div *ngIf="ownerOfPhotos" class="uploadFileContainer" (click)="doClickFileInput()" appDragDrop (onFileDropped)="uploadFile($event)">
+    <h3>Image Files</h3>
+    <p>Drag and Drop Files(*.jpg,*.png)</p>
+    <div class="file">
+        <label class="file-label">
+            <input [disabled]='uploadInProgress' hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
+            <mat-icon *ngIf="!uploadInProgress">cloud_upload</mat-icon>
+            <div *ngIf="uploadInProgress">
+                <span class="file-label">{{progressMessage}}...</span>
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+        </label>
+    </div>
+</div>
+<div  class="files-list" *ngFor="let fileBlob of fileBlobs;let i= index">
+    <img class="preview" [src]="fileBlob.img">
+    <p> {{ fileBlob.name }} </p>
+    <mat-hint *ngIf="fileBlob.invalid" class="upload-error">{{fileBlob.invalidMsg}}</mat-hint>
+    <button disabled *ngIf="!fileBlob.invalid && !fileBlob.failUpload" mat-icon-button class="save-file"
+    aria-label="Upload Done">
+        <mat-icon>cloud_done</mat-icon>
+    </button>
+    <button *ngIf="fileBlob.failUpload" mat-icon-button class="save-file" (click)="uploadAttachment(i)"
+    aria-label="Retry Upload">
+        <mat-icon>cloud_upload</mat-icon>
+    </button>
+    <button mat-icon-button class="delete-file" (click)="deleteAttachment(i)"
+    aria-label="Remove">
+        <mat-icon>cancel</mat-icon>
+    </button>
+ </div>
