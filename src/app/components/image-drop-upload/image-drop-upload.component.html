@@ -4,7 +4,7 @@
     <p>Drag and Drop Files(*.jpg,*.png)</p>
     <div class="file">
         <label class="file-label">
-            <input [disabled]='uploadInProgress' hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
+            <input [disabled]='uploadInProgress' multiple hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
             <mat-icon *ngIf="!uploadInProgress">cloud_upload</mat-icon>
             <div *ngIf="uploadInProgress">
                 <span class="file-label">{{progressMessage}}...</span>
