@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { fuseAnimations } from '@fuse/animations';
 import { ProfileService } from '../../profile.service';
 import { AccountsService } from 'app/services/account/account.service';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 
 @Component({
     selector     : 'profile-account',
@@ -18,6 +19,7 @@ import { AccountsService } from 'app/services/account/account.service';
 export class AccountsComponent implements OnInit, OnDestroy
 {
     @Input() account: any;
+    user: any;
     canAddMember = true;    // TODO: check access right
     canAddGroup = true;    // TODO: check access right
     ownerOfProfile = true; // TODO: check login profile
@@ -35,9 +37,18 @@ export class AccountsComponent implements OnInit, OnDestroy
      */
     constructor(
         private _profileService: ProfileService,
-        public fn: CommonFn
+        public fn: CommonFn,
+        private _auth: AuthTokenSessionService
     )
     {
+        this.ownerOfProfile = false;
+        this.user = this._profileService.user;
+        if (
+            this._auth.currentAuthUser &&
+            this._auth.currentAuthUser.id === this.user.id
+        ) {
+            this.ownerOfProfile = true;
+        }
         this.members = [];
         this.groups = [];
         // Set the private defaults

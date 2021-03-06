@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { fuseAnimations } from '@fuse/animations';
 import { ProfileService } from 'app/main/pages/profile/profile.service';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 
 @Component({
     selector     : 'profile-about',
@@ -16,6 +17,8 @@ import { ProfileService } from 'app/main/pages/profile/profile.service';
 })
 export class ProfileAboutComponent implements OnInit, OnDestroy
 {
+    ownerOfProfile = false;
+    user: any;
     about: any;
     friends: any[];
     groups: any[];
@@ -30,9 +33,18 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
      */
     constructor(
         private _profileService: ProfileService,
-        private router: Router
+        private router: Router,
+        private _auth: AuthTokenSessionService
     )
     {
+        this.ownerOfProfile = false;
+        this.user = this._profileService.user;
+        if (
+            this._auth.currentAuthUser &&
+            this._auth.currentAuthUser.id === this.user.id
+        ) {
+            this.ownerOfProfile = true;
+        }
         this.friends = [];
         this.groups = [];
         // Set the private defaults
@@ -73,5 +85,12 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+    }
+    addNewFriends(): void {
+
+    }
+
+    addNewGroup(): void {
+        
     }
 }

@@ -100,9 +100,17 @@
         <div class="profile-box friends" fxLayout="column">
 
             <header class="accent" fxLayout="row" fxLayoutAlign="space-between center">
-                <div class="title">Friends</div>
+                <div class="title">
+                    <button *ngIf="ownerOfProfile" mat-icon-button
+                    aria-label="create new member" (click)="addNewFriends()">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                    Friends
+                </div>
+
                 <div class="more secondary-text">
-                    <span>See {{friends.length}} more...</span>
+                    <mat-icon *ngIf="friends.length > 10"
+                    aria-label="show more friends" >expand_more</mat-icon>
                 </div>
             </header>
 
@@ -117,9 +125,17 @@
         <div class="profile-box groups" fxLayout="column">
 
             <header class="accent" fxLayout="row" fxLayoutAlign="space-between center">
-                <div class="title">Joined Groups</div>
+                <div class="title">
+                    <button *ngIf="ownerOfProfile" mat-icon-button
+                    aria-label="create new group" (click)="addNewGroup()">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                    Groups
+                </div>
+
                 <div class="more secondary-text">
-                    <span>See {{groups.length}} more...</span>
+                    <mat-icon *ngIf="groups.length > 10"
+                    aria-label="show more groups" >expand_more</mat-icon>
                 </div>
             </header>
 
