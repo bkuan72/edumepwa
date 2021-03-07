@@ -71,7 +71,7 @@ export class ImageDropUploadComponent {
                     .resizeImage(base64Data, 0.05, 128)
                     .then((previewImg) => {
                         this._fn
-                        .resizeImage(base64Data, 0.20, 128)
+                        .resizeImage(base64Data, 0.60, 128)
                         .then((fullImg) => {
                         this.fileBlobs.push({
                             name: file.name,

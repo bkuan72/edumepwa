@@ -199,7 +199,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
             return;
         }
         this.commentSubmitted = true;
-        this.toggleCommentEmojiPicker(timeline);
+        timeline.isCommentEmojiPickerVisible  = false;
 
         // stop here if form is invalid
         if (this.emptyComment(timeline)) {

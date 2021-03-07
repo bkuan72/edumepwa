@@ -6,8 +6,8 @@
 
             <div class="form" fxFlex>
                 <div class="emoji-container">
-                    <textarea matInput mat-autosize placeholder="Write something.."
-                        [value]="post.message"></textarea>
+                    <textarea matInput placeholder="Write something.."
+                        [(ngModel)]="post.message"></textarea>
                 </div>
 
                 <div class="content" *ngIf="post.medias.length > 0">
@@ -170,7 +170,7 @@
                         name="{{authUser.user_name}}"></ngx-avatar>
                     <div class="form" fxFlex>
                         <div class="emoji-container">
-                            <textarea matInput matTextareaAutosize placeholder="Add a comment..."
+                            <textarea matInput placeholder="Add a comment..."
                                 [(ngModel)]="timeline.newComment"></textarea>
                         </div>
                         <div fxLayout="row" *ngIf="emojiPickerVisible(timeline)"  fxLayoutAlign="start center">
