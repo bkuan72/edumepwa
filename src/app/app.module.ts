@@ -115,6 +115,7 @@ const appRoutes: Routes = [
     },
     {
         path        : 'contacts',
+        canActivate : [AuthGuard],
         loadChildren: () => import('./main/apps/contacts/contacts.module').then(m => m.ContactsModule),
         resolve     : {
             any: ContactsService

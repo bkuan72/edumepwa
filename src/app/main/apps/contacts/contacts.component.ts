@@ -10,6 +10,8 @@ import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 import { ContactsService } from 'app/main/apps/contacts/contacts.service';
 import { ContactsContactFormDialogComponent } from 'app/main/apps/contacts/contact-form/contact-form.component';
 import { CommonFn } from 'app/shared/common-fn';
+import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
+import { ModuleCodeEnum } from 'app/shared/module-code-enum';
 
 @Component({
     selector     : 'contacts',
@@ -23,6 +25,12 @@ export class ContactsComponent implements OnInit, OnDestroy
     dialogRef: any;
     hasSelectedContacts: boolean;
     searchInput: FormControl;
+    canDev: boolean;
+    panelOpenState = false;
+
+    friendDTO: any;
+    updFriendDTO: any;
+    friendsSchema: any;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -38,9 +46,15 @@ export class ContactsComponent implements OnInit, OnDestroy
         private _contactsService: ContactsService,
         private _fuseSidebarService: FuseSidebarService,
         private _matDialog: MatDialog,
-        public fn: CommonFn
+        public fn: CommonFn,
+        private _auth: AuthTokenSessionService
     )
     {
+        this.canDev = this._auth.devUser;
+        this.friendDTO = this._contactsService.friendDTO;
+        this.updFriendDTO = this._contactsService.updFriendDTO;
+        this.friendsSchema = this._contactsService.friendsSchema;
+
         // Set the defaults
         this.searchInput = new FormControl('');
 
@@ -57,6 +71,21 @@ export class ContactsComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this._contactsService.friendDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((friendDTO) => {
+            this.friendDTO = friendDTO;
+        });
+        this._contactsService.updFriendDTOOnChanged
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((updFriendDTO) => {
+                this.updFriendDTO = updFriendDTO;
+            });
+        this._contactsService.friendsSchemaOnChanged
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((friendsSchema) => {
+                this.friendsSchema = friendsSchema;
+            });
         this._contactsService.onSelectedContactsChanged
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(selectedContacts => {

@@ -24,6 +24,7 @@ import { ContactsContactFormDialogComponent } from 'app/main/apps/contacts/conta
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgxPhotoEditorModule } from 'ngx-photo-editor';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const routes: Routes = [
     {
@@ -59,6 +60,7 @@ const routes: Routes = [
         AvatarModule,
         PickerModule,
         NgxPhotoEditorModule,
+        MatExpansionModule,
 
         FuseSharedModule,
         FuseConfirmDialogModule,

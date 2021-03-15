@@ -38,7 +38,7 @@
                         <img [hidden]="fn.showGenericAvatar(user.avatar)" class="avatar medium" src="{{ user.avatar }}" />
                         <img [hidden]="!fn.showGenericAvatar(user.avatar)" class="avatar" src="assets/images/avatars/profile.jpg">
                         <!-- <ngx-avatar class="my-avatar" size=40 [hidden]="!fn.showGenericAvatar(user.avatar)" name="{{ user.first_name }}"></ngx-avatar> -->
-                        {{user.full_name}} {{user.email}}
+                        {{user.full_name}}
                       </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
