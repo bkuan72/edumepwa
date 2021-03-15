@@ -1,7 +1,7 @@
 import { CommonFn } from 'app/shared/common-fn';
 import { UserService } from './../../../../services/user/user.service';
 import { Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 import { Contact } from 'app/main/apps/contacts/contact.model';
@@ -25,6 +25,7 @@ export class ContactsContactFormDialogComponent implements OnDestroy, OnInit
     contact: Contact;
     contactForm: FormGroup;
     dialogTitle: string;
+    newContact = true;
 
     filteredUsers: any[];
     searchCtrl = new FormControl();
@@ -58,12 +59,14 @@ export class ContactsContactFormDialogComponent implements OnDestroy, OnInit
         {
             this.dialogTitle = 'Edit Contact';
             this.contact = _data.contact;
+            this.newContact = false;
         }
         else
         {
             this.dialogTitle = 'New Contact';
             this.contact = new Contact({});
             this.contact.user_id = this._auth.currentAuthUser.id;
+            this.newContact = true;
         }
 
         this.contactForm = this.createContactForm();
@@ -96,8 +99,10 @@ export class ContactsContactFormDialogComponent implements OnDestroy, OnInit
           debounceTime(500),
           startWith(''))
         .subscribe(value => {
-            this.contactForm.controls.first_name.setValue(value);
-            this._filter(value);
+            if (this.newContact) {
+                this.contactForm.controls.first_name.setValue(value);
+                this._filter(value);
+            }
         });
 
     }
@@ -138,7 +143,7 @@ export class ContactsContactFormDialogComponent implements OnDestroy, OnInit
             id      : [this.contact.id],
             user_id      : [this.contact.user_id],
             friend_id      : [this.contact.friend_id],
-            first_name    : [this.contact.first_name],
+            first_name    : [this.contact.first_name, [Validators.required]],
             last_name: [this.contact.last_name],
             avatar  : [this.contact.avatar],
             nickname: [this.contact.nickname],

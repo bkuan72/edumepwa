@@ -20,10 +20,12 @@
         <form [formGroup]="contactForm">
 
             <div fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field hidden appearance="outline" fxFlex>
-                <input hidden first_name="first_name" formControlName="first_name" matInput required>
+                <mat-form-field [hidden]="newContact" appearance="outline" fxFlex>
+                <mat-label>Name</mat-label>
+                <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
+                <input name="first_name" formControlName="first_name" matInput required>
                 </mat-form-field>
-                <mat-form-field appearance="outline" fxFlex>
+                <mat-form-field [hidden]="!newContact" appearance="outline" fxFlex>
                     <mat-label>Name</mat-label>
                     <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
                     <input type="text"
@@ -35,7 +37,7 @@
                       <mat-option *ngFor="let user of filteredUsers" [value]="user.first_name" (click)="selectUser(user)">
                         <img [hidden]="fn.showGenericAvatar(user.avatar)" class="avatar medium" src="{{ user.avatar }}" />
                         <img [hidden]="!fn.showGenericAvatar(user.avatar)" class="avatar" src="assets/images/avatars/profile.jpg">
-                        <!-- <ngx-avatar class="my-avatar" size=40 [hidden]="!fn.showGenericAvatar(user.avatar)" first_name="{{ user.first_name }}"></ngx-avatar> -->
+                        <!-- <ngx-avatar class="my-avatar" size=40 [hidden]="!fn.showGenericAvatar(user.avatar)" name="{{ user.first_name }}"></ngx-avatar> -->
                         {{user.full_name}} {{user.email}}
                       </mat-option>
                     </mat-autocomplete>
@@ -46,7 +48,7 @@
                 <mat-form-field appearance="outline" fxFlex>
                     <mat-label>Last Name</mat-label>
                     <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
-                    <input first_name="last_name" formControlName="last_name" matInput>
+                    <input name="last_name" formControlName="last_name" matInput>
                 </mat-form-field>
             </div>
 
@@ -54,7 +56,7 @@
                 <mat-form-field appearance="outline" fxFlex>
                     <mat-label>Nickname</mat-label>
                     <mat-icon matSuffix class="secondary-text">star</mat-icon>
-                    <input first_name="nickname" formControlName="nickname" matInput>
+                    <input name="nickname" formControlName="nickname" matInput>
                 </mat-form-field>
             </div>
 
@@ -70,7 +72,7 @@
                 <mat-form-field appearance="outline" fxFlex>
                     <mat-label>Email</mat-label>
                     <mat-icon matSuffix class="secondary-text">email</mat-icon>
-                    <input first_name="email" formControlName="email" matInput type="email">
+                    <input name="email" formControlName="email" matInput type="email">
                 </mat-form-field>
             </div>
 
@@ -78,7 +80,7 @@
                 <mat-form-field appearance="outline" fxFlex>
                     <mat-label>Company</mat-label>
                     <mat-icon matSuffix class="secondary-text">domain</mat-icon>
-                    <input first_name="company" formControlName="company" matInput>
+                    <input name="company" formControlName="company" matInput>
                 </mat-form-field>
             </div>
 
@@ -86,14 +88,14 @@
                 <mat-form-field appearance="outline" fxFlex>
                     <mat-label>Job title</mat-label>
                     <mat-icon matSuffix class="secondary-text">work</mat-icon>
-                    <input first_name="job_title" formControlName="job_title" matInput>
+                    <input name="job_title" formControlName="job_title" matInput>
                 </mat-form-field>
             </div>
 
             <div fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field appearance="outline" fxFlex>
                     <mat-label>Birthday</mat-label>
-                    <input matInput [matDatepicker]="birthdayDatePicker" first_name="birthday" formControlName="birthday">
+                    <input matInput [matDatepicker]="birthdayDatePicker" name="birthday" formControlName="birthday">
                     <mat-datepicker-toggle matSuffix [for]="birthdayDatePicker"></mat-datepicker-toggle>
                     <mat-datepicker #birthdayDatePicker></mat-datepicker>
                 </mat-form-field>
@@ -103,14 +105,14 @@
                 <mat-form-field appearance="outline" fxFlex>
                     <mat-label>Address</mat-label>
                     <mat-icon matSuffix class="secondary-text">home</mat-icon>
-                    <input first_name="address" formControlName="address" matInput>
+                    <input name="address" formControlName="address" matInput>
                 </mat-form-field>
             </div>
 
             <div fxLayout="row" class="textarea-wrapper" fxLayoutAlign="start start">
                 <mat-form-field appearance="outline" fxFlex>
                     <mat-label>Notes</mat-label>
-                    <textarea first_name="notes" formControlName="notes" matInput type="text" max-rows="4"></textarea>
+                    <textarea name="notes" formControlName="notes" matInput type="text" max-rows="4"></textarea>
                 </mat-form-field>
             </div>
 

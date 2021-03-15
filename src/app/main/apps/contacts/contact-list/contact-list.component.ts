@@ -11,6 +11,8 @@ import { FuseConfirmDialogComponent } from '@fuse/components/confirm-dialog/conf
 import { ContactsService } from 'app/main/apps/contacts/contacts.service';
 import { ContactsContactFormDialogComponent } from 'app/main/apps/contacts/contact-form/contact-form.component';
 import { CommonFn } from 'app/shared/common-fn';
+import { OkDialogComponent } from 'app/components/ok-dialog/ok-dialog.component';
+import { UserProfileSessionService } from 'app/services/session/user-profile-session.service';
 
 @Component({
     selector     : 'contacts-contact-list',
@@ -32,6 +34,7 @@ export class ContactsContactListComponent implements OnInit, OnDestroy
     checkboxes: {};
     dialogRef: any;
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
+    okDialogRef: MatDialogRef<OkDialogComponent>;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -45,7 +48,8 @@ export class ContactsContactListComponent implements OnInit, OnDestroy
     constructor(
         private _contactsService: ContactsService,
         public _matDialog: MatDialog,
-        public fn: CommonFn
+        public fn: CommonFn,
+        private _session: UserProfileSessionService
     )
     {
         // Set the private defaults
@@ -200,6 +204,22 @@ export class ContactsContactListComponent implements OnInit, OnDestroy
     toggleStar(contactId): void
     {
         this._contactsService.updateContactStar(contactId);
+    }
+
+    gotoProfile(friend): void {
+        if (this.fn.isZeroUuid(friend.friend_id)) {
+            this.okDialogRef = this._matDialog.open(OkDialogComponent, {
+                disableClose: false
+            });
+            this.okDialogRef.componentInstance.confirmMessage = 'Friend is NOT a Registered User';
+            this.okDialogRef.afterClosed().subscribe(result => {
+
+                this.okDialogRef = null;
+            });
+        } else {
+            this._session.goToUserProfile(friend.friend_id);
+        }
+
     }
 }
 

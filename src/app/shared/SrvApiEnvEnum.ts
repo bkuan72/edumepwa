@@ -25,6 +25,9 @@ export enum SrvApiEnvEnum {
     toggleContactStar= '/api/friends/toggleStar',
     incrContactFrequency= '/api/friends/incrFrequency',
     removeContact= '/api/friends/remove',
+    friendDTO= '/api/friends/DTO',
+    updFriendDTO= '/api/friends/updDTO',
+    friendsSchema= '/api/friends/schema',
 
     about = '/api/users/profile-about/byUserId',
     groups = '/api/groups/byUserId',

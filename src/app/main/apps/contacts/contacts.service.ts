@@ -31,6 +31,14 @@ export class ContactsService implements Resolve<any>, OnDestroy {
     user: any;
     selectedContacts: string[] = [];
 
+    friendDTO: any;
+    updFriendDTO: any;
+    friendsSchema: any;
+
+    friendDTOOnChanged: BehaviorSubject<any>;
+    updFriendDTOOnChanged: BehaviorSubject<any>;
+    friendsSchemaOnChanged: BehaviorSubject<any>;
+
     searchText: string;
     filterBy: string;
 
@@ -56,6 +64,10 @@ export class ContactsService implements Resolve<any>, OnDestroy {
         this.onSearchTextChanged = new Subject();
         this.onFilterChanged = new Subject();
 
+        this.friendDTOOnChanged = new BehaviorSubject(this.friendDTO);
+        this.updFriendDTOOnChanged = new BehaviorSubject(this.updFriendDTO);
+        this.friendsSchemaOnChanged = new BehaviorSubject(this.friendsSchema);
+
         // Set the private defaults
         this._unsubscribeAll = new Subject();
 
@@ -63,7 +75,9 @@ export class ContactsService implements Resolve<any>, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((user) => {
                 this.user = user;
-                this.getContacts();
+                if (this.user) {
+                    this.getContacts();
+                }
                 this.onUserDataChanged.next(this.user);
             });
     }
@@ -85,7 +99,12 @@ export class ContactsService implements Resolve<any>, OnDestroy {
     ): Observable<void> | Promise<void> | void {
         return new Promise((resolve, reject) => {
             if (this.user) {
-                Promise.all([this.getContacts()]).then(([files]) => {
+                Promise.all([
+                    this.getContacts(),
+                    this.getFriendDTO(),
+                    this.getUpdFriendDTO(),
+                    this.getFriendSchema()
+                ]).then(() => {
                     this.onSearchTextChanged.subscribe((searchText) => {
                         this.searchText = searchText;
                         this.getContacts();
@@ -108,6 +127,66 @@ export class ContactsService implements Resolve<any>, OnDestroy {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+    }
+
+
+
+    /**
+     * Get friend DTO
+     */
+     getFriendDTO(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (this._authTokenSession.devUser) {
+                const httpConfig = this._http.getSrvHttpConfig(
+                    SrvApiEnvEnum.friendDTO
+                );
+                this._http.GetObs(httpConfig, true).subscribe((friendDTO: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    this.friendDTO = friendDTO;
+                    this.friendDTOOnChanged.next(this.friendDTO);
+                    resolve(this.friendDTO);
+                }, reject);
+            } else {
+                resolve();
+            }
+
+        });
+    }
+    /**
+     * Get update friend DTO
+     */
+    getUpdFriendDTO(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.updFriendDTO
+            );
+            this._http.GetObs(httpConfig, true).subscribe((updFriendDTO: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                this.updFriendDTO = updFriendDTO;
+                this.updFriendDTOOnChanged.next(this.updFriendDTO);
+                resolve(this.updFriendDTO);
+            }, reject);
+        });
+    }
+    /**
+     * Get friend schema
+     */
+    getFriendSchema(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (this._authTokenSession.devUser) {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.friendsSchema
+            );
+            this._http.GetObs(httpConfig, true).subscribe((friendsSchema: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                this.friendsSchema = friendsSchema;
+                this.friendsSchemaOnChanged.next(this.friendsSchema);
+                resolve(this.friendsSchema);
+            }, reject);
+            } else {
+                resolve();
+            }
+        });
     }
 
     /**
@@ -225,12 +304,13 @@ export class ContactsService implements Resolve<any>, OnDestroy {
      */
     updateContact(contact): Promise<void> {
         return new Promise((resolve, reject) => {
-            const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userContactsUpdate,
-                undefined,
-                contact
-            );
+
             if (this._fn.emptyStr(contact.id)) {
+                const httpConfig = this._http.getSrvHttpConfig(
+                    SrvApiEnvEnum.userContactsUpdate,
+                    [contact.id],
+                    contact
+                );
                 this._fn.defineProperty(contact, 'friend_date', '');
                 contact.friend_date = this._fn.getNowISODate();
                 this._http.PostObs(httpConfig, true).subscribe((newUser: any) => {
@@ -239,6 +319,20 @@ export class ContactsService implements Resolve<any>, OnDestroy {
                     resolve();
                 }, reject);
             } else {
+                let origContact = {};
+                this.contacts.some((ct) => {
+                    if (ct.id === contact.id) {
+                        origContact = ct;
+                        return true;
+                    }
+
+                });
+                const updContact = this._fn.mapObjChangedPropertyValue(origContact, contact);
+                const httpConfig = this._http.getSrvHttpConfig(
+                    SrvApiEnvEnum.userContactsUpdate,
+                    [contact.id],
+                    updContact
+                );
                 this._http.PatchObs(httpConfig, true).subscribe((newUser: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
                     this.getContacts();

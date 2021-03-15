@@ -189,7 +189,7 @@ export class CommonFn {
                     if (mapObj === undefined) {
                         mapObj = {};
                     }
-                    mapObj = this.defineProperty(mapObj, propName, obj1[propName].value);
+                    mapObj = this.defineProperty(mapObj, propName, obj2[propName]);
                 }
             }
         }
@@ -327,6 +327,15 @@ export class CommonFn {
      * @returns true/false
      */
     isZeroUuid(uuid: string): boolean {
-        return uuid === '30000000-0000-0000-0000-000000000000';
+        let zeroUuid = false;
+        zeroUuid = uuid === '30000000-0000-0000-0000-000000000000';
+        if (this.emptyStr(uuid)) {
+            zeroUuid = true;
+        } else {
+            if (uuid === '00000000-0000-0000-0000-000000000000') {
+                zeroUuid = true;
+            }
+        }
+        return zeroUuid;
     }
 }

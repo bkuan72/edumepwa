@@ -177,9 +177,8 @@ export class AuthTokenSessionService implements OnDestroy {
 
     login = (loginDTO: LoginDTO, rememberMe: boolean): Promise<any> => {
         return new Promise((resolve, reject) => {
-            this._auth.login(loginDTO, rememberMe)
+            this._auth.login(loginDTO, rememberMe, this._authToken.setToken)
             .then((responseBody) => {
-                this._authToken.setToken(responseBody, rememberMe);
                 resolve(responseBody);
             })
             .catch(() => {

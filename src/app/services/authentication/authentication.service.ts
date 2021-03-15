@@ -88,7 +88,9 @@ export class AuthenticationService {
         });
     }
 
-    login = (loginDTO: LoginDTO, rememberMe: boolean): Promise<any> => {
+    login = (loginDTO: LoginDTO,
+             rememberMe: boolean,
+             setToken: (resp: any, rememberMe: boolean) => void): Promise<any> => {
         return new Promise((resolve, reject) => {
             this.rememberMe = rememberMe;
             const httpConfig = this._http.getSrvHttpConfig(
@@ -103,6 +105,7 @@ export class AuthenticationService {
                         LocalStoreVarEnum.USER,
                         JSON.stringify(responseBody)
                     );
+                    setToken(responseBody, rememberMe);
                     this.authUserOnChange.next(responseBody);
                     resolve(responseBody);
                 })
