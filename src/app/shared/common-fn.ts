@@ -286,6 +286,11 @@ export class CommonFn {
           });
     }
 
+    /**
+     * Return true if string is empty
+     * @param val - string
+     * @returns boolean
+     */
     emptyStr(val: string): boolean {
         let empty = false;
         if (val === undefined) {
@@ -304,5 +309,24 @@ export class CommonFn {
             }
         }
         return empty;
+    }
+
+    /**
+     * get Today's ISO string date
+     * 
+     * @returns todays ISO string date
+     */
+    getNowISODate(): string {
+        const now = new Date();
+        return now.toISOString()
+    }
+
+    /**
+     * check if uuid is ZERO value
+     * @param uuid
+     * @returns true/false
+     */
+    isZeroUuid(uuid: string): boolean {
+        return uuid === '30000000-0000-0000-0000-000000000000';
     }
 }

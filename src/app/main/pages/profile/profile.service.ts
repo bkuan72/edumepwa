@@ -62,6 +62,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     countries: any[];
     titles: any[];
     postMedias: any[];
+
+    userOnChanged: BehaviorSubject<any>;
     accountsOnChanged: BehaviorSubject<any>;
 
     accountDTOOnChanged: BehaviorSubject<any>;
@@ -144,6 +146,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             this._accountService.account,
             undefined);
         // Set the defaults
+        this.userOnChanged = new BehaviorSubject(this.user);
         this.accountsOnChanged = new BehaviorSubject(this._accountService.accounts);
 
         this.accountDTOOnChanged = new BehaviorSubject(this._accountService.accountsDTO);
@@ -191,7 +194,9 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 this.user,
                 this._accountService.account,
                 undefined);
-            this.doLoadUserProfile();
+            this.doLoadUserProfile().then(() => {
+                this.userOnChanged.next(this.user);
+            })
         });
         this._accountService.accountsOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
@@ -1051,4 +1056,14 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         });
     }
 
+    isFriend(userId: string): boolean {
+        let friend = false;
+        this.friends.some((fr) => {
+            if (userId === fr.friend_id) {
+                friend = true;
+                return true;
+            }
+        });
+        return friend;
+    }
 }

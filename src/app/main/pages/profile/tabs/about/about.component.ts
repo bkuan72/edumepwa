@@ -1,3 +1,4 @@
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { group } from '@angular/animations';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
@@ -7,6 +8,9 @@ import { takeUntil } from 'rxjs/operators';
 import { fuseAnimations } from '@fuse/animations';
 import { ProfileService } from 'app/main/pages/profile/profile.service';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
+import { CommonFn } from 'app/shared/common-fn';
+import { OkDialogComponent } from 'app/components/ok-dialog/ok-dialog.component';
+import { UserProfileSessionService } from 'app/services/session/user-profile-session.service';
 
 @Component({
     selector     : 'profile-about',
@@ -25,6 +29,7 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
 
     // Private
     private _unsubscribeAll: Subject<any>;
+    confirmDialogRef: MatDialogRef<OkDialogComponent>;
 
     /**
      * Constructor
@@ -34,7 +39,10 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
     constructor(
         private _profileService: ProfileService,
         private router: Router,
-        private _auth: AuthTokenSessionService
+        private _auth: AuthTokenSessionService,
+        public fn: CommonFn,
+        private _matDialog: MatDialog,
+        private _session: UserProfileSessionService
     )
     {
         this.ownerOfProfile = false;
@@ -60,6 +68,18 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this._profileService.userOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((user) => {
+            this.user = user;
+            this.ownerOfProfile = false;
+            if (
+                this._auth.currentAuthUser &&
+                this._auth.currentAuthUser.id === this.user.id
+            ) {
+                this.ownerOfProfile = true;
+            }
+        });
         this._profileService.aboutOnChanged
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(about => {
@@ -91,6 +111,22 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
     }
 
     addNewGroup(): void {
-        
+
+    }
+
+    gotoProfile(friend): void {
+        if (this.fn.isZeroUuid(friend.friend_id)) {
+            this.confirmDialogRef = this._matDialog.open(OkDialogComponent, {
+                disableClose: false
+            });
+            this.confirmDialogRef.componentInstance.confirmMessage = 'Friend is NOT a Registered User';
+            this.confirmDialogRef.afterClosed().subscribe(result => {
+
+                this.confirmDialogRef = null;
+            });
+        } else {
+            this._session.goToUserProfile(friend.friend_id);
+        }
+
     }
 }

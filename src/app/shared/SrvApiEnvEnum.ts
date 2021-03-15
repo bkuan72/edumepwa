@@ -16,9 +16,17 @@ export enum SrvApiEnvEnum {
     updUserDTO= '/api/users/updDTO',
     userSchema= '/api/users/schema',
     updateUserAvatar= '/api/users/updateAvatar',
+    findUserByEmail= '/api/users/byEmail',
+    basicUserByKeyword = '/api/users/basicInfo/byKeyword',
+
+    friends = '/api/friends/friendList/byUserId',
+    userContactsByUserId= '/api/friends/contactList/byUserId',
+    userContactsUpdate= '/api/friends',
+    toggleContactStar= '/api/friends/toggleStar',
+    incrContactFrequency= '/api/friends/incrFrequency',
+    removeContact= '/api/friends/remove',
 
     about = '/api/users/profile-about/byUserId',
-    friends = '/api/friends/friendList/byUserId',
     groups = '/api/groups/byUserId',
     activities = '/api/activities/activityList/byTimelineUserIdOffSetDays',
 
@@ -121,6 +129,9 @@ export enum SrvApiEnvEnum {
 
     userMediaFullImageById= '/api/userMedias/fullImage',
     accountGroupMediaFullImageById= '/api/accountGroupMedias/fullImage',
+
+
+
 
     // local web server path
     SETTINGS_JSON_LOCATION = 'assets/app-settings.json',

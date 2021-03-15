@@ -89,10 +89,18 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>User name</mat-label>
+                        <mat-label>User Name</mat-label>
                         <input matInput formControlName="user_name" required>
                         <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
                         <mat-error>User Name is required!</mat-error>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field appearance="outline" fxFlex="100">
+                        <mat-label>Company Name</mat-label>
+                        <input matInput formControlName="company">
+                        <mat-icon matSuffix class="secondary-text">b</mat-icon>
+                        <mat-error>Company is required!</mat-error>
                     </mat-form-field>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">

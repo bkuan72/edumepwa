@@ -26,7 +26,12 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
     friends: any[];
     authUser: any;
 
+    user: any;
+    ownerOfProfile = false;
     commentSubmitted = false;
+
+    canPost = false;
+    canComment = false;
 
     public isPostEmojiPickerVisible: boolean;
     public isCommentEmojiPickerVisible: boolean;
@@ -44,7 +49,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
      */
     constructor(private _profileService: ProfileService,
                 private _timelineService: TimelineService,
-                public _authSession: AuthTokenSessionService,
+                public _auth: AuthTokenSessionService,
                 public fn: CommonFn,
                 private alert: AlertService) {
         this.post = {
@@ -58,6 +63,20 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
         this.userTimeline = [];
         this.activities = [];
         this.friends = [];
+        this.ownerOfProfile = false;
+
+        this.user = this._profileService.user;
+        this.canComment = this._profileService.isFriend(this.user.id);
+        this.canPost = this._profileService.isFriend(this.user.id);
+        if (
+            this._auth.currentAuthUser &&
+            this._auth.currentAuthUser.id === this.user.id
+        ) {
+            this.ownerOfProfile = true;
+            this.canPost = true;
+            this.canComment = true;
+        }
+
         // Set the private defaults
         this._unsubscribeAll = new Subject();
     }
@@ -88,10 +107,26 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
                 this.friends = friends;
                 // this.doUpdateTimeLineUser();
             });
-        this._authSession.authUserOnChanged
+        this._auth.authUserOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((authUser) => {
             this.authUser = authUser;
+        });
+        this._profileService.userOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((user) => {
+            this.user = user;
+            this.ownerOfProfile = false;
+            this.canPost = this._profileService.isFriend(user.id);
+            this.canComment = this._profileService.isFriend(user.id);
+            if (
+                this._auth.currentAuthUser &&
+                this._auth.currentAuthUser.id === this.user.id
+            ) {
+                this.ownerOfProfile = true;
+                this.canPost = true;
+                this.canComment = true;
+            }
         });
     }
 
@@ -109,7 +144,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
      }
 
     isAuth(): boolean {
-        return this._authSession.isLoggedIn();
+        return this._auth.isLoggedIn();
     }
 
 
@@ -148,12 +183,12 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
         if (this.post.message.length > 0 ||
             this.post.medias.length > 0) {
             this.post.timeline_user_id = this._profileService.user.id;
-            this.post.post_user_id = this._authSession.currentAuthUser.id;
+            this.post.post_user_id = this._auth.currentAuthUser.id;
             this._timelineService.doPostToTimeline(this.post)
             .then((postDTO) => {
                 const promiseList: Promise<any>[] = [];
                 this.post.medias.forEach((media) => {
-                    promiseList.push(this._timelineService.doPostMedia(this._authSession.currentAuthUser.id,
+                    promiseList.push(this._timelineService.doPostMedia(this._auth.currentAuthUser.id,
                         postDTO.id,
                         media));
                 });
@@ -207,7 +242,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
         }
 
         this._timelineService.doPostCommentToTimeline(
-            this._authSession.currentAuthUser.id,
+            this._auth.currentAuthUser.id,
             timeline.id,
             timeline.post.id,
             timeline.newComment
@@ -231,7 +266,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
 
         this._timelineService.doToggleTimelineLike(
             this._profileService.user.id,
-            this._authSession.currentAuthUser.id,
+            this._auth.currentAuthUser.id,
             timeline.id
         )
         .then(() => {

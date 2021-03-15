@@ -6,7 +6,8 @@ export const locale = {
             'SAMPLE'        : {
                 'TITLE': 'Sample',
                 'BADGE': '25'
-            }
+            },
+            'CONTACTS'    : 'Contacts',
         }
     }
 };

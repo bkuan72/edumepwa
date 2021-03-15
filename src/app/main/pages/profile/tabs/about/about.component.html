@@ -116,7 +116,11 @@
 
             <div class="content" fxLayout="row wrap">
                 <div class="friend" fxFlex="20" *ngFor="let friend of friends">
-                    <img [src]="friend.avatar">
+                    <button class="avatar-button" (click)="gotoProfile(friend)">
+                        <img [hidden]="fn.showGenericAvatar(friend.avatar)" src="{{ friend.avatar }}" />
+                        <ngx-avatar size=40 [hidden]="!fn.showGenericAvatar(friend.avatar)
+                            " name="{{ friend.name }}"></ngx-avatar>
+                    </button>
                 </div>
             </div>
 

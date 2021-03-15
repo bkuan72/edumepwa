@@ -15,6 +15,7 @@ export const navigation: FuseNavigation[] = [
                 url: 'search/modern',
                 externalUrl: false
             },
+
         ]
     },
 ];
@@ -27,6 +28,14 @@ export const adminNavigation: FuseNavigation[] = [
         icon: 'account_circle',
         url: 'maintain/profile',
         externalUrl: false
+    },
+    {
+        id       : 'contacts',
+        title    : 'Contacts',
+        translate: 'NAV.CONTACTS',
+        type     : 'item',
+        icon     : 'account_box',
+        url      : 'contacts'
     },
     {
         id      : 'admin.maintenance',
@@ -70,6 +79,14 @@ export const devNavigation: FuseNavigation[] = [
         url: 'maintain/profile'
     },
     {
+        id       : 'contacts',
+        title    : 'Contacts',
+        translate: 'NAV.CONTACTS',
+        type     : 'item',
+        icon     : 'account_box',
+        url      : 'contacts'
+    },
+    {
         id      : 'admin.maintenance',
         title   : 'Maintenance',
         type    : 'collapsable',
@@ -107,6 +124,14 @@ export const bizNavigation: FuseNavigation[] = [
         icon: 'account_circle',
         url: 'maintain/profile'
     },
+    {
+        id       : 'contacts',
+        title    : 'Contacts',
+        translate: 'NAV.CONTACTS',
+        type     : 'item',
+        icon     : 'account_box',
+        url      : 'contacts'
+    },
 ];
 export const userNavigation: FuseNavigation[] = [
     {
@@ -115,5 +140,13 @@ export const userNavigation: FuseNavigation[] = [
         type: 'item',
         icon: 'account_circle',
         url: 'maintain/profile'
+    },
+    {
+        id       : 'contacts',
+        title    : 'Contacts',
+        translate: 'NAV.CONTACTS',
+        type     : 'item',
+        icon     : 'account_box',
+        url      : 'contacts'
     },
 ];

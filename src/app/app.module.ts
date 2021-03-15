@@ -1,3 +1,4 @@
+import { UserService } from './services/user/user.service';
 import { AccountProfileSessionService } from './services/session/account-profile-session.service';
 import { CurrentUserLoadedGuard } from './main/guards/currentUserLoaded.guard';
 import { LockComponent } from 'app/main/pages/authentication/lock/lock.component';
@@ -50,6 +51,7 @@ import { AdKeywordsFormComponent } from './main/pages/forms/ad-keywords-maintena
 import { AccountsService } from './services/account/account.service';
 import { UserProfileSessionService } from './services/session/user-profile-session.service';
 import { AngularMaterialImageOverlayModule, AngularMaterialImageOverlayComponent } from 'angular-material-image-overlay';
+import { ContactsService } from './main/apps/contacts/contacts.service';
 
 
 const appRoutes: Routes = [
@@ -112,6 +114,13 @@ const appRoutes: Routes = [
         }
     },
     {
+        path        : 'contacts',
+        loadChildren: () => import('./main/apps/contacts/contacts.module').then(m => m.ContactsModule),
+        resolve     : {
+            any: ContactsService
+        }
+    },
+    {
         path        : 'pages',
         loadChildren: () => import('./main/pages/pages.module').then(m => m.PagesModule)
     },
@@ -168,6 +177,8 @@ const appRoutes: Routes = [
         UserProfileSessionService,
         AccountsService,
         AccountProfileSessionService,
+        ContactsService,
+        UserService,
         CommonFn
     ],
     bootstrap   : [

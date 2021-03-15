@@ -153,11 +153,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             .subscribe((userTimelineCommentSchema) => {
                 this.userTimelineCommentSchema = userTimelineCommentSchema;
             });
-        this._profileService.accountsOnChanged
-        .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe((accounts) => {
-            this.accounts = accounts;
-        });
+
         this._profileService.accountDTOOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((accountDTO) => {
@@ -194,6 +190,23 @@ export class ProfileComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((userAccountDataDTO) => {
             this.userAccountDataDTO = userAccountDataDTO;
+        });
+        this._profileService.accountsOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((accounts) => {
+            this.accounts = accounts;
+        });
+        this._profileService.userOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((user) => {
+            this.user = user;
+            this.ownerOfProfile = false;
+            if (
+                this._auth.currentAuthUser &&
+                this._auth.currentAuthUser.id === this.user.id
+            ) {
+                this.ownerOfProfile = true;
+            }
         });
     }
 

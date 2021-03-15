@@ -2,7 +2,7 @@
 
     <div class="timeline-content" fxLayout="column" fxFlex="100" fxFlex.gt-sm="55" fxFlex.gt-md="65">
 
-        <div class="profile-box add-post">
+        <div class="profile-box add-post" *ngIf="canPost">
 
             <div class="form" fxFlex>
                 <div class="emoji-container">
@@ -66,7 +66,7 @@
 
         </div>
 
-        <mat-divider></mat-divider>
+        <mat-divider *ngIf="canPost"></mat-divider>
 
         <div class="timeline-item" *ngFor="let timeline of userTimeline; let i = index; trackBy: trackByUuid">
 
@@ -163,7 +163,7 @@
                     </div>
                 </div>
 
-                <div class="reply" fxLayout="row" fxFlexFill>
+                <div class="reply" fxLayout="row" fxFlexFill *ngIf="canComment">
                     <img [hidden]="authUser && isAuth() && fn.showGenericAvatar(authUser.avatar)" class="avatar"
                         src="{{authUser.avatar}}">
                     <ngx-avatar size=40 [hidden]="authUser && isAuth() && !fn.showGenericAvatar(authUser.avatar)"

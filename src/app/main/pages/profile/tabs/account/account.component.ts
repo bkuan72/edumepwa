@@ -64,6 +64,18 @@ export class AccountsComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this._profileService.userOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((user) => {
+            this.user = user;
+            this.ownerOfProfile = false;
+            if (
+                this._auth.currentAuthUser &&
+                this._auth.currentAuthUser.id === this.user.id
+            ) {
+                this.ownerOfProfile = true;
+            }
+        });
         this._profileService.aboutOnChanged
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(about => {

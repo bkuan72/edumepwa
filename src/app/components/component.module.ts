@@ -1,3 +1,5 @@
+import { OkDialogComponent } from './ok-dialog/ok-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatRippleModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,18 +25,21 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
         MatChipsModule,
         MatAutocompleteModule,
         MatProgressSpinnerModule,
+        MatDialogModule
     ],
     declarations: [
         AlertComponent,
         ChipsSelectorComponent,
         ImageDropUploadComponent,
-        DragDropDirective
+        DragDropDirective,
+        OkDialogComponent
     ],
     exports: [
         AlertComponent,
         ChipsSelectorComponent,
         ImageDropUploadComponent,
-        DragDropDirective
+        DragDropDirective,
+        OkDialogComponent
     ]
 })
 
