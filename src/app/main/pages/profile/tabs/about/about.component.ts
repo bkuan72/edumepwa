@@ -22,6 +22,8 @@ import { UserProfileSessionService } from 'app/services/session/user-profile-ses
 export class ProfileAboutComponent implements OnInit, OnDestroy
 {
     ownerOfProfile = false;
+    areFriends = false;
+    showFullProfile = false;
     user: any;
     about: any;
     friends: any[];
@@ -53,6 +55,9 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
         ) {
             this.ownerOfProfile = true;
         }
+        this.areFriends = this._profileService.areFriends;
+        this.showFullProfile = this._profileService.showFullProfile;
+
         this.friends = [];
         this.groups = [];
         // Set the private defaults
@@ -79,6 +84,8 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
             ) {
                 this.ownerOfProfile = true;
             }
+            this.areFriends = this._profileService.areFriends;
+            this.showFullProfile = this._profileService.showFullProfile;
         });
         this._profileService.aboutOnChanged
             .pipe(takeUntil(this._unsubscribeAll))

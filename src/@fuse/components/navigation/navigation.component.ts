@@ -92,13 +92,13 @@ export class FuseNavigationComponent implements OnInit
 
     private updateNavigation(nav: FuseNavigation, add: boolean): void {
         const mainNav = this._fuseNavigationService.getNavigation('main');
-        if (mainNav) {
-            const fuseNav = this._fuseNavigationService.getNavigationItem(nav.id, mainNav);
+        if (mainNav && mainNav.length > 0) {
+            const fuseNav = this._fuseNavigationService.getNavigationItem(nav.id, mainNav[0].children);
             if (add) {
                 if (fuseNav !== false) {
                     this._fuseNavigationService.updateNavigationItem(nav.id, nav);
                 } else {
-                    this._fuseNavigationService.addNavigationItem(nav, 'end');
+                    this._fuseNavigationService.addNavigationItem(nav, 'applications');
                 }
             } else {
                 if (fuseNav) {

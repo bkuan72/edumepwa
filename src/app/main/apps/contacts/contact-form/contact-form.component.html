@@ -29,10 +29,10 @@
                     <mat-label>Name</mat-label>
                     <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
                     <input type="text"
-                           aria-label="Name"
+                           aria-label="Search First Name, Last Name And Email"
                            matInput
                            [formControl]="searchCtrl"
-                           [matAutocomplete]="auto">
+                           [matAutocomplete]="auto" required>
                     <mat-autocomplete #auto="matAutocomplete">
                       <mat-option *ngFor="let user of filteredUsers" [value]="user.first_name" (click)="selectUser(user)">
                         <img [hidden]="fn.showGenericAvatar(user.avatar)" class="avatar medium" src="{{ user.avatar }}" />
@@ -49,6 +49,15 @@
                     <mat-label>Last Name</mat-label>
                     <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
                     <input name="last_name" formControlName="last_name" matInput>
+                </mat-form-field>
+            </div>
+
+            <div [hidden]="fn.isZeroUuid(contactForm.controls.friend_id.value)" fxLayout="row" class="textarea-wrapper" fxLayoutAlign="start start">
+                <mat-slide-toggle color="accent" name="blockUser" matInput formControlName="blockUser">Block User</mat-slide-toggle>
+            </div>
+            <div hidden>
+                <mat-form-field appearance="outline" fxFlex>
+                    <input name="friend_status" formControlName="friend_status" matInput>
                 </mat-form-field>
             </div>
 
@@ -116,6 +125,7 @@
                 </mat-form-field>
             </div>
 
+
         </form>
 
     </div>
@@ -131,7 +141,7 @@
             DELETE
         </button>
 
-        <button *ngIf="action !== 'edit'"
+        <button *ngIf="action !== 'edit' && fn.isZeroUuid(contactForm.controls.friend_id.value)"
                 mat-button
                 color="accent"
                 class="save-button"
@@ -139,6 +149,25 @@
                 [disabled]="contactForm.invalid"
                 aria-label="SAVE">
             ADD
+        </button>
+
+        <button *ngIf="action !== 'edit' && !fn.isZeroUuid(contactForm.controls.friend_id.value) && !contactForm.controls.blockUser.value"
+        mat-button
+        color="accent"
+        class="save-button"
+        (click)="matDialogRef.close(contactForm)"
+        [disabled]="contactForm.invalid"
+        aria-label="REQUEST">
+            REQUEST
+        </button>
+        <button *ngIf="action !== 'edit' && !fn.isZeroUuid(contactForm.controls.friend_id.value) && contactForm.controls.blockUser.value"
+        mat-button
+        color="accent"
+        class="save-button"
+        (click)="matDialogRef.close(contactForm)"
+        [disabled]="contactForm.invalid"
+        aria-label="BLOCK">
+            BLOCK
         </button>
 
         <button *ngIf="action === 'edit'"

@@ -304,11 +304,6 @@ export class AccountsService implements OnDestroy, Resolve<any> {
                 user_id: userId,
                 account_id: accountId,
                 acc_type: "HOLDER",
-                allow_notification: true,
-                allow_promo: true,
-                allow_msg: true,
-                allow_friends: true,
-                public: true
             }
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.userAccounts,

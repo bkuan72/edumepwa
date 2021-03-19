@@ -199,11 +199,14 @@ export class ContactsContactListComponent implements OnInit, OnDestroy
     /**
      * Toggle star
      *
-     * @param contactId
+     * @param contact
      */
-    toggleStar(contactId): void
+    toggleStar(contact: any): void
     {
-        this._contactsService.updateContactStar(contactId);
+        if (contact.blockUser) {
+            return;
+        }
+        this._contactsService.updateContactStar(contact.id);
     }
 
     gotoProfile(friend): void {
@@ -217,7 +220,30 @@ export class ContactsContactListComponent implements OnInit, OnDestroy
                 this.okDialogRef = null;
             });
         } else {
-            this._session.goToUserProfile(friend.friend_id);
+            this._contactsService.checkBlockByFriend(friend.friend_id).then((resp) => {
+                if (resp.blocked) {
+                    this.okDialogRef = this._matDialog.open(OkDialogComponent, {
+                        disableClose: false
+                    });
+                    this.okDialogRef.componentInstance.confirmMessage = 'You have been blocked by User';
+                    this.okDialogRef.afterClosed().subscribe(result => {
+        
+                        this.okDialogRef = null;
+                    });
+                } else {
+                    this._session.goToUserProfile(friend.friend_id);
+                }
+            })
+            .catch(() => {
+                this.okDialogRef = this._matDialog.open(OkDialogComponent, {
+                    disableClose: false
+                });
+                this.okDialogRef.componentInstance.confirmMessage = 'Unable to goto Profile';
+                this.okDialogRef.afterClosed().subscribe(result => {
+    
+                    this.okDialogRef = null;
+                });
+            });
         }
 
     }

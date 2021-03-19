@@ -141,7 +141,9 @@ export class SrvHttpService {
         }
         srvConfig.requestTimeStamp = new Date().getTime();
         return this._httpClient
-            .get(srvConfig.url, { headers: httpHdr, withCredentials: srvConfig.withCredentials });
+            .get(srvConfig.url, { headers: httpHdr,
+                                  withCredentials: srvConfig.withCredentials
+                                });
     }
 
 
@@ -153,7 +155,10 @@ export class SrvHttpService {
             }
             srvConfig.requestTimeStamp = new Date().getTime();
             this._httpClient
-                .get(srvConfig.url, { headers: httpHdr, observe: 'response', withCredentials: srvConfig.withCredentials })
+                .get(srvConfig.url, { headers: httpHdr,
+                                      observe: 'response',
+                                      withCredentials: srvConfig.withCredentials
+                                    })
                 .subscribe(
                     (httpResponse: HttpResponse<object>) => {
                         // SUCCESS

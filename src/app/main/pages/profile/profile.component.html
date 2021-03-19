@@ -34,10 +34,10 @@
 
         <div *ngIf="!ownerOfProfile" class="actions" fxLayout="row" fxLayoutAlign="end center"
             [@animate]="{ value: '*', params: { delay: '200ms' } }">
-            <button mat-raised-button color="accent" aria-label="Follow">
+            <button mat-raised-button color="accent" aria-label="Follow" *ngIf='user.allow_follows'>
                 Follow
             </button>
-            <button mat-raised-button color="primary" aria-label="Send Message">
+            <button mat-raised-button color="primary" aria-label="Send Message" *ngIf='user.allow_msg'>
                 Send Message
             </button>
         </div>
@@ -47,7 +47,7 @@
     <!-- CONTENT -->
     <div class="content">
         <mat-tab-group dynamicHeight="true">
-            <mat-tab label="Timeline">
+            <mat-tab label="Timeline" *ngIf='showFullProfile'>>
                 <profile-timeline></profile-timeline>
             </mat-tab>
             <mat-tab label="About">
@@ -60,11 +60,11 @@
                 </ng-template>
                 <profile-about></profile-about>
             </mat-tab>
-            <mat-tab label="Photos">
+            <mat-tab label="Photos" *ngIf='showFullProfile'>
                 <profile-photos-videos (uploadCompleted)="refreshPhotos()"></profile-photos-videos>
             </mat-tab>
 
-            <mat-tab label="Accounts">
+            <mat-tab label="Accounts" *ngIf='showFullProfile'>
                 <ng-template mat-tab-label>
                     <button *ngIf="ownerOfProfile" mat-icon-button color="accent"
                     aria-label="create new account" (click)="addNewAccount()">
@@ -219,6 +219,30 @@
                             <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userAccountsSchema">
                                 <div class="h2 mb-24">Accounts Schema</div>
                                 <pre><code>{{userAccountsSchema| json}}</code></pre>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                User DTO
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                User Table DTO
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userDTO">
+                                <div class="h2 mb-24">User DTO</div>
+                                <pre><code>{{userDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updUserDTO">
+                                <div class="h2 mb-24">Update User DTO</div>
+                                <pre><code>{{updUserDTO | json}}</code></pre>
+                            </div>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="usersSchema">
+                                <div class="h2 mb-24">Users Schema</div>
+                                <pre><code>{{usersSchema| json}}</code></pre>
                             </div>
                         </div>
                     </mat-expansion-panel>

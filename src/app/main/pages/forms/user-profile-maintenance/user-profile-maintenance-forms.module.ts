@@ -12,6 +12,10 @@ import { FuseSharedModule } from '@fuse/shared.module';
 
 import { UserProfileMaintenanceFormsComponent } from './user-profile-maintenance-forms.component';
 import { CommonComponentModule } from 'app/components/component.module';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
+
 
 const routes: Routes = [
     {
@@ -36,7 +40,9 @@ const routes: Routes = [
         MatInputModule,
         MatSelectModule,
         MatStepperModule,
-
+        MatSlideToggleModule,
+        MatTabsModule,
+        MatExpansionModule,
         FuseSharedModule,
         CommonComponentModule
     ]

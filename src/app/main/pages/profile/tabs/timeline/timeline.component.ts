@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { TimelinePostIfc, TimelineService } from '../../timeline.service';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 import { CroppedEvent, NgxPhotoEditorComponent } from 'ngx-photo-editor';
+import { ContactsService } from 'app/main/apps/contacts/contacts.service';
 
 @Component({
     selector: 'profile-timeline',
@@ -50,6 +51,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
     constructor(private _profileService: ProfileService,
                 private _timelineService: TimelineService,
                 public _auth: AuthTokenSessionService,
+                private _contactService: ContactsService,
                 public fn: CommonFn,
                 private alert: AlertService) {
         this.post = {
@@ -66,8 +68,8 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
         this.ownerOfProfile = false;
 
         this.user = this._profileService.user;
-        this.canComment = this._profileService.isFriend(this.user.id);
-        this.canPost = this._profileService.isFriend(this.user.id);
+        this.canComment = this._profileService.showFullProfile;
+        this.canPost = this._profileService.showFullProfile;
         if (
             this._auth.currentAuthUser &&
             this._auth.currentAuthUser.id === this.user.id
@@ -117,8 +119,8 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
         .subscribe((user) => {
             this.user = user;
             this.ownerOfProfile = false;
-            this.canPost = this._profileService.isFriend(user.id);
-            this.canComment = this._profileService.isFriend(user.id);
+            this.canPost = this._profileService.showFullProfile;
+            this.canComment = this._profileService.showFullProfile;
             if (
                 this._auth.currentAuthUser &&
                 this._auth.currentAuthUser.id === this.user.id
@@ -300,5 +302,16 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
     }
     imageLoadFail(): void {
         this.alert.error('Invalid Image File');
+    }
+
+    acceptFriend(activity: any): void {
+
+    }
+
+    ignoreFriend(activity: any): void {
+    }
+
+    blockFriend(activity: any): void {
+
     }
 }

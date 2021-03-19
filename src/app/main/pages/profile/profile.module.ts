@@ -26,9 +26,6 @@ import { AccountsService } from 'app/services/account/account.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import {MatBadgeModule} from '@angular/material/badge';
-import { AngularMaterialImageOverlayComponent } from 'angular-material-image-overlay';
-
-
 
 
 const routes = [

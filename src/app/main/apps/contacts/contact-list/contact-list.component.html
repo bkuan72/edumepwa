@@ -72,24 +72,27 @@
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let contact">
             <div fxFlex="row" fxLayoutAlign="end center">
-                <button mat-icon-button (click)="$event.stopPropagation();toggleStar(contact.id)" aria-label="Toggle star">
-                    <mat-icon class="amber-fg" *ngIf="contact.starred">star</mat-icon>
-                    <mat-icon class="secondary-text" *ngIf="!contact.starred">star_border</mat-icon>
+                <button mat-icon-button (click)="$event.stopPropagation();toggleStar(contact)" aria-label="Toggle star">
+                    <mat-icon class="amber-fg" *ngIf="!contact.blockUser && contact.starred">star</mat-icon>
+                    <mat-icon class="secondary-text" *ngIf="!contact.blockUser && !contact.starred">star_border</mat-icon>
+                    <mat-icon class="secondary-text" *ngIf="contact.blockUser">block</mat-icon>
                 </button>
-
+                <!-- <button mat-icon-button (click)="$event.stopPropagation();removeBlock(contact.id)" aria-label="Remove Block">
+                    <mat-icon class="secondary-text" *ngIf="contact.blockUser">block</mat-icon>
+                </button> -->
                 <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
                         (click)="$event.stopPropagation();">
                     <mat-icon class="secondary-text">more_vert</mat-icon>
                 </button>
 
                 <mat-menu #moreMenu="matMenu">
-                    <button mat-menu-item aria-label="remove" (click)="deleteContact(contact)">
-                        <mat-icon>delete</mat-icon>
-                        <span>Remove</span>
-                    </button>
                     <button mat-menu-item aria-label="profile" (click)="gotoProfile(contact)">
                         <mat-icon>perm_identity</mat-icon>
                         <span>Profile</span>
+                    </button>
+                    <button mat-menu-item aria-label="remove" (click)="deleteContact(contact)">
+                        <mat-icon>delete</mat-icon>
+                        <span>Remove</span>
                     </button>
                 </mat-menu>
             </div>

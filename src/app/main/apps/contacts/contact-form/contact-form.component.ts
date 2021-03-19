@@ -153,10 +153,17 @@ export class ContactsContactFormDialogComponent implements OnDestroy, OnInit
             mobile_no   : [this.contact.mobile_no],
             address : [this.contact.address],
             birthday: [this.contact.birthday],
-            notes   : [this.contact.notes]
+            notes   : [this.contact.notes],
+            friend_status: [this.contact.friend_status],
+            blockUser: [this.contact.friend_status === 'BLOCKED']
         });
     }
 
+    /**
+     * Select user to populate form if user is not already on list and user had
+     * not block login user
+     * @param user - new user
+     */
     selectUser(user: any): void {
         if (this._contactService.inContact(user.id)) {
             this.confirmDialogRef = this._matDialog.open(OkDialogComponent, {
@@ -167,28 +174,50 @@ export class ContactsContactFormDialogComponent implements OnDestroy, OnInit
                 this.confirmDialogRef = null;
             });
         } else {
-        this._userService.getUserData(user.id).then ((userData) => {
-            this.selectedUser = userData;
-            this.contactForm.setValue({
-                id: '',
-                user_id: this._auth.currentAuthUser.id,
-                friend_id: userData.id,
-                first_name: userData.first_name,
-                last_name: userData.last_name,
-                avatar: userData.avatar,
-                nickname: '',
-                company: userData.company,
-                job_title: '',
-                email: userData.email,
-                mobile_no: userData.mobile_no,
-                address: userData.address,
-                birthday: userData.birthday,
-                notes: ''
+        this._contactService.checkBlockByFriend(user.id).then((resp) => {
+            if (resp.blocked) {
+                this.confirmDialogRef = this._matDialog.open(OkDialogComponent, {
+                    disableClose: false
+                });
+                this.confirmDialogRef.componentInstance.confirmMessage = 'User Has Blocked You';
+                this.confirmDialogRef.afterClosed().subscribe(result => {
+                    this.confirmDialogRef = null;
+                });
+            } else {
+                this._userService.getUserData(user.id).then ((userData) => {
+                    this.selectedUser = userData;
+                    this.contactForm.setValue({
+                        id: '',
+                        user_id: this._auth.currentAuthUser.id,
+                        friend_id: userData.id,
+                        first_name: userData.first_name,
+                        last_name: userData.last_name,
+                        avatar: userData.avatar,
+                        nickname: '',
+                        company: userData.company,
+                        job_title: '',
+                        email: '',
+                        mobile_no: '',
+                        address: '',
+                        birthday: '',
+                        notes: '',
+                        friend_status: 'REQUEST',
+                        blockUser: false
+                    });
+                    this.contact.avatar = userData.avatar;
+                    this.contact.first_name = userData.first_name;
+                    this.contact.last_name = userData.last_name;
+                });
+            }
+        }).catch(() => {
+            this.confirmDialogRef = this._matDialog.open(OkDialogComponent, {
+                disableClose: false
             });
-            this.contact.avatar = userData.avatar;
-            this.contact.first_name = userData.first_name;
-            this.contact.last_name = userData.last_name;
-        });
+            this.confirmDialogRef.componentInstance.confirmMessage = 'Unable to Select User';
+            this.confirmDialogRef.afterClosed().subscribe(result => {
+                this.confirmDialogRef = null;
+            });
+        })
         }
 
     }

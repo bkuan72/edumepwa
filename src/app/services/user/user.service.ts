@@ -110,7 +110,7 @@ constructor(
     getUsersSchema(): Promise<any[]> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userSchema
+                SrvApiEnvEnum.usersSchema
             );
             this._http.GetObs(httpConfig, true).subscribe((adUsersSchema: any) => {
                 this._authTokenSession.checkAuthTokenStatus();

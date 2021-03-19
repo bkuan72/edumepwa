@@ -24,6 +24,10 @@ export class Contact
     notes: string;
     starred: boolean;
     frequent: number;
+    // tslint:disable-next-line:variable-name
+    friend_status: string;
+
+    blockUser: boolean;
 
     /**
      * Constructor
@@ -49,6 +53,8 @@ export class Contact
             this.notes = contact.notes || '';
             this.starred = contact.starred || false;
             this.frequent = contact.frequent || 0;
+            this.friend_status = contact.friend_status || 'REQUEST';
+            this.blockUser = contact.friend_status === 'BLOCKED' || false;
         }
     }
 }

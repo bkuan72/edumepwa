@@ -25,6 +25,7 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgxPhotoEditorModule } from 'ngx-photo-editor';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { MatExpansionModule } from '@angular/material/expansion';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 const routes: Routes = [
     {
@@ -61,6 +62,7 @@ const routes: Routes = [
         PickerModule,
         NgxPhotoEditorModule,
         MatExpansionModule,
+        MatSlideToggleModule,
 
         FuseSharedModule,
         FuseConfirmDialogModule,

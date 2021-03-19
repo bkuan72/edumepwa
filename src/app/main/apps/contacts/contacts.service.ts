@@ -98,25 +98,36 @@ export class ContactsService implements Resolve<any>, OnDestroy {
         state: RouterStateSnapshot
     ): Observable<void> | Promise<void> | void {
         return new Promise((resolve, reject) => {
+            if (!this._authTokenSession.isLoggedIn()) {
+                reject();
+                return;
+            }
             if (this.user) {
-                Promise.all([
-                    this.getContacts(),
-                    this.getFriendDTO(),
-                    this.getUpdFriendDTO(),
-                    this.getFriendSchema()
-                ]).then(() => {
-                    this.onSearchTextChanged.subscribe((searchText) => {
-                        this.searchText = searchText;
-                        this.getContacts();
-                    });
-
-                    this.onFilterChanged.subscribe((filter) => {
-                        this.filterBy = filter;
-                        this.getContacts();
-                    });
-
-                    resolve();
-                }, reject);
+                this.checkBlockByFriend(this.user.id).then((resp) => {
+                    if (resp.blocked) {
+                        reject();
+                        return;
+                    }
+                    Promise.all([
+                        this.getContacts(),
+                        this.getFriendDTO(),
+                        this.getUpdFriendDTO(),
+                        this.getFriendSchema()
+                    ]).then(() => {
+                        this.onSearchTextChanged.subscribe((searchText) => {
+                            this.searchText = searchText;
+                            this.getContacts();
+                        });
+                        this.onFilterChanged.subscribe((filter) => {
+                            this.filterBy = filter;
+                            this.getContacts();
+                        });
+                        resolve();
+                    }, reject);
+                })
+                .catch(() => {
+                    reject();
+                });
             } else {
                 reject();
             }
@@ -196,6 +207,10 @@ export class ContactsService implements Resolve<any>, OnDestroy {
      */
     getContacts(): Promise<any> {
         return new Promise((resolve, reject) => {
+        if (!this._authTokenSession.isLoggedIn()) {
+            reject();
+            return;
+        }
         const httpConfig = this._http.getSrvHttpConfig(
             SrvApiEnvEnum.userContactsByUserId,
             [this.user.id]
@@ -215,6 +230,12 @@ export class ContactsService implements Resolve<any>, OnDestroy {
                 if (this.filterBy === 'frequent') {
                     this.contacts = this.contacts.filter((_contact) => {
                         return _contact.frequent > 5;
+                    });
+                }
+
+                if (this.filterBy === 'blocked') {
+                    this.contacts = this.contacts.filter((_contact) => {
+                        return _contact.friend_status === 'BLOCKED';
                     });
                 }
 
@@ -306,13 +327,18 @@ export class ContactsService implements Resolve<any>, OnDestroy {
         return new Promise((resolve, reject) => {
 
             if (this._fn.emptyStr(contact.id)) {
+                if (contact.blockUser) {
+                    contact.friend_status = 'BLOCKED';
+                }
+                contact.friend_date = this._fn.getNowISODate();
+                const newContact = this._fn.mapObj(contact, contact, ['id', 'blockUser']);
                 const httpConfig = this._http.getSrvHttpConfig(
                     SrvApiEnvEnum.userContactsUpdate,
-                    [contact.id],
-                    contact
+                    undefined,
+                    newContact
                 );
                 this._fn.defineProperty(contact, 'friend_date', '');
-                contact.friend_date = this._fn.getNowISODate();
+
                 this._http.PostObs(httpConfig, true).subscribe((newUser: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
                     this.getContacts();
@@ -320,6 +346,9 @@ export class ContactsService implements Resolve<any>, OnDestroy {
                 }, reject);
             } else {
                 let origContact = {};
+                if (contact.blockUser) {
+                    contact.friend_status = 'BLOCKED';
+                }
                 this.contacts.some((ct) => {
                     if (ct.id === contact.id) {
                         origContact = ct;
@@ -327,7 +356,7 @@ export class ContactsService implements Resolve<any>, OnDestroy {
                     }
 
                 });
-                const updContact = this._fn.mapObjChangedPropertyValue(origContact, contact);
+                const updContact = this._fn.mapObjChangedPropertyValue(origContact, contact, ['blockUser']);
                 const httpConfig = this._http.getSrvHttpConfig(
                     SrvApiEnvEnum.userContactsUpdate,
                     [contact.id],
@@ -419,7 +448,11 @@ export class ContactsService implements Resolve<any>, OnDestroy {
         this.deselectContacts();
     }
 
-
+    /**
+     * Check if user.id is in already in contact list
+     * @param userId - users.id
+     * @returns 
+     */
     inContact(userId: string): boolean {
         let isContact = false;
         this.contacts.some((contact) => {
@@ -429,5 +462,36 @@ export class ContactsService implements Resolve<any>, OnDestroy {
             }
         });
         return isContact;
+    }
+
+    /**
+     * Check if user have blocked current login user
+     * @param friendId - link users
+     * @returns 
+     */
+    checkBlockByFriend(friendId: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            if (this._authTokenSession.currentAuthUser.id === friendId) {
+                resolve({
+                    user_id: this._authTokenSession.currentAuthUser.id,
+                    friend_id: friendId,
+                    blocked: false
+                });
+                return;
+            } else {
+                const httpConfig = this._http.getSrvHttpConfig(
+                    SrvApiEnvEnum.blockedByUser,
+                    [
+                        this._authTokenSession.currentAuthUser.id,
+                        friendId,
+                    ]
+                );
+                this._http.GetObs(httpConfig, true).subscribe((resp: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    resolve(resp);
+                }, reject);
+            }
+ 
+        });
     }
 }

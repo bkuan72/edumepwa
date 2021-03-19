@@ -24,7 +24,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     userDTO: any;
     updUserDTO: any;
     insUserDTO: any;
-    userSchema: any;
+    usersSchema: any;
     userTimelineDTO: any;
     postDTO: any;
     updPostDTO: any;
@@ -39,6 +39,9 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     user: any;
     userFullData: any;
     userBasicData: any;
+    areFriends = false;
+    ownerOfProfile = false;
+    showFullProfile = false;
     userTimeline: any[];
     about: any;
     photosVideos: any[];
@@ -85,7 +88,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     userDTOOnChanged: BehaviorSubject<any>;
     updUserDTOOnChanged: BehaviorSubject<any>;
     insUserDTOOnChanged: BehaviorSubject<any>;
-    userSchemaOnChanged: BehaviorSubject<any>;
+    usersSchemaOnChanged: BehaviorSubject<any>;
     countriesOnChanged: BehaviorSubject<any>;
     userBasicDataOnChanged: BehaviorSubject<any>;
     userFullDataOnChanged: BehaviorSubject<any>;
@@ -128,6 +131,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             this._fn,
             UploadMode.UserMedia);
         this.user = this._session.userProfileValue;
+        this.ownerOfProfile = this.user.id === this._authTokenSession.currentAuthUser.id;
         this.userBasicData = undefined;
         this.userFullData = undefined;
         this.userTimeline = [];
@@ -168,7 +172,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         this.userDTOOnChanged = new BehaviorSubject(this.userDTO);
         this.updUserDTOOnChanged = new BehaviorSubject(this.updUserDTO);
         this.insUserDTOOnChanged = new BehaviorSubject(this.insUserDTO);
-        this.userSchemaOnChanged = new BehaviorSubject(this.userSchema);
+        this.usersSchemaOnChanged = new BehaviorSubject(this.usersSchema);
         this.countriesOnChanged = new BehaviorSubject(this.countries);
         this.titlesOnChanged = new BehaviorSubject(this.titles);
         this.userBasicDataOnChanged = new BehaviorSubject(this.userBasicData);
@@ -194,9 +198,12 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 this.user,
                 this._accountService.account,
                 undefined);
-            this.doLoadUserProfile().then(() => {
-                this.userOnChanged.next(this.user);
-            })
+            this.ownerOfProfile = this.user.id === this._authTokenSession.currentAuthUser.id;
+            this.doCheckAreFriends().finally(() => {
+                this.doLoadUserProfile().then(() => {
+                    this.userOnChanged.next(this.user);
+                });
+            });
         });
         this._accountService.accountsOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
@@ -264,6 +271,29 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     updateSessionProfileAvatar(avatar: string): void {
         this._session.setProfileAvatar(avatar);
     }
+    doCheckAreFriends(): Promise<void> {
+        return new Promise<void>((resolve) => {
+            if (this.user.id !== this._authTokenSession.currentAuthUser.id) {
+                const httpConfig = this._http.getSrvHttpConfig(
+                    SrvApiEnvEnum.areFriends,
+                    [
+                        this.user.id,
+                        this._authTokenSession.currentAuthUser.id
+                    ]
+                );
+                this._http.GetObs(httpConfig, true).subscribe((userFriend: any) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    this.areFriends = userFriend.friends;
+
+                    this.showFullProfile = this.areFriends || this.ownerOfProfile || this.user.public;
+                    resolve();
+                }, resolve);
+            } else {
+                this.showFullProfile = this.areFriends || this.ownerOfProfile || this.user.public;
+                resolve();
+            }
+        });
+    }
 
     doLoadUserProfile(): Observable<any> | Promise<any> | any {
         return new Promise<void>((resolve, reject) => {
@@ -276,9 +306,9 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 this.getGroups(),
                 this.getCountries(),
                 this.getTitles(),
-                this._accountService.doLoadAccounts(this.user.id),
+                this.getAccounts(),
             ]).then(() => {
-                this._mediaService.getPhotosVideos();
+                this.getMediaAndPhotos();
 
                 if (this._authTokenSession.devUser) {
                     this.getUserDTO();
@@ -305,7 +335,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.userDTO = undefined;
                     this.updUserDTO = undefined;
                     this.insUserDTO = undefined;
-                    this.userSchema = undefined;
+                    this.usersSchema = undefined;
                     this.userTimelineDTO = undefined;
                     this.postDTO = undefined;
                     this.updPostDTO = undefined;
@@ -322,7 +352,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     this.userDTOOnChanged.next(this.userDTO);
                     this.updUserDTOOnChanged.next(this.updUserDTO);
                     this.insUserDTOOnChanged.next(this.insUserDTO);
-                    this.userSchemaOnChanged.next(this.userSchema);
+                    this.usersSchemaOnChanged.next(this.usersSchema);
                     this.userTimelineDTOOnChanged.next(this.userTimelineDTO);
                     this.postDTOOnChanged.next(this.postDTO);
                     this.updPostDTOOnChanged.next(this.updPostDTO);
@@ -344,6 +374,28 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             }, reject);
         });
     }
+
+    getAccounts(): Promise<void> {
+        return new Promise<void> ((resolve) => {
+            if (!this.showFullProfile) {
+                resolve();
+                return;
+            }
+
+            this._accountService.doLoadAccounts(this.user.id).finally(() => {
+                resolve();
+            });
+        });
+
+    }
+
+    getMediaAndPhotos(): void {
+        if (!this.showFullProfile) {
+            return;
+        }
+        this._mediaService.getPhotosVideos();
+    }
+
     /**
      * Resolver
      *
@@ -355,7 +407,14 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Observable<any> | Promise<any> | any {
-        return this.doLoadUserProfile();
+        return new Promise((resolve) => {
+            this.doCheckAreFriends().finally(() => {
+                this.doLoadUserProfile().then(() => {
+                    this.userOnChanged.next(this.user);
+                    resolve('');
+                });
+            });
+        });
     }
 
     getUserFromCache(userId: string): any {
@@ -405,6 +464,11 @@ export class ProfileService implements Resolve<any>, OnDestroy {
      */
     getTimeline(): Promise<any[]> {
         return new Promise((resolve, reject) => {
+            if (!this.showFullProfile) {
+                this.userTimeline = [];
+                resolve(this.userTimeline);
+                return;
+            }
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.userTimeline,
                 [this.user.id, '10']
@@ -653,6 +717,11 @@ export class ProfileService implements Resolve<any>, OnDestroy {
      */
     getActivities(): Promise<any[]> {
         return new Promise((resolve, reject) => {
+            if (!this.showFullProfile) {
+                this.activities = [];
+                resolve(this.activities);
+                return;
+            }
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.activities,
                 [this.user.id, '10']
@@ -671,7 +740,13 @@ export class ProfileService implements Resolve<any>, OnDestroy {
      * Get friends
      */
     getFriends(): Promise<any[]> {
+
         return new Promise((resolve, reject) => {
+            if (!this.showFullProfile) {
+                this.friends = [];
+                resolve(this.friends);
+                return;
+            }
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.friends,
                 [this.user.id]
@@ -690,6 +765,11 @@ export class ProfileService implements Resolve<any>, OnDestroy {
      */
     getGroups(): Promise<any[]> {
         return new Promise((resolve, reject) => {
+            if (!this.showFullProfile) {
+                this.groups = [];
+                resolve(this.groups);
+                return;
+            }
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.userGroups,
                 [this.user.id]
@@ -726,13 +806,13 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     getUserSchema(): Promise<any[]> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userSchema
+                SrvApiEnvEnum.usersSchema
             );
-            this._http.GetObs(httpConfig, true).subscribe((userSchema: any) => {
+            this._http.GetObs(httpConfig, true).subscribe((usersSchema: any) => {
                 this._authTokenSession.checkAuthTokenStatus();
-                this.userSchema = userSchema;
-                this.userSchemaOnChanged.next(this.userSchema);
-                resolve(this.userSchema);
+                this.usersSchema = usersSchema;
+                this.usersSchemaOnChanged.next(this.usersSchema);
+                resolve(this.usersSchema);
             }, reject);
         });
     }
@@ -1056,14 +1136,5 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         });
     }
 
-    isFriend(userId: string): boolean {
-        let friend = false;
-        this.friends.some((fr) => {
-            if (userId === fr.friend_id) {
-                friend = true;
-                return true;
-            }
-        });
-        return friend;
-    }
+
 }

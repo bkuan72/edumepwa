@@ -19,7 +19,7 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
     userDTO: any;
     updUserDTO: any;
     insUserDTO: any;
-    userSchema: any;
+    usersSchema: any;
     countries: any;
     titles: any;
     form: FormGroup;
@@ -44,7 +44,7 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
         this.userDTO = this._userProfile.userDTO;
         this.updUserDTO = this._userProfile.updUserDTO;
         this.insUserDTO = this._userProfile.insUserDTO;
-        this.userSchema = this._userProfile.userSchema;
+        this.usersSchema = this._userProfile.usersSchema;
         this.countries = this._userProfile.countries;
         this.titles = this._userProfile.titles;
         this._userProfile.getFullUserData();
@@ -76,10 +76,10 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
         .subscribe(updUserDTO => {
             this.updUserDTO = updUserDTO;
         });
-        this._userProfile.userSchemaOnChanged
+        this._userProfile.usersSchemaOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe(userSchema => {
-            this.userSchema = userSchema;
+        .subscribe(usersSchema => {
+            this.usersSchema = usersSchema;
         });
         this._userProfile.countriesOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
@@ -119,6 +119,12 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
             occupation     : ['', [Validators.maxLength(255)]],
             skills     : ['', [Validators.maxLength(255)]],
             jobs     : ['', [Validators.maxLength(255)]],
+            allow_notification: [true],
+            allow_promo: [true],
+            allow_msg: [true],
+            allow_friends: [true],
+            allow_follows: [true],
+            public: [true]
         });
 
         this._userProfile.userFullDataOnChanged

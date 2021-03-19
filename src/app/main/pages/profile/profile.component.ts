@@ -48,6 +48,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     updAccountDTO: any;
     accountsSchema: any;
 
+    userDTO: any;
+    updUserDTO: any;
+    usersSchema: any;
+
     userAccountDTO: any;
     updUserAccountDTO: any;
     userAccountsSchema: any;
@@ -55,7 +59,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     user: any;
     userFullData: any;
-    ownerOfProfile: boolean;
+    ownerOfProfile = false;
+    areFriends = false;
+    showFullProfile = false;
 
     showAvatarEditor = false;
     avatarChangedEvent: any;
@@ -88,6 +94,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.updAccountDTO = this._profileService.updAccountDTO;
         this.accountsSchema = this._profileService.accountsSchema;
 
+        this.userDTO = this._profileService.userDTO;
+        this.updUserDTO = this._profileService.updUserDTO;
+        this.usersSchema = this._profileService.usersSchema;
+
         this.userAccountDTO = this._profileService.userAccountDTO;
         this.updUserAccountDTO = this._profileService.updUserAccountDTO;
         this.userAccountsSchema = this._profileService.userAccountsSchema;
@@ -102,6 +112,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         ) {
             this.ownerOfProfile = true;
         }
+        this.areFriends = this._profileService.areFriends;
+        this.showFullProfile = this._profileService.showFullProfile;
         this.accounts = this._profileService.accounts;
         // Set the private defaults
         this._unsubscribeAll = new Subject();
@@ -170,6 +182,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.accountsSchema = accountsSchema;
         });
 
+        this._profileService.userDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((userDTO) => {
+            this.userDTO = userDTO;
+        });
+        this._profileService.updUserDTOOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((updUserDTO) => {
+            this.updUserDTO = updUserDTO;
+        });
+        this._profileService.usersSchemaOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((usersSchema) => {
+            this.usersSchema = usersSchema;
+        });
+
         this._profileService.userAccountDTOOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((userAccountDTO) => {
@@ -207,6 +235,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
             ) {
                 this.ownerOfProfile = true;
             }
+            this.areFriends = this._profileService.areFriends;
+            this.showFullProfile = this._profileService.showFullProfile;
         });
     }
 

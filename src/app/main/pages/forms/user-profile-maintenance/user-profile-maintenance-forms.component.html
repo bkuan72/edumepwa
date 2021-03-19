@@ -1,5 +1,4 @@
 <div id="forms" class="page-layout simple fullwidth" fxLayout="column">
-
     <!-- HEADER -->
     <div class="header accent p-24 h-160" fxLayout="row" fxLayoutAlign="start center">
         <div fxLayout="column" fxLayoutAlign="center start">
@@ -15,241 +14,249 @@
 
     <!-- CONTENT -->
     <div class="content p-24">
-
-        <!-- <div class="h1">
-            Reactive Forms
-        </div>
-
-        <p class="pt-16 pb-32">
-            Angular reactive forms facilitate a reactive style of programming that favors explicit management of the
-            data flowing between a non-UI data model (typically retrieved from a server) and a UI-oriented form model
-            that retains the states and values of the HTML controls on screen. Reactive forms offer the ease of using
-            reactive patterns, testing, and validation.
-        </p> -->
-
         <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
-
             <!-- REACTIVE FORM EXAMPLE -->
-
-            <form class="mat-card mat-elevation-z4 p-24 mr-24" fxLayout="column" fxLayoutAlign="start"
-                  fxFlex="1 0 auto" name="form" [formGroup]="form" (ngSubmit)="onSubmit()">
-
-                <div class="h2 mb-24">General Information</div>
-
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Email (disabled)</mat-label>
-                        <input matInput formControlName="email">
-                        <mat-icon matSuffix class="disabled-text">email</mat-icon>
-                    </mat-form-field>
-
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Title</mat-label>
-                        <mat-select formControlName="gender" required>
-                            <mat-option value=" ">
-                            </mat-option>
-                            <mat-option value="Female">
-                                Female
-                            </mat-option>
-                            <mat-option value="Male">
-                                Male
-                            </mat-option>
-                        </mat-select>
-                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
-                        <mat-error>Title is required!</mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Title</mat-label>
-                        <mat-select formControlName="title" required>
-                            <mat-option *ngFor="let title of titles" [value]="title">
-                                {{title}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
-                        <mat-error>Title is required!</mat-error>
-                    </mat-form-field>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="50" class="pr-4">
-                        <mat-label>First name</mat-label>
-                        <input matInput formControlName="first_name" required>
-                        <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
-                        <mat-error>First Name is required!</mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" fxFlex="50" class="pl-4">
-                        <mat-label>Last name</mat-label>
-                        <input matInput formControlName="last_name" required>
-                        <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
-                        <mat-error>Last Name is required!</mat-error>
-                    </mat-form-field>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>User Name</mat-label>
-                        <input matInput formControlName="user_name" required>
-                        <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
-                        <mat-error>User Name is required!</mat-error>
-                    </mat-form-field>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Company Name</mat-label>
-                        <input matInput formControlName="company">
-                        <mat-icon matSuffix class="secondary-text">b</mat-icon>
-                        <mat-error>Company is required!</mat-error>
-                    </mat-form-field>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>About Me</mat-label>
-                        <textarea matInput formControlName="about_me"></textarea>
-                    </mat-form-field>
-                </div>
-
-                <div fxLayout="row wrap" fxLayoutAlign="start center" fxFlex="1 0 auto">
-
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Street Address</mat-label>
-                        <textarea matInput formControlName="address" required>
-                        </textarea>
-                        <mat-error>Address is required!</mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Suburb</mat-label>
-                        <textarea matInput formControlName="suburb"></textarea>
-                        <mat-error>Suburb is required!</mat-error>
-                    </mat-form-field>
-
-                </div>
-
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-
-                    <mat-form-field appearance="outline" fxFlex="33">
-                        <mat-label>City</mat-label>
-                        <input matInput formControlName="city" required>
-                        <mat-icon matSuffix class="secondary-text">location_city</mat-icon>
-                        <mat-error>City is required!</mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" fxFlex="34" class="px-8">
-                        <mat-label>State</mat-label>
-                        <input matInput formControlName="state">
-                        <mat-icon matSuffix class="secondary-text">location_city</mat-icon>
-                        <mat-error>State is required!</mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" fxFlex="33">
-                        <mat-label>Postal Code</mat-label>
-                        <input matInput #postalCode value="94043"
-                               formControlName="post_code" maxlength="10" required>
-                        <mat-icon matSuffix class="secondary-text">markunread_mailbox</mat-icon>
-                        <mat-hint align="end">{{postalCode.value.length}} / 10</mat-hint>
-                        <mat-error>Postal Code is required!</mat-error>
-                    </mat-form-field>
-
-                </div>
-
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Country</mat-label>
-                        <mat-select formControlName="country" required>
-                            <mat-option *ngFor="let country of countries" [value]="country.name">
-                                {{country.name}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
-                        <mat-error>Country is required!</mat-error>
-                    </mat-form-field>
-
-                </div>
-
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Phone No</mat-label>
-                        <input type="tel" matInput formControlName="phone_no" required>
-                        <mat-icon matSuffix class="secondary-text">local_phone</mat-icon>
-                        <mat-error>Phone No is required!</mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Mobile No</mat-label>
-                        <input type="tel" matInput formControlName="mobile_no" required>
-                        <mat-icon matSuffix class="secondary-text">phone_iphone</mat-icon>
-                        <mat-error>Mobile No is required!</mat-error>
-                    </mat-form-field>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Web Site</mat-label>
-                        <input type="url" matInput formControlName="website">
-                    </mat-form-field>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Date of Birth</mat-label>
-                        <input type="date" matInput formControlName="birthday">
-                    </mat-form-field>
-                </div>
-
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Occupation</mat-label>
-                        <textarea matInput formControlName="occupation"></textarea>
-                    </mat-form-field>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Skills</mat-label>
-                        <textarea matInput formControlName="skills"></textarea>
-                    </mat-form-field>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field appearance="outline" fxFlex="100">
-                        <mat-label>Jobs</mat-label>
-                        <textarea matInput formControlName="jobs"></textarea>
-                    </mat-form-field>
-                </div>
+            <form class="mat-card mat-elevation-z4 p-24 mr-24" fxLayout="column" fxLayoutAlign="start" fxFlex="1 0 auto"
+                name="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+                <mat-tab-group dynamicHeight="true">
+                    <mat-tab label="General">
+                        <div class="page-layout simple fullwidth" fxLayout="column">
+                            <div class="h2 mb-24">General Information</div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Title</mat-label>
+                                    <mat-select formControlName="gender" required>
+                                        <mat-option value=" "> </mat-option>
+                                        <mat-option value="Female">
+                                            Female
+                                        </mat-option>
+                                        <mat-option value="Male"> Male </mat-option>
+                                    </mat-select>
+                                    <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                                    <mat-error>Title is required!</mat-error>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Title</mat-label>
+                                    <mat-select formControlName="title" required>
+                                        <mat-option *ngFor="let title of titles" [value]="title">
+                                            {{ title }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                                    <mat-error>Title is required!</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="50" class="pr-4">
+                                    <mat-label>First name</mat-label>
+                                    <input matInput formControlName="first_name" required />
+                                    <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
+                                    <mat-error>First Name is required!</mat-error>
+                                </mat-form-field>
+    
+                                <mat-form-field appearance="outline" fxFlex="50" class="pl-4">
+                                    <mat-label>Last name</mat-label>
+                                    <input matInput formControlName="last_name" required />
+                                    <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
+                                    <mat-error>Last Name is required!</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>User Name</mat-label>
+                                    <input matInput formControlName="user_name" required />
+                                    <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
+                                    <mat-error>User Name is required!</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Company Name</mat-label>
+                                    <input matInput formControlName="company" />
+                                    <mat-icon matSuffix class="secondary-text">b</mat-icon>
+                                    <mat-error>Company is required!</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>About Me</mat-label>
+                                    <textarea matInput formControlName="about_me"></textarea>
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Web Site</mat-label>
+                                    <input type="url" matInput formControlName="website" />
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Occupation</mat-label>
+                                    <textarea matInput formControlName="occupation"></textarea>
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Skills</mat-label>
+                                    <textarea matInput formControlName="skills"></textarea>
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Jobs</mat-label>
+                                    <textarea matInput formControlName="jobs"></textarea>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Personal">
+                        <div class="h2 mb-24">Personal Information</div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                            <mat-form-field appearance="outline" fxFlex="100">
+                                <mat-label>Email (disabled)</mat-label>
+                                <input matInput formControlName="email" />
+                                <mat-icon matSuffix class="disabled-text">email</mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                            <mat-form-field appearance="outline" fxFlex="100">
+                                <mat-label>Date of Birth</mat-label>
+                                <input type="date" matInput formControlName="birthday" />
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                            <mat-form-field appearance="outline" fxFlex="100">
+                                <mat-label>Phone No</mat-label>
+                                <input type="tel" matInput formControlName="phone_no" required />
+                                <mat-icon matSuffix class="secondary-text">local_phone</mat-icon>
+                                <mat-error>Phone No is required!</mat-error>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" fxFlex="100">
+                                <mat-label>Mobile No</mat-label>
+                                <input type="tel" matInput formControlName="mobile_no" required />
+                                <mat-icon matSuffix class="secondary-text">phone_iphone</mat-icon>
+                                <mat-error>Mobile No is required!</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Address">
+                        <div class="page-layout simple fullwidth" fxLayout="column">
+                            <div class="h2 mb-24">Address Information</div>
+                            <div fxLayout="row wrap" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Street Address</mat-label>
+                                    <textarea matInput formControlName="address" required>
+                                    </textarea>
+                                    <mat-error>Address is required!</mat-error>
+                                </mat-form-field>
+    
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Suburb</mat-label>
+                                    <textarea matInput formControlName="suburb" required></textarea>
+                                    <mat-error>Suburb is required!</mat-error>
+                                </mat-form-field>
+                            </div>
+    
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="33">
+                                    <mat-label>City</mat-label>
+                                    <input matInput formControlName="city" required />
+                                    <mat-icon matSuffix class="secondary-text">location_city</mat-icon>
+                                    <mat-error>City is required!</mat-error>
+                                </mat-form-field>
+    
+                                <mat-form-field appearance="outline" fxFlex="34" class="px-8">
+                                    <mat-label>State</mat-label>
+                                    <input matInput formControlName="state" />
+                                    <mat-icon matSuffix class="secondary-text">location_city</mat-icon>
+                                    <mat-error>State is required!</mat-error>
+                                </mat-form-field>
+    
+                                <mat-form-field appearance="outline" fxFlex="33">
+                                    <mat-label>Postal Code</mat-label>
+                                    <input matInput #postalCode value="94043" formControlName="post_code" maxlength="10"
+                                        required />
+                                    <mat-icon matSuffix class="secondary-text">markunread_mailbox</mat-icon>
+                                    <mat-hint align="end">{{ postalCode.value.length }} /
+                                        10</mat-hint>
+                                    <mat-error>Postal Code is required!</mat-error>
+                                </mat-form-field>
+                            </div>
+    
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Country</mat-label>
+                                    <mat-select formControlName="country" required>
+                                        <mat-option *ngFor="let country of countries" [value]="country.name">
+                                            {{ country.name }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                                    <mat-error>Country is required!</mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Privacy">
+                        <div class="page-layout simple fullwidth" fxLayout="column">
+                            <div class="h2 mb-24">Privacy Controls</div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-slide-toggle formControlName="allow_promo">Allow Receiving of Promotional
+                                    Emails</mat-slide-toggle>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-slide-toggle formControlName="allow_notification">Allow Notification</mat-slide-toggle>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-slide-toggle formControlName="allow_msg">Allow Other Users To Message You</mat-slide-toggle>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-slide-toggle formControlName="allow_friends">Allow Add Other Users You As Contacts</mat-slide-toggle>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-slide-toggle formControlName="allow_follows">Allow Other User To Follow Your Posts</mat-slide-toggle>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                <mat-slide-toggle formControlName="public">Profile Viewable By Public</mat-slide-toggle>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="DTO">
+                        <div class="page-layout simple fullwidth" fxLayout="column">
+                            <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
+                                <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userDTO">
+                                    <div class="h2 mb-24">User DTO</div>
+                                    <!-- <pre><code>{{form.getRawValue() | json}}</code></pre> -->
+                                    <pre><code>{{userDTO | json}}</code></pre>
+                                </div>
+                                <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="insUserDTO">
+                                    <div class="h2 mb-24">Insert User DTO</div>
+                                    <pre><code>{{insUserDTO | json}}</code></pre>
+                                </div>
+                                <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updUserDTO">
+                                    <div class="h2 mb-24">Update User DTO</div>
+                                    <pre><code>{{updUserDTO | json}}</code></pre>
+                                </div>
+                                <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="usersSchema">
+                                    <div class="h2 mb-24">User Schema</div>
+                                    <pre><code>{{usersSchema | json}}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <button mat-raised-button color="accent" class="submit-button" aria-label="DONE"
-                            [disabled]="form.invalid">
-                                DONE
+                        [disabled]="form.invalid">
+                        DONE
                     </button>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <app-alert></app-alert>
                 </div>
             </form>
-
             <!-- / REACTIVE FORM EXAMPLE -->
         </div>
-        <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
-            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userDTO">
-                <div class="h2 mb-24">User DTO</div>
-                <!-- <pre><code>{{form.getRawValue() | json}}</code></pre> -->
-                <pre><code>{{userDTO | json}}</code></pre>
-            </div>
-            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="insUserDTO">
-                <div class="h2 mb-24">Insert User DTO</div>
-                <pre><code>{{insUserDTO | json}}</code></pre>
-            </div>
-            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updUserDTO">
-                <div class="h2 mb-24">Update User DTO</div>
-                <pre><code>{{updUserDTO | json}}</code></pre>
-            </div>
-            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="userSchema">
-                <div class="h2 mb-24">User Schema</div>
-                <pre><code>{{userSchema | json}}</code></pre>
-            </div>
-        </div>
-
     </div>
     <!-- / CONTENT -->
-
 </div>
-
-

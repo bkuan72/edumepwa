@@ -14,12 +14,13 @@ export enum SrvApiEnvEnum {
     userDTO= '/api/users/DTO',
     insUserDTO= '/api/users/insDTO',
     updUserDTO= '/api/users/updDTO',
-    userSchema= '/api/users/schema',
+    usersSchema= '/api/users/schema',
     updateUserAvatar= '/api/users/updateAvatar',
     findUserByEmail= '/api/users/byEmail',
     basicUserByKeyword = '/api/users/basicInfo/byKeyword',
 
     friends = '/api/friends/friendList/byUserId',
+    areFriends= '/api/friends/areFriends',
     userContactsByUserId= '/api/friends/contactList/byUserId',
     userContactsUpdate= '/api/friends',
     toggleContactStar= '/api/friends/toggleStar',
@@ -28,6 +29,7 @@ export enum SrvApiEnvEnum {
     friendDTO= '/api/friends/DTO',
     updFriendDTO= '/api/friends/updDTO',
     friendsSchema= '/api/friends/schema',
+    blockedByUser= '/api/friends/isBlockedByFriend',
 
     about = '/api/users/profile-about/byUserId',
     groups = '/api/groups/byUserId',

@@ -149,10 +149,22 @@ export class CommonFn {
      * @param obj1 - object to map data to
      * @param obj2 - object to data
      */
-    public mapObj = (obj1: any, obj2: any): any => {
+    public mapObj = (obj1: any,
+                     obj2: any,
+                     excludeProp?: string[]): any => {
         let mapObj = {};
+        // tslint:disable-next-line:forin
         for (const propName in obj1) {
-            if (this.hasProperty(obj2, propName)) {
+            let incProp = true;
+            if (excludeProp) {
+                excludeProp.some((exPropName) => {
+                    if (exPropName === propName) {
+                        incProp = false;
+                        return true;
+                    }
+                });
+            }
+            if (incProp && this.hasProperty(obj2, propName)) {
                 mapObj = this.defineProperty(mapObj, propName, obj2[propName]);
             }
         }
@@ -181,10 +193,22 @@ export class CommonFn {
      * @param obj1 - object to map data to
      * @param obj2 - object to data
      */
-    public mapObjChangedPropertyValue = (obj1: any, obj2: any): any | undefined => {
+    public mapObjChangedPropertyValue = (obj1: any, 
+                                         obj2: any,
+                                         excludeProp?: string[]): any | undefined => {
         let mapObj;
+        // tslint:disable-next-line:forin
         for (const propName in obj1) {
-            if (this.hasProperty(obj2, propName)) {
+            let checkProp = true;
+            if (excludeProp) {
+                excludeProp.some((exPropName) => {
+                    if (exPropName === propName) {
+                        checkProp = false;
+                        return true;
+                    }
+                });
+            }
+            if (checkProp && this.hasProperty(obj2, propName)) {
                 if (obj1[propName] !== obj2[propName]) {
                     if (mapObj === undefined) {
                         mapObj = {};
@@ -240,7 +264,7 @@ export class CommonFn {
             ctx.drawImage(img, 0, 0, newX, newY);
             const data = ctx.canvas.toDataURL();
             res(data);
-          }
+          };
           img.onerror = error => rej('Failed To Compress Image');
         });
       }
@@ -281,7 +305,7 @@ export class CommonFn {
               ctx.drawImage(img, 0, 0, newX, newY);
               const data = ctx.canvas.toDataURL();
               res(data);
-            }
+            };
             img.onerror = error => rej(error);
           });
     }
@@ -318,7 +342,7 @@ export class CommonFn {
      */
     getNowISODate(): string {
         const now = new Date();
-        return now.toISOString()
+        return now.toISOString();
     }
 
     /**
