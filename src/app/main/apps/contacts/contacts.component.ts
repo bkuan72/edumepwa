@@ -109,7 +109,7 @@ export class ContactsComponent implements OnInit, OnDestroy
     ngOnDestroy(): void
     {
         // Reset the search
-        this._contactsService.onSearchTextChanged.next('');
+        // this._contactsService.onSearchTextChanged.next('');
 
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
