@@ -1,3 +1,4 @@
+import { Contact } from 'app/main/apps/contacts/contact.model';
 import { AlertService } from 'app/services/alert/alert.service';
 import { CommonFn } from './../../../../../shared/common-fn';
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, ElementRef } from '@angular/core';
@@ -11,6 +12,7 @@ import { TimelinePostIfc, TimelineService } from '../../timeline.service';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 import { CroppedEvent, NgxPhotoEditorComponent } from 'ngx-photo-editor';
 import { ContactsService } from 'app/main/apps/contacts/contacts.service';
+import { ActivityService } from 'app/services/activity/activity.service';
 
 @Component({
     selector: 'profile-timeline',
@@ -52,6 +54,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
                 private _timelineService: TimelineService,
                 public _auth: AuthTokenSessionService,
                 private _contactService: ContactsService,
+                private _activityService: ActivityService,
                 public fn: CommonFn,
                 private alert: AlertService) {
         this.post = {
@@ -287,7 +290,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
     }
 
     imageCropped(event: CroppedEvent): void {
-        this.fn.resizeImage (event.base64, 0.15, 128).then((resizedImg) => {
+        this.fn.resizeImage (event.base64, 1024, 512).then((resizedImg) => {
             const picture = {
                 type: 'image',
                 preview: resizedImg
@@ -305,13 +308,43 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
     }
 
     acceptFriend(activity: any): void {
-
+        let blockContact = new Contact({
+            user_id: this.authUser.id,
+            friend_id: activity.user_id,
+            friend_status: 'OK'
+        });
+        this._profileService.getUserData(activity.user_id).then((userData) => {
+            blockContact = this.fn.mapValueToObj(blockContact, userData, ['id']);
+            this._contactService.updateContact(blockContact).then(() => {
+                this._activityService.deleteActivity(activity.id).finally(() => {
+                    this._profileService.getActivities();
+                });
+            });
+        });
     }
 
     ignoreFriend(activity: any): void {
+        this._activityService.deleteActivity(activity.id).finally(() => {
+            this._profileService.getActivities();
+        });
     }
 
     blockFriend(activity: any): void {
+        const blockContact = new Contact({
+            user_id: this.authUser.id,
+            friend_id: activity.user_id,
+            friend_status: 'BLOCKED'
+        });
+        this._profileService.getBasicUserData(activity.user_id).then((userData) => {
+            blockContact.first_name = userData.first_name;
+            blockContact.last_name = userData.last_name;
+            blockContact.avatar = userData.avatar;
+            this._contactService.updateContact(blockContact).then(() => {
+                this._activityService.deleteActivity(activity.id).finally(() => {
+                    this._profileService.getActivities();
+                });
+            });
+        });
 
     }
 }

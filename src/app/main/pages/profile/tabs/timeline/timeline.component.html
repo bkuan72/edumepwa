@@ -230,7 +230,7 @@
                             </div>
                             <span class="time secondary-text">{{activity.activity_date | dateSinceNow}}</span>
                         </div>
-                        <div fxLayout="row" *ngIf="activity.activity_type === 'FRIEND_REQUEST'">
+                        <div fxLayout="row" *ngIf="ownerOfProfile && activity.activity_type === 'FRIEND_REQUEST'">
                             <button (click)="acceptFriend(activity)">Accept</button>
                             <button (click)="ignoreFriend(activity)">Ignore</button>
                             <button (click)="blockFriend(activity)">Block</button>

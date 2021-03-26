@@ -1,3 +1,4 @@
+import { ActivityService } from './services/activity/activity.service';
 import { UserService } from './services/user/user.service';
 import { AccountProfileSessionService } from './services/session/account-profile-session.service';
 import { CurrentUserLoadedGuard } from './main/guards/currentUserLoaded.guard';
@@ -179,6 +180,7 @@ const appRoutes: Routes = [
         AccountsService,
         AccountProfileSessionService,
         ContactsService,
+        ActivityService,
         UserService,
         CommonFn
     ],

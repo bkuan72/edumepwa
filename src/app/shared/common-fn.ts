@@ -110,7 +110,12 @@ export class CommonFn {
      * @param avatar - ling to avatar file
      */
     showGenericAvatar(avatar: string): boolean {
-        return avatar === undefined || avatar === null || avatar.length === 0 || avatar === '';
+        return (
+            avatar === undefined ||
+            avatar === null ||
+            avatar.length === 0 ||
+            avatar === ''
+        );
     }
 
     /**
@@ -136,11 +141,35 @@ export class CommonFn {
     public hasProperty = (obj: any, prop: string): boolean => {
         let found = false;
         for (const key in obj) {
-          if (key === prop) {
-            found = true;
-          }
+            if (key === prop) {
+                found = true;
+            }
         }
         return found;
+    }
+
+    /**
+     * This function map value from obj2 to obj1 if property exist in obj1
+     * @param obj1 - object to map data to
+     * @param obj2 - object to data
+     */
+    public mapValueToObj = (obj1: any, obj2: any, excludeProp?: string[]): any => {
+        // tslint:disable-next-line:forin
+        for (const propName in obj1) {
+            let incProp = true;
+            if (excludeProp) {
+                excludeProp.some((exPropName) => {
+                    if (exPropName === propName) {
+                        incProp = false;
+                        return true;
+                    }
+                });
+            }
+            if (incProp && this.hasProperty(obj2, propName)) {
+                obj1[propName] = obj2[propName];
+            }
+        }
+        return obj1;
     }
 
     /**
@@ -149,9 +178,7 @@ export class CommonFn {
      * @param obj1 - object to map data to
      * @param obj2 - object to data
      */
-    public mapObj = (obj1: any,
-                     obj2: any,
-                     excludeProp?: string[]): any => {
+    public mapObj = (obj1: any, obj2: any, excludeProp?: string[]): any => {
         let mapObj = {};
         // tslint:disable-next-line:forin
         for (const propName in obj1) {
@@ -171,7 +198,6 @@ export class CommonFn {
         return mapObj;
     }
 
-
     /**
      * This function maps obj1 property values to Form controls has matching
      * and copy obj2 data to new object
@@ -186,16 +212,17 @@ export class CommonFn {
         }
     }
 
-
     /**
      * This function create a new object that has properties that obj1 and obj2 has matching
      * and copy obj2 data to new object if the two property value does not match
      * @param obj1 - object to map data to
      * @param obj2 - object to data
      */
-    public mapObjChangedPropertyValue = (obj1: any, 
-                                         obj2: any,
-                                         excludeProp?: string[]): any | undefined => {
+    public mapObjChangedPropertyValue = (
+        obj1: any,
+        obj2: any,
+        excludeProp?: string[]
+    ): any | undefined => {
         let mapObj;
         // tslint:disable-next-line:forin
         for (const propName in obj1) {
@@ -213,7 +240,11 @@ export class CommonFn {
                     if (mapObj === undefined) {
                         mapObj = {};
                     }
-                    mapObj = this.defineProperty(mapObj, propName, obj2[propName]);
+                    mapObj = this.defineProperty(
+                        mapObj,
+                        propName,
+                        obj2[propName]
+                    );
                 }
             }
         }
@@ -226,10 +257,12 @@ export class CommonFn {
      * @param formCtrl - object to map data to
      * @param obj2 - object to data
      */
-    public mapFormControlChangedPropertyValue = (formCtrl: {
-                                                                [key: string]: AbstractControl;
-                                                            },
-                                                 obj2: any): any | undefined => {
+    public mapFormControlChangedPropertyValue = (
+        formCtrl: {
+            [key: string]: AbstractControl;
+        },
+        obj2: any
+    ): any | undefined => {
         let mapObj;
         for (const propName in formCtrl) {
             if (this.hasProperty(obj2, propName)) {
@@ -237,77 +270,98 @@ export class CommonFn {
                     if (mapObj === undefined) {
                         mapObj = {};
                     }
-                    mapObj = this.defineProperty(mapObj, propName, formCtrl[propName].value);
+                    mapObj = this.defineProperty(
+                        mapObj,
+                        propName,
+                        formCtrl[propName].value
+                    );
                 }
             }
         }
         return mapObj;
     }
 
-/**
- * This function compress the image
- * @param base64Src - image data
- * @param newX  - new width in px
- * @param newY  - new height in px
- */
-    private compressImage(base64Src: string, newX: number, newY: number): Promise<string> {
-        return new Promise((res, rej) => {
-          const img = new Image();
-          img.src = base64Src;
-
-          img.onload = () => {
-            const elem = document.createElement('canvas');
-            elem.width = newX;
-            elem.height = newY;
-            const ctx = elem.getContext('2d');
-
-            ctx.drawImage(img, 0, 0, newX, newY);
-            const data = ctx.canvas.toDataURL();
-            res(data);
-          };
-          img.onerror = error => rej('Failed To Compress Image');
-        });
-      }
-
-/**
- * This function resize an image to a standard avatar image that is H128 px * W128 px
- * @param base64Src - image data
- */
-    public toAvatarDataURL(base64Src: string): Promise<string> {
-        return this.compressImage(base64Src, 128, 128);
-    }
-
-/**
- * This function resize image
- * @param base64Src - source data for image
- * @param resizePercent - resize to percentage of original image size
- * @param minPixel - minimum pixel length
- */
-    public resizeImage(base64Src: string, resizePercent: number, minPixel: number): Promise<string> {
+    /**
+     * This function compress the image
+     * @param base64Src - image data
+     * @param newX  - new width in px
+     * @param newY  - new height in px
+     */
+    private compressImage(
+        base64Src: string,
+        newX: number,
+        newY: number
+    ): Promise<string> {
         return new Promise((res, rej) => {
             const img = new Image();
             img.src = base64Src;
 
+            img.onload = () => {
+                const elem = document.createElement('canvas');
+                elem.width = newX;
+                elem.height = newY;
+                const ctx = elem.getContext('2d');
+
+                ctx.drawImage(img, 0, 0, newX, newY);
+                const data = ctx.canvas.toDataURL();
+                res(data);
+            };
+            img.onerror = (error) => rej('Failed To Compress Image');
+        });
+    }
+
+    /**
+     * This function resize an image to a standard avatar image that is H128 px * W128 px
+     * @param base64Src - image data
+     */
+    public toAvatarDataURL(base64Src: string): Promise<string> {
+        return this.compressImage(base64Src, 128, 128);
+    }
+
+    /**
+     * This function resize image
+     * @param base64Src - source data for image
+     * @param resizePercent - resize to percentage of original image size
+     * @param minPixel - minimum pixel length
+     */
+    public resizeImage(
+        base64Src: string,
+        maxPixel: number,
+        minPixel: number
+    ): Promise<string> {
+        return new Promise((res, rej) => {
+            const img = new Image();
+            img.src = base64Src;
 
             img.onload = () => {
-              let newX = img.width * resizePercent;
-              let newY = img.height * resizePercent;
-              if (minPixel > 0) {
-                  if (newX < minPixel || newY < minPixel) {
-                    newX = img.width * (minPixel / img.width);
-                    newY = img.height * (minPixel / img.height);
-                  }
-              }
-              const elem = document.createElement('canvas');
-              elem.width = newX;
-              elem.height = newY;
-              const ctx = elem.getContext('2d');
-              ctx.drawImage(img, 0, 0, newX, newY);
-              const data = ctx.canvas.toDataURL();
-              res(data);
+                let newX;
+                let newY;
+                let aspectRatio;
+                if (img.width > img.height) {
+                    aspectRatio = img.height / img.width;
+                    newX = maxPixel;
+                    newY = newX * aspectRatio;
+                } else {
+                    if (img.width < img.height) {
+                        aspectRatio = img.width / img.height;
+                        newY = maxPixel;
+                        newX = newY * aspectRatio;
+                    } else {
+                        newX = minPixel;
+                        newY = minPixel;
+                    }
+                }
+
+                const elem = document.createElement('canvas');
+                elem.width = newX;
+                elem.height = newY;
+                const ctx = elem.getContext('2d');
+                ctx.drawImage(img, 0, 0, newX, newY);
+                const data = ctx.canvas.toDataURL();
+                res(data);
             };
-            img.onerror = error => rej(error);
-          });
+            img.onerror = (error) => rej(error);
+        });
     }
 
     /**
@@ -337,7 +391,7 @@ export class CommonFn {
 
     /**
      * get Today's ISO string date
-     * 
+     *
      * @returns todays ISO string date
      */
     getNowISODate(): string {

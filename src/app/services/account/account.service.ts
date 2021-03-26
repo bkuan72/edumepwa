@@ -321,7 +321,7 @@ export class AccountsService implements OnDestroy, Resolve<any> {
                         reject();
                     }
                 }, reject);
-        })
+        });
     }
 
     addServiceAccount(userId: string, account: any): Promise<void> {

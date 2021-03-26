@@ -491,7 +491,8 @@ export class ContactsService implements Resolve<any>, OnDestroy {
                     resolve(resp);
                 }, reject);
             }
- 
+
         });
     }
+
 }

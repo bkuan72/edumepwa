@@ -33,8 +33,9 @@ export enum SrvApiEnvEnum {
 
     about = '/api/users/profile-about/byUserId',
     groups = '/api/groups/byUserId',
-    activities = '/api/activities/activityList/byTimelineUserIdOffSetDays',
 
+    activities = '/api/activities/activityList/byTimelineUserIdOffSetDays',
+    removeActivity = '/api/activities/remove',
     increment_likes = '/api/posts/likes',
     increment_share = '/api/posts/share',
     userGroups = '/api/userGroups/byUserId',
