@@ -1,3 +1,4 @@
+import { UserProfileSessionService } from 'app/services/session/user-profile-session.service';
 import { AlertService } from './../../../../services/alert/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoginDTO } from './../../../../dtos/login-dto';
@@ -36,7 +37,8 @@ export class LoginComponent implements OnInit, OnDestroy
         private _formBuilder: FormBuilder,
         private _auth: AuthTokenSessionService,
         private _log: LoggerService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private _session: UserProfileSessionService
     )
     {
         // Configure the layout
@@ -121,8 +123,9 @@ export class LoginComponent implements OnInit, OnDestroy
             this._log.log('logged in');
 
             // get return url from query parameters or default to home page
-            const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-            this.router.navigateByUrl(returnUrl);
+            // const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+            // this.router.navigateByUrl(returnUrl);
+            this._session.goToUserProfile(this._auth.currentAuthUser.id);
         })
         .catch(() => {
             this.alertService.error('Login Failed');
