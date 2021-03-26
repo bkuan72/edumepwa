@@ -68,10 +68,10 @@ export class ImageDropUploadComponent {
             reader.addEventListener('load', () => {
                 base64Data = reader.result;
                 this._fn
-                    .resizeImage(base64Data, 0.05, 128)
+                    .resizeImage(base64Data, 256, 512)
                     .then((previewImg) => {
                         this._fn
-                        .resizeImage(base64Data, 0.60, 128)
+                        .resizeImage(base64Data, 1024, 512)
                         .then((fullImg) => {
                         this.fileBlobs.push({
                             name: file.name,
