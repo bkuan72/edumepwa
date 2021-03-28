@@ -22,14 +22,6 @@ export const navigation: FuseNavigation[] = [
 
 export const adminNavigation: FuseNavigation[] = [
     {
-        id: 'user.profile',
-        title: 'Maintain Profile',
-        type: 'item',
-        icon: 'account_circle',
-        url: 'maintain/profile',
-        externalUrl: false
-    },
-    {
         id       : 'contacts',
         title    : 'Contacts',
         translate: 'NAV.CONTACTS',
@@ -72,13 +64,6 @@ export const adminNavigation: FuseNavigation[] = [
 ];
 export const devNavigation: FuseNavigation[] = [
     {
-        id: 'user.profile',
-        title: 'Maintain Profile',
-        type: 'item',
-        icon: 'account_circle',
-        url: 'maintain/profile'
-    },
-    {
         id       : 'contacts',
         title    : 'Contacts',
         translate: 'NAV.CONTACTS',
@@ -118,13 +103,6 @@ export const devNavigation: FuseNavigation[] = [
 ];
 export const bizNavigation: FuseNavigation[] = [
     {
-        id: 'user.profile',
-        title: 'Maintain Profile',
-        type: 'item',
-        icon: 'account_circle',
-        url: 'maintain/profile'
-    },
-    {
         id       : 'contacts',
         title    : 'Contacts',
         translate: 'NAV.CONTACTS',
@@ -134,13 +112,6 @@ export const bizNavigation: FuseNavigation[] = [
     },
 ];
 export const userNavigation: FuseNavigation[] = [
-    {
-        id: 'user.profile',
-        title: 'Maintain Profile',
-        type: 'item',
-        icon: 'account_circle',
-        url: 'maintain/profile'
-    },
     {
         id       : 'contacts',
         title    : 'Contacts',
