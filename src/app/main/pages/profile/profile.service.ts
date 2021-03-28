@@ -16,6 +16,7 @@ import { UserProfileSessionService } from 'app/services/session/user-profile-ses
 import { MediaService, UploadMode } from 'app/services/media/media.service';
 import { LoggerService } from 'app/services/logger/logger.service';
 import { CommonFn } from 'app/shared/common-fn';
+import { ActivityService } from 'app/services/activity/activity.service';
 
 @Injectable()
 export class ProfileService implements Resolve<any>, OnDestroy {
@@ -119,6 +120,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         private _authTokenSession: AuthTokenSessionService,
         public _accountService: AccountsService,
         private _logger: LoggerService,
+        private _activities: ActivityService,
         private _fn: CommonFn
     ) {
         this._mediaService = new MediaService(
@@ -766,17 +768,12 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 resolve(this.activities);
                 return;
             }
-            const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.activities,
-                [this.user.id, '10']
-            );
-            this._http.GetObs(httpConfig, true).subscribe((activities: any) => {
-                this._authTokenSession.checkAuthTokenStatus();
+            this._activities.getActivities(this.user.id).then((activities) => {
                 this.activities = activities;
                 this.getActivitiesUser();
                 this.activitiesOnChanged.next(this.activities);
                 resolve(this.activities);
-            }, reject);
+            });
         });
     }
 

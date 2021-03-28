@@ -12,6 +12,11 @@ export class ActivityService {
         private _authTokenSession: AuthTokenSessionService
     ) {}
 
+    /**
+     * Delete an activity
+     * @param activityId activities.id
+     * @returns
+     */
     deleteActivity(activityId: any): Promise<void> {
         return new Promise((resolve) => {
             const httpConfig = this._http.getSrvHttpConfig(
@@ -24,4 +29,20 @@ export class ActivityService {
             }, resolve);
         });
     }
+
+    /**
+     * Get user activities
+     */
+    getActivities(userId): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+        const httpConfig = this._http.getSrvHttpConfig(
+            SrvApiEnvEnum.activities,
+            [userId, '10']
+        );
+        this._http.GetObs(httpConfig, true).subscribe((activities: any[]) => {
+            this._authTokenSession.checkAuthTokenStatus();
+            resolve(activities);
+        }, reject);
+    });
+}
 }

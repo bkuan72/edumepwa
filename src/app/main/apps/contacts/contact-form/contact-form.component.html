@@ -31,6 +31,8 @@
                     <input type="text"
                            aria-label="Search First Name, Last Name And Email"
                            matInput
+                           name="searchCtrl"
+                           autocomplete='new-password'
                            [formControl]="searchCtrl"
                            [matAutocomplete]="auto" required>
                     <mat-autocomplete #auto="matAutocomplete">

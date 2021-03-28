@@ -113,8 +113,8 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
     }
-    addNewFriends(): void {
-
+    goToContacts(): void {
+        this.router.navigateByUrl('contacts');
     }
 
     addNewGroup(): void {
