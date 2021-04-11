@@ -53,6 +53,7 @@ import { AccountsService } from './services/account/account.service';
 import { UserProfileSessionService } from './services/session/user-profile-session.service';
 import { AngularMaterialImageOverlayModule, AngularMaterialImageOverlayComponent } from 'angular-material-image-overlay';
 import { ContactsService } from './main/apps/contacts/contacts.service';
+import { DateSinceNowPipe } from './pipes/date-since-now.pipe';
 
 
 const appRoutes: Routes = [
@@ -135,7 +136,8 @@ const appRoutes: Routes = [
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        DateSinceNowPipe
     ],
     imports     : [
         BrowserModule,

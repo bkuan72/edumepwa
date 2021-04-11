@@ -60,6 +60,7 @@ export class MediaService implements OnDestroy {
         this.uploadMode = mode;
         this.user = user;
         this.account = account;
+        this.group = group;
         this.photosVideos = [];
         this.photosVideosOnChanged.next(this.photosVideos);
     }
@@ -155,7 +156,26 @@ export class MediaService implements OnDestroy {
         uploadFile: UploadFileIfc
     ): Promise<void> {
         return new Promise((resolve, reject) => {
-            resolve();
+            const uploadDate = new Date();
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.accountGroupMedias,
+                undefined,
+                {
+                    accountGroupMediaPeriod_id: periodId,
+                    account_id: accountId,
+                    upload_date: uploadDate.toISOString(),
+                    media_type: 'image',
+                    filename: uploadFile.name,
+                    title: uploadFile.title,
+                    preview: uploadFile.img,
+                    fullImage: uploadFile.fullImage,
+                }
+            );
+            this._http.PostObs(httpConfig, true).subscribe((userMediaDTO: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+
+                resolve();
+            }, reject);
         });
     }
 
@@ -166,7 +186,27 @@ export class MediaService implements OnDestroy {
         uploadFile: UploadFileIfc
     ): Promise<void> {
         return new Promise((resolve, reject) => {
-            resolve();
+            const uploadDate = new Date();
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.accountGroupMedias,
+                undefined,
+                {
+                    accountGroupMediaPeriod_id: periodId,
+                    account_id: accountId,
+                    group_id: groupId,
+                    upload_date: uploadDate.toISOString(),
+                    media_type: 'image',
+                    filename: uploadFile.name,
+                    title: uploadFile.title,
+                    preview: uploadFile.img,
+                    fullImage: uploadFile.fullImage,
+                }
+            );
+            this._http.PostObs(httpConfig, true).subscribe((userMediaDTO: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+
+                resolve();
+            }, reject);
         });
     }
 
@@ -209,7 +249,7 @@ export class MediaService implements OnDestroy {
                     this.uploadAccountGroupMediaPeriod(
                         period,
                         infoStr,
-                        this.account.id,
+                        this.group.account_id,
                         this.group.id,
                         uploadFile
                     )
@@ -267,9 +307,29 @@ export class MediaService implements OnDestroy {
         uploadFile: UploadFileIfc
     ): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
-            // TODO:
-            resolve({});
-        });
+            const uploadDate = new Date();
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.userMediaPeriods,
+                undefined,
+                {
+                    account_id: accountId,
+                    period: period,
+                    info: infoStr,
+                    upload_date: uploadDate.toISOString(),
+                    filename: uploadFile.name,
+                    media_type: 'image',
+                    title: uploadFile.title,
+                    preview: uploadFile.img,
+                    fullImage: uploadFile.fullImage,
+
+                }
+            );
+            this._http.PostObs(httpConfig, true).subscribe((accountMediaPeriod: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+
+                resolve(accountMediaPeriod);
+            }, reject);
+            });
     }
 
     uploadAccountGroupMediaPeriod(
@@ -280,9 +340,30 @@ export class MediaService implements OnDestroy {
         uploadFile: UploadFileIfc
     ): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
-            // TODO:
-            resolve({});
-        });
+            const uploadDate = new Date();
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.userMediaPeriods,
+                undefined,
+                {
+                    account_id: accountId,
+                    group_id: groupId,
+                    period: period,
+                    info: infoStr,
+                    upload_date: uploadDate.toISOString(),
+                    filename: uploadFile.name,
+                    media_type: 'image',
+                    title: uploadFile.title,
+                    preview: uploadFile.img,
+                    fullImage: uploadFile.fullImage,
+
+                }
+            );
+            this._http.PostObs(httpConfig, true).subscribe((accountGroupMediaPeriod: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+
+                resolve(accountGroupMediaPeriod);
+            }, reject);
+            });
     }
 
     /**
@@ -290,10 +371,32 @@ export class MediaService implements OnDestroy {
      */
     getPhotosVideos(): Promise<any[]> {
         return new Promise((resolve, reject) => {
-            const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userMediaPeriodsByUserId,
-                [this.user.id]
-            );
+            let httpConfig;
+            switch(this.uploadMode) {
+                case UploadMode.UserMedia:
+                    httpConfig = this._http.getSrvHttpConfig(
+                        SrvApiEnvEnum.userMediaPeriodsByUserId,
+                        [this.user.id]
+                    );
+                    break;
+                case UploadMode.AccountMedia:
+                    httpConfig = this._http.getSrvHttpConfig(
+                        SrvApiEnvEnum.accountGroupMediaPeriodsByAccountId,
+                        [this.account.id]
+                    );
+                    break;
+                case UploadMode.GroupMedia:
+                    httpConfig = this._http.getSrvHttpConfig(
+                        SrvApiEnvEnum.accountGroupMediaPeriodsByGroupId,
+                        [this.group.id]
+                    );
+                    break;
+                case UploadMode.UnknownMedia:
+                    this._logger.error('Upload Mode Not Defined');
+                    reject();
+                    return;
+                    break;
+            }
 
             this._http
                 .GetObs(httpConfig, true)
@@ -311,10 +414,29 @@ export class MediaService implements OnDestroy {
      */
     getMediaPeriodPhotosVideos(period: any): Promise<any[]> {
         return new Promise((resolve, reject) => {
-            const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userMediasByUserMediaPeriodId,
-                [period.id]
-            );
+            let httpConfig;
+            switch(this.uploadMode) {
+                case UploadMode.UserMedia:
+                    httpConfig = this._http.getSrvHttpConfig(
+                        SrvApiEnvEnum.userMediasByUserMediaPeriodId,
+                        [period.id]
+                    );
+                    break;
+                case UploadMode.AccountMedia:
+                case UploadMode.GroupMedia:
+                    httpConfig = this._http.getSrvHttpConfig(
+                        SrvApiEnvEnum.accountGroupMediasByAccountGroupMediaPeriodId,
+                        [period.id]
+                    );
+                    break;
+                case UploadMode.UnknownMedia:
+                    this._logger.error('Upload Mode Not Defined');
+                    reject();
+                    return;
+                    break;
+            }
+
+
 
             this._http
                 .GetObs(httpConfig, true)

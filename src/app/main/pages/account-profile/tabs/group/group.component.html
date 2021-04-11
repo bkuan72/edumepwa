@@ -1,0 +1,134 @@
+<div id="account" class="p-24" fxLayout="row wrap">
+
+    <div class="account-content" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="65">
+
+        <div class="profile-box info-box general" fxLayout="column">
+            <header class="accent">
+                <div class="title">General Information</div>
+                <div class="info">{{group.account_name}}</div>
+            </header>
+
+            <div class="content">
+                <div class="info-line">
+                    <div class="title">Description</div>
+                    <div class="info">{{group.description}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">About Business</div>
+                    <div class="info">{{group.about_me}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">Locations</div>
+                    <mat-icon class="s-16 ml-4">location_on</mat-icon>
+                    <div class="info">{{group.suburb}}</div>
+                    <div class="info">{{group.city}}</div>
+                    <div class="info">{{group.country}}</div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="profile-box info-box contact" fxLayout="column">
+
+            <header class="accent">
+                <div class="title">Contact</div>
+            </header>
+
+            <div class="content">
+                <div class="info-line">
+                    <div class="title">Address</div>
+                    <div class="info">{{group.address}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">Mobile No.</div>
+                    <div class="info">{{group.mobile_no}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">Phone No.</div>
+                    <div class="info">{{group.phone_no}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">Website</div>
+                    <div class="info">{{group.website}}</div>
+                </div>
+                <div class="info-line">
+                    <div class="title">Email</div>
+                    <div class="info">{{group.email}}</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="account-sidebar" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="35">
+
+        <div class="profile-box members" fxLayout="column">
+
+            <header class="accent" fxLayout="row" fxLayoutAlign="space-between center">
+
+                <div class="title">
+                    <button *ngIf="ownerOfProfile && canAddMember" mat-icon-button
+                    aria-label="create new member" (click)="addNewMember()">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                    Members
+                </div>
+
+                <div class="more secondary-text">
+                    <mat-icon *ngIf="members.length > 10"
+                    aria-label="show more member" >expand_more</mat-icon>
+                </div>
+            </header>
+
+            <div class="content" fxLayout="row wrap">
+                <div class="member" fxFlex="20" *ngFor="let member of members">
+                    <img [src]="member.avatar">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="profile-box groups" fxLayout="column">
+
+            <header class="accent" fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="title">
+                    <button *ngIf="ownerOfProfile && canAddGroup" mat-icon-button
+                    aria-label="create new group" (click)="addNewGroup()">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                    Groups</div>
+                <div class="more secondary-text">
+                    <mat-icon *ngIf="groups.length > 10"
+                        aria-label="show more member" >expand_more</mat-icon>
+                </div>
+            </header>
+
+            <div class="content">
+
+                <div class="group" *ngFor="let group of groups" fxLayout="row" fxLayoutAlign="space-between center">
+
+                    <div fxLayout="row" fxLayoutAlign="start center">
+
+                        <div class="logo">{{group.name.substring(0,1)}}</div>
+
+                        <div>
+                            <div class="name">{{group.name}}</div>
+                            <div class="category">{{group.category}}</div>
+                            <div class="members">{{group.members}} people</div>
+                        </div>
+                    </div>
+
+                    <button mat-icon-button aria-label="More">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

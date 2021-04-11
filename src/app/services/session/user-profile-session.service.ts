@@ -4,8 +4,6 @@ import { SrvApiEnvEnum } from '../../shared/SrvApiEnvEnum';
 import { LocalStoreVarEnum } from '../../shared/local-store-var-enum';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { AppSettings } from '../../shared/app-settings';
-import { HttpClient } from '@angular/common/http';
 import { AuthTokenSessionService } from '../auth-token-session/auth-token-session.service';
 
 @Injectable({

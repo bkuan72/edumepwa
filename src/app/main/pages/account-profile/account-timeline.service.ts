@@ -8,17 +8,17 @@ import { SrvApiEnvEnum } from 'app/shared/SrvApiEnvEnum';
 import { ActivityService } from 'app/services/activity/activity.service';
 
 
-export interface TimelinePostMediaIfc {
+export interface AccountTimelinePostMediaIfc {
     type: string;
     preview?: string;
     embed?: string;
 
 }
-export interface TimelinePostIfc  {
+export interface AccountTimelinePostIfc  {
     post_user_id: string;
-    timeline_user_id: string;
+    timeline_account_id: string;
     message: string;
-    medias: TimelinePostMediaIfc[];
+    medias: AccountTimelinePostMediaIfc[];
     location: {
         lat: number;
          lng: number;
@@ -34,7 +34,7 @@ export interface PostMediaIfc {
 }
 
 @Injectable()
-export class TimelineService implements OnDestroy {
+export class AccountTimelineService implements OnDestroy {
     // Private
     private _unsubscribeAll: Subject<any>;
     constructor(private _http: SrvHttpService,
@@ -50,7 +50,7 @@ export class TimelineService implements OnDestroy {
     }
 
 
-    doPostToTimeline(post: TimelinePostIfc): Promise<any | undefined> {
+    doPostToTimeline(post: AccountTimelinePostIfc): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
             const postDate = new Date();
             const postDTO = {
@@ -70,22 +70,22 @@ export class TimelineService implements OnDestroy {
             .then((respPostDTO: any) => {
                 this._auth.checkAuthTokenStatus();
                 postDTO.id = respPostDTO.id;
-                const userTimelineDTO = {
+                const accountTimelineDTO = {
                     id: '',
                     status: 'OK',
-                    timeline_user_id: post.timeline_user_id,
+                    timeline_account_id: post.timeline_account_id,
                     post_user_id: post.post_user_id,
                     post_date: postDTO.post_date,
                     post_id: postDTO.id
                 };
-                const userTimelineHttpConfig = this._http.getSrvHttpConfig(
-                    SrvApiEnvEnum.userTimelines,
+                const accountTimelineHttpConfig = this._http.getSrvHttpConfig(
+                    SrvApiEnvEnum.accountTimeline,
                     undefined,
-                    userTimelineDTO
+                    accountTimelineDTO
                 );
-                this._http.Post(userTimelineHttpConfig, true)
-                .then((respUserTimelineDTO: any) => {
-                    resolve(respUserTimelineDTO);
+                this._http.Post(accountTimelineHttpConfig, true)
+                .then((respAccountTimelineDTO: any) => {
+                    resolve(respAccountTimelineDTO);
                 })
                 .catch (() => {
                     reject();
@@ -102,7 +102,7 @@ export class TimelineService implements OnDestroy {
 
     doPostMedia(postUserId: string,
                 postId: string,
-                media: TimelinePostMediaIfc): Promise<any | undefined> {
+                media: AccountTimelinePostMediaIfc): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
             const postMediaDTO = {
                 id: '',
@@ -148,7 +148,7 @@ export class TimelineService implements OnDestroy {
                 message: comment
             };
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userTimelineComments,
+                SrvApiEnvEnum.accountGroupTimelineComments,
                 undefined,
                 commentDTO
             );
@@ -165,16 +165,16 @@ export class TimelineService implements OnDestroy {
     }
 
 
-    doFindTimelineUserLikeActivity(
+    doFindTimelineAccountLikeActivity(
         timelineId: string,
-        userId: string
+        accountId: string
     ): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.findUserTimelineLikeActivity,
+                SrvApiEnvEnum.findAccountTimelineLikeActivity,
                 [
                     timelineId,
-                    userId
+                    accountId
                 ]
             );
             this._http.Get(httpConfig, true)
@@ -189,16 +189,16 @@ export class TimelineService implements OnDestroy {
     }
 
     addTimelineLikeActivity(
-        timelineUserId: string,
+        timelineAccountId: string,
         userId: string,
         timelineId: string
     ): Promise<void> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userActivitiesLikes,
+                SrvApiEnvEnum.accountActivitiesLikes,
                 undefined,
                 {
-                    timeline_user_id: timelineUserId,
+                    timeline_user_id: timelineAccountId,
                     user_id: userId,
                     timeline_id: timelineId,
                     message: 'like your post'
@@ -221,7 +221,7 @@ export class TimelineService implements OnDestroy {
     ): Promise<void> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userTimelineUnlike,
+                SrvApiEnvEnum.accountGroupTimelineUnlike,
                 [timelineId]
             );
             this._http.Put(httpConfig, true)
@@ -239,7 +239,7 @@ export class TimelineService implements OnDestroy {
     ): Promise<void> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userTimelineLike,
+                SrvApiEnvEnum.accountGroupTimelineLike,
                 [timelineId]
             );
             this._http.Put(httpConfig, true)
@@ -254,12 +254,12 @@ export class TimelineService implements OnDestroy {
     }
 
     doToggleTimelineLike(
-        timelineUserId: string,
+        timelineAccountId: string,
         userId: string,
         timelineId: string
     ): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.doFindTimelineUserLikeActivity(timelineId, userId)
+            this.doFindTimelineAccountLikeActivity(timelineId, userId)
             .then((respActivityDTO: any[]) => {
                 this._auth.checkAuthTokenStatus();
                 if (respActivityDTO.length > 0) {
@@ -270,7 +270,7 @@ export class TimelineService implements OnDestroy {
                     }).catch(() => { reject(); });
                 } else {
                     this.incrementTimelineLikes(timelineId).then(() => {
-                        this.addTimelineLikeActivity(timelineUserId, userId, timelineId).then(() => {
+                        this.addTimelineLikeActivity(timelineAccountId, userId, timelineId).then(() => {
                             resolve();
                         }).catch(() => { reject(); });
                     }).catch(() => { reject(); });

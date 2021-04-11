@@ -1,3 +1,4 @@
+import { AccountProfileModule } from './account-profile/account-profile.module';
 import { AccountProfileMaintenanceFormsModule } from './forms/account-profile-maintenance/account-profile-maintenance-form.module';
 import { AdAgeGroupsFormModule } from './forms/ad-ageGroups-maintenance/ad-ageGroups-maintenance-form.module';
 import { AdKeywordsFormModule } from './forms/ad-keywords-maintenance/ad-keywords-maintenance-form.module';
@@ -57,6 +58,7 @@ import { NgModule } from '@angular/core';
 
         // Profile
         ProfileModule,
+        AccountProfileModule,
 
         // Search
         // SearchClassicModule,

@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { fuseAnimations } from '@fuse/animations';
-import { ProfileService } from 'app/main/pages/profile/profile.service';
+import { AccountProfileService } from 'app/main/pages/account-profile/account-profile.service';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 import { CommonFn } from 'app/shared/common-fn';
 import { OkDialogComponent } from 'app/components/ok-dialog/ok-dialog.component';
@@ -21,11 +21,11 @@ import { UserProfileSessionService } from 'app/services/session/user-profile-ses
 export class ProfileAboutComponent implements OnInit, OnDestroy
 {
     ownerOfProfile = false;
-    areFriends = false;
+    areAccountGroupMembers = false;
     showFullProfile = false;
-    user: any;
+    account: any;
     about: any;
-    friends: any[];
+    members: any[];
     groups: any[];
 
     // Private
@@ -38,26 +38,18 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
      * @param {ProfileService} _profileService
      */
     constructor(
-        private _profileService: ProfileService,
+        private _profileService: AccountProfileService,
         private router: Router,
-        private _auth: AuthTokenSessionService,
         public fn: CommonFn,
         private _matDialog: MatDialog,
-        private _session: UserProfileSessionService
+        private _userProfile: UserProfileSessionService
     )
     {
-        this.ownerOfProfile = false;
-        this.user = this._profileService.user;
-        if (
-            this._auth.currentAuthUser &&
-            this._auth.currentAuthUser.id === this.user.id
-        ) {
-            this.ownerOfProfile = true;
-        }
-        this.areFriends = this._profileService.areFriends;
+        this.ownerOfProfile = this._profileService.ownerOfProfile;
+        this.areAccountGroupMembers = this._profileService.areAccountGroupMembers;
         this.showFullProfile = this._profileService.showFullProfile;
 
-        this.friends = [];
+        this.members = [];
         this.groups = [];
         // Set the private defaults
         this._unsubscribeAll = new Subject();
@@ -72,29 +64,28 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        this._profileService.userOnChanged
+        this._profileService.accountOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe((user) => {
-            this.user = user;
-            this.ownerOfProfile = false;
-            if (
-                this._auth.currentAuthUser &&
-                this._auth.currentAuthUser.id === this.user.id
-            ) {
-                this.ownerOfProfile = true;
-            }
-            this.areFriends = this._profileService.areFriends;
+        .subscribe((account) => {
+            this.account = account;
+            this.ownerOfProfile = this._profileService.ownerOfProfile;
+            this.areAccountGroupMembers = this._profileService.areAccountGroupMembers;
             this.showFullProfile = this._profileService.showFullProfile;
+        });
+        this._profileService.ownerOfProfileOnChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((ownerOfProfile) => {
+            this.ownerOfProfile = ownerOfProfile;
         });
         this._profileService.aboutOnChanged
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(about => {
                 this.about = about;
             });
-        this._profileService.friendsOnChanged
+        this._profileService.membersOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe(friends => {
-            this.friends = friends;
+        .subscribe(members => {
+            this.members = members;
         });
         this._profileService.groupsOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
@@ -131,7 +122,7 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
                 this.confirmDialogRef = null;
             });
         } else {
-            this._session.goToUserProfile(friend.friend_id);
+            this._userProfile.goToUserProfile(friend.friend_id);
         }
 
     }

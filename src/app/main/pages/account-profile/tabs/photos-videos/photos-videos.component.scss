@@ -1,0 +1,92 @@
+@import "src/@fuse/scss/fuse";
+
+profile-photos-videos {
+
+    #photos-videos {
+        .add-new-photos {
+            cursor: pointer;
+            border: 2px dashed gray;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            flex-direction: column;
+            margin-top: 39px;
+            margin-right: 24px;
+        }
+        .button-row .mat-button-base {
+            margin: 8px 8px 8px 0;
+        }
+
+        .period {
+
+             .period-title {
+                margin-bottom: 24px;
+
+                .name {
+                    font-size: 20px;
+                }
+
+                .media {
+                    margin-right: 15px;
+                    .div-preview {
+                        overflow: hidden;
+                        width: 150px;
+                        height: 150px;
+                        .preview {
+                            cursor: pointer;
+                            display: block;
+                            width: 150px;
+                            height: 150px;
+                            margin-right: 16px;
+                        }
+                    }
+                }
+            }
+
+            .period-media {
+                margin-bottom: 16px;
+
+                .media {
+                    position: relative;
+                    margin: 0 16px 16px 0;
+                    border-radius: 4px;
+
+                    .info {
+                        font-size: 15px;
+                    }
+                    .div-preview {
+                        overflow: hidden;
+                        width: 256px;
+                        height: 256px;
+                        .preview {
+                            cursor: zoom-in;
+                            display: block;
+                            width: 256px;
+                            height: 256px;
+                        }
+                        .periodMediaLoading{
+                            float: inline-end;
+                            position: relative;
+                            display: flex;
+                        }
+                    }
+
+                    .title {
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        z-index: 10;
+                        padding: 0 16px;
+                        height: 48px;
+                        line-height: 48px;
+                        font-size: 15px;
+                    }
+                }
+            }
+        }
+    }
+}
