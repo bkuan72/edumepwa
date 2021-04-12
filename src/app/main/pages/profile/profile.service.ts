@@ -148,7 +148,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         this._mediaService.initMediaService(
             UploadMode.UserMedia,
             this.user,
-            this._accountService.account,
+            undefined,
             undefined
         );
         // Set the defaults
@@ -225,7 +225,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                 this._mediaService.initMediaService(
                     UploadMode.UserMedia,
                     this.user,
-                    this._accountService.account,
+                    undefined,
                     undefined
                 );
                 this.ownerOfProfile =

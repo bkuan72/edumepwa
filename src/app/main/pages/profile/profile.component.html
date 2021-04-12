@@ -77,8 +77,12 @@
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 <button *ngIf="ownerOfProfile" mat-icon-button color="accent"
-                                    aria-label="maintain account" (click)="doMaintainAccount(account)">
+                                    aria-label="maintain account profile" (click)="doMaintainAccount(account)">
                                     <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button color="accent"
+                                aria-label="view account profile" (click)="doViewAccountProfile(account)">
+                                <mat-icon>perm_identity</mat-icon>
                                 </button>
                                 <ngx-avatar [hidden]="!fn.showGenericAvatar(account.avatar)"
                                 name="{{account.account_name}}" size=40></ngx-avatar>

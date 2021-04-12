@@ -15,13 +15,17 @@ import { CommonComponentModule } from 'app/components/component.module';
 import { AvatarModule } from 'ngx-avatar';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgxPhotoEditorModule } from 'ngx-photo-editor';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { AccountProfileService } from '../../account-profile/account-profile.service';
 
 const routes: Routes = [
     {
         path     : 'account-profile',
         component: AccountProfileMaintenanceFormsComponent,
         resolve  : {
-            any: ProfileService
+            any: AccountProfileService
         }
     }
 ];
@@ -40,6 +44,9 @@ const routes: Routes = [
         MatInputModule,
         MatSelectModule,
         MatStepperModule,
+        MatSlideToggleModule,
+        MatTabsModule,
+        MatExpansionModule,
         AvatarModule,
         FuseSharedModule,
         CommonComponentModule

@@ -16,6 +16,7 @@ import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-to
 import { Subject } from 'rxjs';
 import { CroppedEvent } from 'ngx-photo-editor';
 import { ModuleCodeEnum } from 'app/shared/module-code-enum';
+import { AccountsService } from 'app/services/account/account.service';
 
 @Component({
     selector: 'account-profile',
@@ -65,8 +66,10 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
         private _auth: AuthTokenSessionService,
         public fn: CommonFn,
         private _profileService: AccountProfileService,
+        private _accountService: AccountsService,
         private router: Router
     ) {
+        this.account = this._accountService.account;
         this.canDev = this._auth.canDev(ModuleCodeEnum.Maintenance);
         this.accountTimelineDTO = this._profileService.accountTimelineDTO;
         this.postDTO = this._profileService.postDTO;

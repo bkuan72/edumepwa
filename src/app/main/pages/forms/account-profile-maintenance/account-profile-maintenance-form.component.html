@@ -230,6 +230,30 @@
                         <mat-error>Keywords is required!</mat-error>
                     </mat-form-field>
                 </div>
+
+                <div class="page-layout simple fullwidth" fxLayout="column">
+                    <div class="h2 mb-24">Privacy Controls</div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                        <mat-slide-toggle formControlName="allow_promo">Allow Receiving of Promotional
+                            Emails</mat-slide-toggle>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                        <mat-slide-toggle formControlName="allow_notification">Allow Notification</mat-slide-toggle>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                        <mat-slide-toggle formControlName="allow_msg">Allow Other Users To Message You</mat-slide-toggle>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                        <mat-slide-toggle formControlName="allow_friends">Allow Add Other Users You As Contacts</mat-slide-toggle>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                        <mat-slide-toggle formControlName="allow_follows">Allow Other User To Follow Your Posts</mat-slide-toggle>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                        <mat-slide-toggle formControlName="public">Profile Viewable By Public</mat-slide-toggle>
+                    </div>
+                </div>
+
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <button mat-raised-button color="accent" class="submit-button" aria-label="DONE"
                         [disabled]="form.invalid">

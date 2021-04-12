@@ -260,6 +260,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
             });
         });
     }
+
+    doViewAccountProfile(account: any): void {
+        this._profileService._accountService.getAccountById(account.account_id).then(() => {
+                this.router.navigateByUrl('pages/account-profile');
+        });
+    }
+
     addNewAccount(): void {
         this._profileService.getFullUserData().then(() => {
             this._profileService._accountService.initNewAccount(this.user.id).then(() => {

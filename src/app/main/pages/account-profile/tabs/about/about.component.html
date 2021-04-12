@@ -10,13 +10,12 @@
 
             <div class="content" *ngIf="about.general">
                 <div class="info-line">
-                    <div class="title">Gender</div>
-                    <div class="info">{{about.general.gender}}</div>
+                    <div class="title">Company Name</div>
+                    <div class="info">{{about.general.account_name}}</div>
                 </div>
-
-                <div class="info-line" *ngIf='showFullProfile'>
-                    <div class="title">Birthday</div>
-                    <div class="info">{{about.general.birthday}}</div>
+                <div class="info-line">
+                    <div class="title">About Me</div>
+                    <div class="info">{{about.general.about}}</div>
                 </div>
 
                 <div class="info-line" *ngIf='showFullProfile'>
@@ -27,40 +26,11 @@
                         <mat-icon class="s-16 ml-4">location_on</mat-icon>
                     </div>
                 </div>
-
-                <div class="info-line">
-                    <div class="title">About Me</div>
-                    <div class="info">{{about.general.about}}</div>
-                </div>
             </div>
 
         </div>
 
-        <div class="profile-box info-box work" fxLayout="column">
-
-            <header class="accent">
-                <div class="title">Work</div>
-            </header>
-
-            <div class="content" *ngIf="about.work">
-                <div class="info-line">
-                    <div class="title">Occupation</div>
-                    <div class="info">{{about.work.occupation}}</div>
-                </div>
-
-                <div class="info-line">
-                    <div class="title">Skills</div>
-                    <div class="info">{{about.work.skills}}</div>
-                </div>
-
-                <div class="info-line">
-                    <div class="title">Jobs</div>
-                    <div class="info">{{about.work.jobs}}</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="profile-box info-box contact" fxLayout="column" *ngIf='showFullProfile'>
+        <div class="profile-box info-box contact" fxLayout="column">
 
             <header class="accent">
                 <div class="title">Contact</div>
@@ -97,7 +67,7 @@
 
     <div class="about-sidebar" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="35" *ngIf='showFullProfile'>
 
-        <div class="profile-box friends" fxLayout="column">
+        <div class="profile-box members" fxLayout="column">
 
             <header class="accent" fxLayout="row" fxLayoutAlign="space-between center">
                 <div class="title">
@@ -109,13 +79,13 @@
                 </div>
 
                 <div class="more secondary-text">
-                    <mat-icon *ngIf="friends.length > 10"
-                    aria-label="show more friends" >expand_more</mat-icon>
+                    <mat-icon *ngIf="members.length > 10"
+                    aria-label="show more members" >expand_more</mat-icon>
                 </div>
             </header>
 
             <div class="content" fxLayout="row wrap">
-                <div class="friend" fxFlex="20" *ngFor="let friend of friends">
+                <div class="friend" fxFlex="20" *ngFor="let friend of members">
                     <button class="avatar-button" (click)="gotoProfile(friend)">
                         <img [hidden]="fn.showGenericAvatar(friend.avatar)" src="{{ friend.avatar }}" />
                         <ngx-avatar size=40 [hidden]="!fn.showGenericAvatar(friend.avatar)

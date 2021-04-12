@@ -137,8 +137,8 @@ export enum SrvApiEnvEnum {
     userMediasByUserId= '/api/userMedias/byUserId',
     userMediasByUserMediaPeriodId= '/api/userMedias/byUserMediaPeriodId',
 
-    accountActivities = '/api/accountGroupctivities/accountActivityList/byTimelineAccountIdOffSetDays',
-    groupActivities = '/api/accountGroupctivities/groupActivityList/byTimelineGroupIdOffSetDays',
+    accountActivities = '/api/accountGroupActivities/accountActivityList/byTimelineAccountIdOffSetDays',
+    groupActivities = '/api/accountGroupActivities/groupActivityList/byTimelineGroupIdOffSetDays',
     removeAccountGroupActivity = '/api/activities/remove',
 
     accountMembers = '/api/accountGroupMembers/accountGroupMemberList/byAccountId',

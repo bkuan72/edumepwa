@@ -54,6 +54,8 @@ import { UserProfileSessionService } from './services/session/user-profile-sessi
 import { AngularMaterialImageOverlayModule, AngularMaterialImageOverlayComponent } from 'angular-material-image-overlay';
 import { ContactsService } from './main/apps/contacts/contacts.service';
 import { DateSinceNowPipe } from './pipes/date-since-now.pipe';
+import { AccountProfileComponent } from './main/pages/account-profile/account-profile.component';
+import { AccountProfileService } from './main/pages/account-profile/account-profile.service';
 
 
 const appRoutes: Routes = [
@@ -79,6 +81,14 @@ const appRoutes: Routes = [
         canActivate : [AuthGuard],
         resolve     : {
             any: ProfileService
+        }
+    },
+    {
+        path        : 'pages/account-profile',
+        component   : AccountProfileComponent,
+        canActivate : [AuthGuard],
+        resolve     : {
+            any: AccountProfileService
         }
     },
     {

@@ -110,7 +110,6 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
             UploadMode.AccountMedia
         );
         this.account = this._accountService.account;
-        this.updateOwnerOfProfile();
         this.userBasicData = undefined;
         this.accountFullData = undefined;
         this.accountTimeline = [];
@@ -134,7 +133,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         this.ownerOfProfileOnChanged = new BehaviorSubject(this.ownerOfProfile);
 
         this.accountOnChanged = new BehaviorSubject(
-            this._accountService.account
+            this.account
         );
         this.accountDTOOnChanged = new BehaviorSubject(
             this._accountService.accountsDTO
@@ -179,7 +178,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
 
         // Set the private defaults
         this._unsubscribeAll = new Subject();
-        this._accountProfile.accountProfileOnChange
+        this._accountService.accountOnChanged
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((account) => {
                 this.account = account;
@@ -343,13 +342,17 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Observable<any> | Promise<any> | any {
-        return new Promise((resolve) => {
-            this.doCheckAreAccountGroupMembers().finally(() => {
-                this.doLoadAccountProfile().then(() => {
-                    this.accountOnChanged.next(this.account);
-                    resolve('');
+        return new Promise((resolve, reject) => {
+            if (this.account) {
+                this.doCheckAreAccountGroupMembers().finally(() => {
+                    this.doLoadAccountProfile().then(() => {
+                        this.accountOnChanged.next(this.account);
+                        resolve('');
+                    });
                 });
-            });
+            } else {
+                reject('');
+            }
         });
     }
 

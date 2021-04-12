@@ -68,6 +68,34 @@ export class AccountProfileMaintenanceFormsComponent implements OnInit, OnDestro
         this.updAccountDTO = this._profileService._accountService.accountsUpdDTO;
         this.accountSchema = this._profileService._accountService.accountsSchema;
         this.countries = this._profileService.countries;
+                // Reactive Form
+        this.form = this._formBuilder.group({
+            account_code  : [{value: '', disabled: true}],
+            account_type  : [{value: '', disabled: !this.newAccount}, Validators.required],
+            account_name  : ['', [Validators.required, Validators.maxLength(100)]],
+            description  : ['', [Validators.required, Validators.maxLength(100)]],
+            about_me     : ['', [Validators.required, Validators.maxLength(255)]],
+            avatar  : [''],
+            email  : ['', [Validators.required, Validators.maxLength(100)]],
+            phone_no  : ['', [Validators.required, Validators.maxLength(30)]],
+            mobile_no  : ['', [Validators.required, Validators.maxLength(30)]],
+            website     : ['', [Validators.maxLength(255)]],
+            address   : ['', [Validators.required, Validators.maxLength(255)]],
+            suburb  : ['', [Validators.required, Validators.maxLength(40)]],
+            city      : ['', [Validators.required, Validators.maxLength(40)]],
+            state     : ['', [Validators.maxLength(40)]],
+            post_code: ['', [Validators.required, Validators.maxLength(10)]],
+            country   : ['', [Validators.required, Validators.maxLength(40)]],
+            ageGroups   : ['', [Validators.required, Validators.maxLength(255)]],
+            categories   : ['', [Validators.required, Validators.maxLength(255)]],
+            keywords   : ['', [Validators.required, Validators.maxLength(255)]],
+            allow_notification: [true],
+            allow_promo: [true],
+            allow_msg: [true],
+            allow_friends: [true],
+            allow_follows: [true],
+            public: [true]
+        });
 
         this._ageGroupService.doLoadAgeGroupCodes();
         this._categoryService.doLoadCategoryCodes();
@@ -95,32 +123,10 @@ export class AccountProfileMaintenanceFormsComponent implements OnInit, OnDestro
             }
             this.avatar = this._profileService._accountService.account.avatar;
         }
-        // Reactive Form
-        this.form = this._formBuilder.group({
-            account_code  : [{value: '', disabled: true}],
-            account_type  : [{value: '', disabled: !this.newAccount}, Validators.required],
-            account_name  : ['', [Validators.required, Validators.maxLength(100)]],
-            description  : ['', [Validators.required, Validators.maxLength(100)]],
-            about_me     : ['', [Validators.required, Validators.maxLength(255)]],
-            avatar  : [this._profileService.userFullData.avatar],
-            email  : [this._profileService.userFullData.email, [Validators.required, Validators.maxLength(100)]],
-            phone_no  : [this._profileService.userFullData.phone_no, [Validators.required, Validators.maxLength(30)]],
-            mobile_no  : [this._profileService.userFullData.mobile_no, [Validators.required, Validators.maxLength(30)]],
-            website     : [this._profileService.userFullData.website, [Validators.maxLength(255)]],
-            address   : [this._profileService.userFullData.address, [Validators.required, Validators.maxLength(255)]],
-            suburb  : [this._profileService.userFullData.suburb, [Validators.required, Validators.maxLength(40)]],
-            city      : [this._profileService.userFullData.city, [Validators.required, Validators.maxLength(40)]],
-            state     : [this._profileService.userFullData.state, [Validators.maxLength(40)]],
-            post_code: [this._profileService.userFullData.post_code, [Validators.required, Validators.maxLength(10)]],
-            country   : [this._profileService.userFullData.country, [Validators.required, Validators.maxLength(40)]],
-            ageGroups   : ['', [Validators.required, Validators.maxLength(255)]],
-            categories   : ['', [Validators.required, Validators.maxLength(255)]],
-            keywords   : ['', [Validators.required, Validators.maxLength(255)]],
-        });
+
         if (!this.newAccount) {
             const accountData = this._fn.mapObj(this.form.controls, this._profileService._accountService.account);
             this._fn.mapObjValueToForm(accountData, this.form);
-            // this.form.setValue(accountData);
             }
         this._profileService._accountService.accountsDTOOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
