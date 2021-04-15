@@ -1,12 +1,12 @@
-@mixin profile-about-theme($theme) {
+@mixin account-profile-about-theme($theme) {
 
     $background: map-get($theme, background);
     $foreground: map-get($theme, foreground);
     $primary: map-get($theme, primary);
 
-    profile-about {
+    account-profile-about {
 
-        #about {
+        #account-about {
 
             .about-content {
 

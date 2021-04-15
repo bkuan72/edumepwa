@@ -123,6 +123,7 @@ export enum SrvApiEnvEnum {
     userAccountsUpdDTO= '/api/userAccounts/updDTO',
     userAccountsSchema= '/api/userAccounts/schema',
     userAccountsDataDTO= '/api/userAccounts/userAccountDTO',
+    userAccountsByUserIdAccountId= '/api/userAccounts/byUserIdAccountId',
 
     userMediaPeriods= '/api/userMediaPeriods',
     userMediaPeriodDTO= '/api/userMediaPeriods/DTO',
@@ -139,21 +140,22 @@ export enum SrvApiEnvEnum {
 
     accountActivities = '/api/accountGroupActivities/accountActivityList/byTimelineAccountIdOffSetDays',
     groupActivities = '/api/accountGroupActivities/groupActivityList/byTimelineGroupIdOffSetDays',
-    removeAccountGroupActivity = '/api/activities/remove',
+    removeAccountGroupActivity = '/api/accountGroupActivities/remove',
 
+    accountGroupMembers = '/api/accountGroupMembers',
     accountMembers = '/api/accountGroupMembers/accountGroupMemberList/byAccountId',
     areAccountMembers= '/api/accountGroupMembers/areAccountMembers',
 
-    // userContactsByUserId= '/api/friends/contactList/byUserId',
-    // userContactsUpdate= '/api/friends',
-    // toggleContactStar= '/api/friends/toggleStar',
-    // incrContactFrequency= '/api/friends/incrFrequency',
-    // removeContact= '/api/friends/remove',
-    // friendDTO= '/api/friends/DTO',
-    // updFriendDTO= '/api/friends/updDTO',
-    // friendsSchema= '/api/friends/schema',
-    // blockedByUser= '/api/friends/isBlockedByFriend',
+    accountMemberContactsUpdate= '/api/accountGroupMembers',
+    toggleMemberContactStar= '/api/accountGroupMembers/toggleStar',
+    incrMemberContactFrequency= '/api/accountGroupMembers/incrFrequency',
+    removeMemberContact= '/api/accountGroupMembers/remove',
+    memberDTO= '/api/accountGroupMembers/DTO',
+    updMemberDTO= '/api/accountGroupMembers/updDTO',
+    accountGroupMembersSchema= '/api/accountGroupMembers/schema',
+    blockedByMember= '/api/accountGroupMembers/isBlockedByAccountGroupMember',
 
+    accountGroupTimeline = '/api/accountGroupTimelines',
     accountGroupTimelineDTO= '/api/accountGroupTimelines/timelineDTO',
     accountTimeline = '/api/accountGroupTimelines/profile-timeline/timelineAccountIdNOffsetDays',
     groupTimeline = '/api/accountGroupTimelines/profile-timeline/timelineGroupIdNOffsetDays',
@@ -164,8 +166,7 @@ export enum SrvApiEnvEnum {
 
     accountActivitiesLikes= '/api/accountGroupActivities/account/likes',
     groupActivitiesLikes= '/api/accountGroupActivities/group/likes',
-    findAccountTimelineLikeActivity= '/api/accountGroupActivities/likes/byTimelineIdAccountId',
-    findGroupTimelineLikeActivity= '/api/accountGroupActivities/likes/byTimelineIdGroupId',
+    findAccountGroupTimelineLikeActivity= '/api/accountGroupActivities/likes/byTimelineIdUserId',
     accountGroupActivityRemove= '/api/accountGroupActivities/remove',
 
     accountGroupTimelineComments = '/api/accountGroupTimelineComments',
@@ -187,7 +188,7 @@ export enum SrvApiEnvEnum {
     accountGroupMediaUpdDTO= '/api/accountGroupMedias/updDTO',
     accountGroupMediasSchema= '/api/accountGroupMedias/schema',
     accountGroupMediasByAccountId= '/api/accountGroupMedias/byAccountId',
-    accountGroupMediasByAccountGroupMediaPeriodId= '/api/userMedias/byAccountGroupMediaPeriodId',
+    accountGroupMediasByAccountGroupMediaPeriodId= '/api/accountGroupMedias/byAccountGroupMediaPeriodId',
 
     userMediaFullImageById= '/api/userMedias/fullImage',
     accountGroupMediaFullImageById= '/api/accountGroupMedias/fullImage',

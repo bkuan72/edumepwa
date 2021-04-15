@@ -95,7 +95,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
      */
     constructor(
         private _http: SrvHttpService,
-        private _accountProfile: AccountProfileSessionService,
+        private _accountProfileSession: AccountProfileSessionService,
         private _authTokenSession: AuthTokenSessionService,
         public _accountService: AccountsService,
         private _logger: LoggerService,
@@ -109,7 +109,8 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
             this._fn,
             UploadMode.AccountMedia
         );
-        this.account = this._accountService.account;
+        this.account = this._accountProfileSession.accountProfileValue;
+
         this.userBasicData = undefined;
         this.accountFullData = undefined;
         this.accountTimeline = [];
@@ -175,10 +176,11 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         this.accountTimelineCommentSchemaOnChanged = new BehaviorSubject(
             this.accountTimelineCommentSchema
         );
+        this.updateOwnerOfProfile ();
 
         // Set the private defaults
         this._unsubscribeAll = new Subject();
-        this._accountService.accountOnChanged
+        this._accountProfileSession.accountProfileOnChange
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((account) => {
                 this.account = account;
@@ -188,10 +190,11 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
                     this.account,
                     undefined
                 );
-                this.updateOwnerOfProfile ();
-                this.doCheckAreAccountGroupMembers().finally(() => {
-                    this.doLoadAccountProfile().then(() => {
-                        this.accountOnChanged.next(this.account);
+                this.updateOwnerOfProfile ().finally(() => {
+                    this.doCheckAreAccountGroupMembers().finally(() => {
+                        this.doLoadAccountProfile().then(() => {
+                            this.accountOnChanged.next(this.account);
+                        });
                     });
                 });
             });
@@ -229,12 +232,24 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    updateOwnerOfProfile(): void {
-        this.ownerOfProfile = false;
-        this.ownerOfProfileOnChanged.next(this.ownerOfProfile);
-        this._accountProfile.getAccount(this.account.id).finally(() => {
-            this.ownerOfProfile = this._accountProfile.accountHolder(this._authTokenSession.currentAuthUser.id);
+    checkShowFullProfile(): void {
+        this.showFullProfile =
+        this.areAccountGroupMembers ||
+        this.ownerOfProfile ||
+        this.account.public;
+    }
+
+
+    updateOwnerOfProfile(): Promise<void> {
+        return new Promise ((resolve) => {
+            this.ownerOfProfile = false;
             this.ownerOfProfileOnChanged.next(this.ownerOfProfile);
+            this._accountProfileSession.getBasicAccount(this.account.id).finally(() => {
+                this.ownerOfProfile = this._accountProfileSession.accountHolder(this._authTokenSession.currentAuthUser.id);
+                this.checkShowFullProfile();
+                this.ownerOfProfileOnChanged.next(this.ownerOfProfile);
+                resolve();
+            });    
         });
     }
 
@@ -250,10 +265,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
                     this._authTokenSession.checkAuthTokenStatus();
                     this.areAccountGroupMembers = accountGroupMember.accountGroupMembers;
 
-                    this.showFullProfile =
-                        this.areAccountGroupMembers ||
-                        this.ownerOfProfile ||
-                        this.account.public;
+                    this.checkShowFullProfile ();
                     resolve();
                 }, resolve);
         });
@@ -344,10 +356,12 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
     ): Observable<any> | Promise<any> | any {
         return new Promise((resolve, reject) => {
             if (this.account) {
-                this.doCheckAreAccountGroupMembers().finally(() => {
-                    this.doLoadAccountProfile().then(() => {
-                        this.accountOnChanged.next(this.account);
-                        resolve('');
+                this.updateOwnerOfProfile().finally(() => {
+                    this.doCheckAreAccountGroupMembers().finally(() => {
+                        this.doLoadAccountProfile().then(() => {
+                            this.accountOnChanged.next(this.account);
+                            resolve('');
+                        });
                     });
                 });
             } else {

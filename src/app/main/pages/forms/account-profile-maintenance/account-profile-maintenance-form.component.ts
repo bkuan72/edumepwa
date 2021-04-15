@@ -71,7 +71,7 @@ export class AccountProfileMaintenanceFormsComponent implements OnInit, OnDestro
                 // Reactive Form
         this.form = this._formBuilder.group({
             account_code  : [{value: '', disabled: true}],
-            account_type  : [{value: '', disabled: !this.newAccount}, Validators.required],
+            account_type  : ['', Validators.required],
             account_name  : ['', [Validators.required, Validators.maxLength(100)]],
             description  : ['', [Validators.required, Validators.maxLength(100)]],
             about_me     : ['', [Validators.required, Validators.maxLength(255)]],
@@ -124,10 +124,14 @@ export class AccountProfileMaintenanceFormsComponent implements OnInit, OnDestro
             this.avatar = this._profileService._accountService.account.avatar;
         }
 
-        if (!this.newAccount) {
+        if (this.newAccount) {
+            const accountData = this._fn.mapObj(this.form.controls, this._profileService.userFullData);
+            this._fn.mapObjValueToForm(accountData, this.form);
+        } else {
             const accountData = this._fn.mapObj(this.form.controls, this._profileService._accountService.account);
             this._fn.mapObjValueToForm(accountData, this.form);
-            }
+            this.form.controls['account_type'].disable( { onlySelf: true });
+        }
         this._profileService._accountService.accountsDTOOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe(accountDTO => {

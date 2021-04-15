@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { SrvHttpService } from '../http-connect/srv-http.service';
 import { SrvApiEnvEnum } from '../../shared/SrvApiEnvEnum';
 import { LocalStoreVarEnum } from '../../shared/local-store-var-enum';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AuthTokenSessionService } from '../auth-token-session/auth-token-session.service';
 

@@ -94,8 +94,12 @@ $typography: mat-typography-config(
 @import "src/app/main/pages/profile/tabs/about/about.theme";
 @import "src/app/main/pages/profile/tabs/photos-videos/photos-videos.theme";
 @import "src/app/main/pages/profile/tabs/timeline/timeline.theme";
-@import "src/app/main/pages/errors/maintenance/maintenance.theme";
 @import "src/app/main/pages/profile/tabs/account/account.theme";
+@import "src/app/main/pages/errors/maintenance/maintenance.theme";
+@import "src/app/main/pages/account-profile/tabs/about/about.theme";
+@import "src/app/main/pages/account-profile/tabs/photos-videos/photos-videos.theme";
+@import "src/app/main/pages/account-profile/tabs/timeline/timeline.theme";
+@import "src/app/main/pages/account-profile/tabs/group/group.theme";
 
 
 // Define a mixin for easier access
@@ -119,6 +123,10 @@ $typography: mat-typography-config(
     @include profile-photos-videos-theme($theme);
     @include profile-timeline-theme($theme);
     @include profile-account-theme($theme);
+    @include account-profile-about-theme($theme);
+    @include account-profile-photos-videos-theme($theme);
+    @include account-profile-timeline-theme($theme);
+    @include account-profile-group-theme($theme);
     @include maintenance-theme($theme);
 }
 

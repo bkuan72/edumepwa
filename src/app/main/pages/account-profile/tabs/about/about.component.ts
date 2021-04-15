@@ -12,13 +12,13 @@ import { OkDialogComponent } from 'app/components/ok-dialog/ok-dialog.component'
 import { UserProfileSessionService } from 'app/services/session/user-profile-session.service';
 
 @Component({
-    selector     : 'profile-about',
+    selector     : 'account-profile-about',
     templateUrl  : './about.component.html',
     styleUrls    : ['./about.component.scss'],
     encapsulation: ViewEncapsulation.None,
     animations   : fuseAnimations
 })
-export class ProfileAboutComponent implements OnInit, OnDestroy
+export class AccountProfileAboutComponent implements OnInit, OnDestroy
 {
     ownerOfProfile = false;
     areAccountGroupMembers = false;
@@ -26,7 +26,6 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
     account: any;
     about: any;
     members: any[];
-    groups: any[];
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -50,7 +49,6 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
         this.showFullProfile = this._profileService.showFullProfile;
 
         this.members = [];
-        this.groups = [];
         // Set the private defaults
         this._unsubscribeAll = new Subject();
     }
@@ -86,11 +84,6 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe(members => {
             this.members = members;
-        });
-        this._profileService.groupsOnChanged
-        .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe(groups => {
-            this.groups = groups;
         });
     }
 

@@ -13,15 +13,16 @@ import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-to
 import { CroppedEvent, NgxPhotoEditorComponent } from 'ngx-photo-editor';
 import { ContactsService } from 'app/main/apps/contacts/contacts.service';
 import { ActivityService } from 'app/services/activity/activity.service';
+import { Moment } from 'moment';
 
 @Component({
-    selector: 'profile-timeline',
+    selector: 'account-profile-timeline',
     templateUrl: './timeline.component.html',
     styleUrls: ['./timeline.component.scss'],
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations,
 })
-export class ProfileTimelineComponent implements OnInit, OnDestroy {
+export class AccountProfileTimelineComponent implements OnInit, OnDestroy {
     @ViewChild('uploadPostImageFileInput') myUploadPostImageFileInput: ElementRef;
     post: AccountTimelinePostIfc;
     accountTimeline: any[];
@@ -59,7 +60,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
                 private alert: AlertService) {
         this.post = {
             post_user_id: '',
-            timeline_account_id: '',
+            account_id: '',
             message: '',
             medias: [],
             location: { lat: 0, lng: 0 },
@@ -172,7 +173,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
         this.post.message = this.post.message.trim();
         if (this.post.message.length > 0 ||
             this.post.medias.length > 0) {
-            this.post.timeline_account_id = this._profileService.account.id;
+            this.post.account_id = this._profileService.account.id;
             this.post.post_user_id = this._auth.currentAuthUser.id;
             this._timelineService.doPostToTimeline(this.post)
             .then((postDTO) => {

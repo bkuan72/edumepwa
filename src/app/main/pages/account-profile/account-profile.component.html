@@ -1,4 +1,4 @@
-<div id="profile" class="page-layout simple fullwidth" fxLayout="column">
+<div id="account-profile" class="page-layout simple fullwidth" fxLayout="column">
     <!-- HEADER -->
     <div class="header p-24" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-sm="row"
         fxLayoutAlign.gt-sm="space-between end">
@@ -47,21 +47,21 @@
     <!-- CONTENT -->
     <div class="content">
         <mat-tab-group dynamicHeight="true">
-            <mat-tab label="Timeline" *ngIf='showFullProfile'>>
-                <profile-timeline></profile-timeline>
+            <mat-tab label="Timeline" *ngIf='showFullProfile'>
+                <account-profile-timeline></account-profile-timeline>
             </mat-tab>
             <mat-tab label="About">
                 <ng-template mat-tab-label>
                     <button *ngIf="ownerOfProfile" mat-icon-button color="accent"
-                    aria-label="maintain account profile" (click)="doMaintain()">
+                    aria-label="maintain account profile" (click)="doMaintainAccount()">
                     <mat-icon>edit</mat-icon>
                 </button>
                     About
                 </ng-template>
-                <profile-about></profile-about>
+                <account-profile-about></account-profile-about>
             </mat-tab>
             <mat-tab label="Photos" *ngIf='showFullProfile'>
-                <profile-photos-videos (uploadCompleted)="refreshPhotos()"></profile-photos-videos>
+                <account-profile-photos-videos (uploadCompleted)="refreshPhotos()"></account-profile-photos-videos>
             </mat-tab>
 
             <mat-tab label="Groups" *ngIf='showFullProfile'>
@@ -87,7 +87,7 @@
                                 {{group.group_name}}
                             </mat-panel-description>
                         </mat-expansion-panel-header>
-                        <profile-group [group]="group"></profile-group>
+                        <account-profile-group [group]="group"></account-profile-group>
                     </mat-expansion-panel>
                 </mat-accordion>
             </mat-tab>

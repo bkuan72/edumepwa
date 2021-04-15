@@ -1,6 +1,8 @@
+import { SharedModule } from './pipes/shared.module';
+import { DatePeriodPipe } from './pipes/date-period.pipe';
+import { MemberContactsService } from './main/apps/members/member-contacts.service';
 import { ActivityService } from './services/activity/activity.service';
 import { UserService } from './services/user/user.service';
-import { AccountProfileSessionService } from './services/session/account-profile-session.service';
 import { CurrentUserLoadedGuard } from './main/guards/currentUserLoaded.guard';
 import { LockComponent } from 'app/main/pages/authentication/lock/lock.component';
 import { AccountLoadedGuard } from './main/guards/accountLoaded.guard';
@@ -51,7 +53,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdKeywordsFormComponent } from './main/pages/forms/ad-keywords-maintenance/ad-keywords-maintenance-form.component';
 import { AccountsService } from './services/account/account.service';
 import { UserProfileSessionService } from './services/session/user-profile-session.service';
-import { AngularMaterialImageOverlayModule, AngularMaterialImageOverlayComponent } from 'angular-material-image-overlay';
+import { AngularMaterialImageOverlayModule } from 'angular-material-image-overlay';
 import { ContactsService } from './main/apps/contacts/contacts.service';
 import { DateSinceNowPipe } from './pipes/date-since-now.pipe';
 import { AccountProfileComponent } from './main/pages/account-profile/account-profile.component';
@@ -134,6 +136,14 @@ const appRoutes: Routes = [
         }
     },
     {
+        path        : 'contacts',
+        canActivate : [AuthGuard],
+        loadChildren: () => import('./main/apps/members/member-contacts.module').then(m => m.MemberContactsModule),
+        resolve     : {
+            any: MemberContactsService
+        }
+    },
+    {
         path        : 'pages',
         loadChildren: () => import('./main/pages/pages.module').then(m => m.PagesModule)
     },
@@ -145,10 +155,6 @@ const appRoutes: Routes = [
 ];
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        DateSinceNowPipe
-    ],
     imports     : [
         BrowserModule,
         BrowserAnimationsModule,
@@ -179,7 +185,11 @@ const appRoutes: Routes = [
         LayoutModule,
         PagesModule,
         NgbModule,
-        AngularMaterialImageOverlayModule
+        AngularMaterialImageOverlayModule,
+        SharedModule
+    ],
+    declarations: [
+        AppComponent
     ],
     providers: [
         SrvHttpService,
@@ -190,8 +200,9 @@ const appRoutes: Routes = [
         AlertService,
         UserProfileSessionService,
         AccountsService,
-        AccountProfileSessionService,
+        AccountProfileService,
         ContactsService,
+        MemberContactsService,
         ActivityService,
         UserService,
         CommonFn

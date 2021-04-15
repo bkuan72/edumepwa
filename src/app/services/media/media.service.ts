@@ -309,7 +309,7 @@ export class MediaService implements OnDestroy {
         return new Promise((resolve, reject) => {
             const uploadDate = new Date();
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userMediaPeriods,
+                SrvApiEnvEnum.accountGroupMediaPeriods,
                 undefined,
                 {
                     account_id: accountId,
@@ -342,7 +342,7 @@ export class MediaService implements OnDestroy {
         return new Promise((resolve, reject) => {
             const uploadDate = new Date();
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.userMediaPeriods,
+                SrvApiEnvEnum.accountGroupMediaPeriods,
                 undefined,
                 {
                     account_id: accountId,
@@ -449,7 +449,7 @@ export class MediaService implements OnDestroy {
     getFullImage(mediaId: string): Promise<any> {
         return new Promise((resolve, reject) => {
             let apiPath = '';
-            switch(this.uploadMode) {
+            switch (this.uploadMode) {
                 case UploadMode.UserMedia:
                     apiPath = SrvApiEnvEnum.userMediaFullImageById;
                     break;

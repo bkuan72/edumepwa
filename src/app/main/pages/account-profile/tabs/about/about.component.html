@@ -1,4 +1,4 @@
-<div id="about" class="p-24" fxLayout="row wrap">
+<div id="account-about" class="p-24" fxLayout="row wrap">
 
     <div class="about-content" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="65">
 
@@ -75,7 +75,7 @@
                     aria-label="create new member" (click)="goToContacts()">
                     <mat-icon>add_circle_outline</mat-icon>
                 </button>
-                    Friends
+                    Members
                 </div>
 
                 <div class="more secondary-text">
@@ -85,52 +85,11 @@
             </header>
 
             <div class="content" fxLayout="row wrap">
-                <div class="friend" fxFlex="20" *ngFor="let friend of members">
-                    <button class="avatar-button" (click)="gotoProfile(friend)">
-                        <img [hidden]="fn.showGenericAvatar(friend.avatar)" src="{{ friend.avatar }}" />
-                        <ngx-avatar size=40 [hidden]="!fn.showGenericAvatar(friend.avatar)
-                            " name="{{ friend.name }}"></ngx-avatar>
-                    </button>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="profile-box groups" fxLayout="column">
-
-            <header class="accent" fxLayout="row" fxLayoutAlign="space-between center">
-                <div class="title">
-                    <button *ngIf="ownerOfProfile" mat-icon-button
-                    aria-label="create new group" (click)="addNewGroup()">
-                    <mat-icon>add_circle_outline</mat-icon>
-                </button>
-                    Groups
-                </div>
-
-                <div class="more secondary-text">
-                    <mat-icon *ngIf="groups.length > 10"
-                    aria-label="show more groups" >expand_more</mat-icon>
-                </div>
-            </header>
-
-            <div class="content">
-
-                <div class="group" *ngFor="let group of groups" fxLayout="row"
-                     fxLayoutAlign="space-between center">
-
-                    <div fxLayout="row" fxLayoutAlign="start center">
-
-                        <div class="logo">{{group.name.substring(0,1)}}</div>
-
-                        <div>
-                            <div class="name">{{group.name}}</div>
-                            <div class="category">{{group.category}}</div>
-                            <div class="members">{{group.members}} people</div>
-                        </div>
-                    </div>
-
-                    <button mat-icon-button aria-label="More">
-                        <mat-icon>more_vert</mat-icon>
+                <div class="friend" fxFlex="20" *ngFor="let member of members">
+                    <button class="avatar-button" (click)="gotoProfile(member)">
+                        <img [hidden]="fn.showGenericAvatar(member.avatar)" src="{{ member.avatar }}" />
+                        <ngx-avatar size=40 [hidden]="!fn.showGenericAvatar(member.avatar)
+                            " name="{{ member.name }}"></ngx-avatar>
                     </button>
                 </div>
             </div>

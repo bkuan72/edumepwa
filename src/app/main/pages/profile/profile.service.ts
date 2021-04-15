@@ -16,6 +16,7 @@ import { MediaService, UploadMode } from 'app/services/media/media.service';
 import { LoggerService } from 'app/services/logger/logger.service';
 import { CommonFn } from 'app/shared/common-fn';
 import { ActivityService } from 'app/services/activity/activity.service';
+import { AccountProfileSessionService } from 'app/services/session/account-profile-session.service';
 
 @Injectable()
 export class ProfileService implements Resolve<any>, OnDestroy {
@@ -115,7 +116,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
      */
     constructor(
         private _http: SrvHttpService,
-        private _session: UserProfileSessionService,
+        private _userProfileSession: UserProfileSessionService,
+        public _accountProfileSession: AccountProfileSessionService,
         private _authTokenSession: AuthTokenSessionService,
         public _accountService: AccountsService,
         private _logger: LoggerService,
@@ -129,7 +131,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             this._fn,
             UploadMode.UserMedia
         );
-        this.user = this._session.userProfileValue;
+        this.user = this._userProfileSession.userProfileValue;
         this.ownerOfProfile =
             this.user.id === this._authTokenSession.currentAuthUser.id;
         this.userBasicData = undefined;
@@ -218,7 +220,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
 
         // Set the private defaults
         this._unsubscribeAll = new Subject();
-        this._session.userProfileOnChange
+        this._userProfileSession.userProfileOnChange
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((user) => {
                 this.user = user;
@@ -300,7 +302,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     }
 
     updateSessionProfileAvatar(avatar: string): void {
-        this._session.setProfileAvatar(avatar);
+        this._userProfileSession.setProfileAvatar(avatar);
     }
     doCheckAreFriends(): Promise<void> {
         return new Promise<void>((resolve) => {

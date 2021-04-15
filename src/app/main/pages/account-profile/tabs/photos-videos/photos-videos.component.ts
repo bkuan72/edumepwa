@@ -15,13 +15,13 @@ import { CommonFn } from 'app/shared/common-fn';
 import { AccountProfileService } from '../../account-profile.service';
 
 @Component({
-    selector     : 'profile-photos-videos',
+    selector     : 'account-profile-photos-videos',
     templateUrl  : './photos-videos.component.html',
     styleUrls    : ['./photos-videos.component.scss'],
     encapsulation: ViewEncapsulation.None,
     animations   : fuseAnimations
 })
-export class ProfilePhotosVideosComponent implements OnInit, OnDestroy
+export class AccountProfilePhotosVideosComponent implements OnInit, OnDestroy
 {
     @ViewChild('appImageUpload') appImageUpload: ImageDropUploadComponent;
     @Output() uploadCompleted: EventEmitter<any> = new EventEmitter();

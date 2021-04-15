@@ -1,14 +1,14 @@
-@mixin profile-account-theme($theme) {
+@mixin account-profile-group-theme($theme) {
 
     $background: map-get($theme, background);
     $foreground: map-get($theme, foreground);
     $primary: map-get($theme, primary);
 
-    profile-account {
+    account-profile-group {
 
-        #account {
+        #account-group {
 
-            .account-sidebar {
+            .group-sidebar {
 
                 .groups {
 

@@ -8,7 +8,7 @@ import { AccountProfileService } from '../../account-profile.service';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 
 @Component({
-    selector     : 'profile-group',
+    selector     : 'account-profile-group',
     templateUrl  : './group.component.html',
     styleUrls    : ['./group.component.scss'],
     encapsulation: ViewEncapsulation.None,

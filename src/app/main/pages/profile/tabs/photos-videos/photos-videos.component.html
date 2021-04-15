@@ -1,5 +1,5 @@
 <div class="page-layout simple fullwidth" fxLayout="column">
-    <div id="photos-videos" class="content p-24">
+    <div id="profile-photos-videos" class="content p-24">
         <div [hidden]="hideUpload">
             <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
                 <form *ngIf="ownerOfProfile" class="mat-card mat-elevation-z4 p-24 mr-24" fxLayout="column"
@@ -35,7 +35,7 @@
             <app-image-file-upload #appImageUpload [hidden]="form.invalid" *ngIf="ownerOfProfile"
                 [ownerOfPhotos]="ownerOfProfile" [periodId]="periodId" [period]="periodName" [infoStr]="periodInfo"
                 (uploadStarted)="disableDone = true" (uploadEnded)="disableDone = false"
-                (onFileInput)="onSubmit()">
+                (onFileInput)="onSubmit()"  profileType="USER">
             </app-image-file-upload>
 
         </div>

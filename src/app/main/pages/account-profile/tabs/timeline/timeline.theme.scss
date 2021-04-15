@@ -1,12 +1,12 @@
-@mixin profile-timeline-theme($theme) {
+@mixin account-profile-timeline-theme($theme) {
 
     $background: map-get($theme, background);
     $foreground: map-get($theme, foreground);
     $accent: map-get($theme, accent);
 
-    profile-timeline {
+    account-profile-timeline {
 
-        #timeline {
+        #account-profile-timeline {
 
             .timeline-content {
 

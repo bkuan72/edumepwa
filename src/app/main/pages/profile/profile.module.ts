@@ -25,6 +25,7 @@ import { AccountsService } from 'app/services/account/account.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import {MatBadgeModule} from '@angular/material/badge';
+import { SharedModule } from 'app/pipes/shared.module';
 
 
 const routes = [
@@ -62,7 +63,8 @@ const routes = [
         MatBadgeModule,
 
         FuseSharedModule,
-        CommonComponentModule
+        CommonComponentModule,
+        SharedModule
     ],
     providers   : [
         ProfileService,

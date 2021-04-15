@@ -8,6 +8,7 @@ import {
     Input,
 } from '@angular/core';
 import { ProfileService } from 'app/main/pages/profile/profile.service';
+import { AccountProfileService } from 'app/main/pages/account-profile/account-profile.service';
 
 export interface UploadFileIfc {
     name: string;
@@ -30,6 +31,7 @@ export class ImageDropUploadComponent {
     @Input() periodId: string;
     @Input() period: string;
     @Input() infoStr: string;
+    @Input() profileType: string;
     // tslint:disable-next-line:no-output-on-prefix
     @Output() onFileInput: EventEmitter<any> = new EventEmitter();
     @Output() uploadStarted: EventEmitter<any> = new EventEmitter();
@@ -44,7 +46,8 @@ export class ImageDropUploadComponent {
     @ViewChild('fileInput') imageFileInputFile: ElementRef;
 
     constructor(
-        private _profileService: ProfileService,
+        private _userProfileService: ProfileService,
+        private _accountProfileService: AccountProfileService,
         private _fn: CommonFn
     ) {
         this.currentPeriodId = this.periodId;
@@ -168,18 +171,39 @@ export class ImageDropUploadComponent {
         return new Promise((resolve, reject) => {
             this.progressMessage = 'Creating Folder ' + fileList[idx].name;
             this.uploadUploadingFile.emit(fileList[idx].name);
-            this._profileService._mediaService
-            .uploadMediaPeriodToServer(
-                this.period,
-                this.infoStr,
-                fileList[idx]
-            )
-            .then((periodId) => {
-                resolve(periodId);
-            })
-            .catch(() => {
-                reject();
-            });
+            switch (this.profileType) {
+                case 'USER':
+                    this._userProfileService._mediaService
+                    .uploadMediaPeriodToServer(
+                        this.period,
+                        this.infoStr,
+                        fileList[idx]
+                    )
+                    .then((periodId) => {
+                        resolve(periodId);
+                    })
+                    .catch(() => {
+                        reject();
+                    });
+                    break;
+                case 'ACCOUNT':
+                    this._accountProfileService._mediaService
+                    .uploadMediaPeriodToServer(
+                        this.period,
+                        this.infoStr,
+                        fileList[idx]
+                    )
+                    .then((periodId) => {
+                        resolve(periodId);
+                    })
+                    .catch(() => {
+                        reject();
+                    });
+                    break;
+                case 'GROUP':
+                    break;
+            }
+
         });
     }
     private uploadMediaToServer(periodId: string,
@@ -189,23 +213,48 @@ export class ImageDropUploadComponent {
             this.progressMessage = 'Uploading ' + (idx + 1).toString() +
                                     ' of ' + fileList.length.toString() +
                                     ' file : ' + fileList[idx].name;
-            this._profileService._mediaService
-                .uploadFileToServer(
-                    periodId,
-                    this.period,
-                    this.infoStr,
-                    fileList[idx]
-                )
-                .then(() => {
-                    fileList[idx].uploaded = true;
-                    resolve();
-                })
-                .catch(() => {
-                    fileList[idx].failUpload = true;
-                    fileList[idx].invalid = true;
-                    fileList[idx].invalidMsg = 'Failed To Upload To Server';
-                    resolve();
-                });
+            switch (this.profileType) {
+                case 'USER':
+                    this._userProfileService._mediaService
+                    .uploadFileToServer(
+                        periodId,
+                        this.period,
+                        this.infoStr,
+                        fileList[idx]
+                    )
+                    .then(() => {
+                        fileList[idx].uploaded = true;
+                        resolve();
+                    })
+                    .catch(() => {
+                        fileList[idx].failUpload = true;
+                        fileList[idx].invalid = true;
+                        fileList[idx].invalidMsg = 'Failed To Upload To Server';
+                        resolve();
+                    });
+                    break;
+                case 'ACCOUNT':
+                    this._accountProfileService._mediaService
+                    .uploadFileToServer(
+                        periodId,
+                        this.period,
+                        this.infoStr,
+                        fileList[idx]
+                    )
+                    .then(() => {
+                        fileList[idx].uploaded = true;
+                        resolve();
+                    })
+                    .catch(() => {
+                        fileList[idx].failUpload = true;
+                        fileList[idx].invalid = true;
+                        fileList[idx].invalidMsg = 'Failed To Upload To Server';
+                        resolve();
+                    });
+                    break;
+                case 'GROUP':
+                    break;
+            }
         });
     }
 

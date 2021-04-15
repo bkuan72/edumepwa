@@ -179,12 +179,9 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     isAuth(): boolean {
         return this._auth.isLoggedIn();
     }
-    doMaintain(): void {
-        this.router.navigateByUrl('maintain/profile');
-    }
 
-    doMaintainAccount(account: any): void {
-        this._profileService.getFullAccountData().then(() => {
+    doMaintainAccount(): void {
+        this._accountService.getAccountById(this.account.id).then(() => {
             this.router.navigateByUrl('maintain/account-profile');
         });
     }

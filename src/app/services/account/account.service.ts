@@ -398,7 +398,7 @@ export class AccountsService implements OnDestroy, Resolve<any> {
     }
 
 
-    
+
     /**
      * Update User Profile Avatar
      */

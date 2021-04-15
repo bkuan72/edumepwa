@@ -1,11 +1,11 @@
-@mixin profile-photos-videos-theme($theme) {
+@mixin account-profile-photos-videos-theme($theme) {
 
     $background: map-get($theme, background);
     $foreground: map-get($theme, foreground);
 
-    profile-photos-videos {
+    account-profile-photos-videos {
 
-        #photos-videos {
+        #account-profile-photos-videos {
 
             .period {
 

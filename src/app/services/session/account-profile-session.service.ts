@@ -14,7 +14,7 @@ export class AccountProfileSessionService {
     accountProfileOnChange: BehaviorSubject<any>;
     userAccountOnChange: BehaviorSubject<any>;
 
-    accountUser: any[];
+    userAccounts: any[];
 
 
     constructor(
@@ -49,7 +49,7 @@ export class AccountProfileSessionService {
             .Get(httpConfig, true)
             .then((account: any) => {
                 this._authTokenSession.checkAuthTokenStatus();
-                this.getAccount(account.id).finally(() => {
+                this.getBasicAccount(account.id).finally(() => {
                     localStorage.setItem(LocalStoreVarEnum.SESSION_ACCOUNT_PROFILE, JSON.stringify(account));
                     this.accountProfileOnChange.next(account);
                     this.router.navigate(['/pages/account-profile']);
@@ -61,7 +61,7 @@ export class AccountProfileSessionService {
 
     }
 
-    getAccount(accountId: string): Promise<any[]> {
+    getBasicAccount(accountId: string): Promise<any[]> {
         return new Promise<any[]>((resolve) => {
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.basicAccountByAccountId,
@@ -69,12 +69,39 @@ export class AccountProfileSessionService {
             );
             this._http
                 .Get(httpConfig, true)
-                .then((account: any[]) => {
+                .then((account: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
+                    this.account = account;
+                    this.getAccountUser(account.id).finally(() => {
+                        localStorage.setItem(LocalStoreVarEnum.SESSION_ACCOUNT_PROFILE, JSON.stringify(account));
+                        this.userAccountOnChange.next(account);
+                        resolve(account);
+                    });
+                })
+                .catch(() => {
+                    this.userAccountOnChange.next([]);
+                    resolve([]);
+                });
+        });
+    }
 
-                    localStorage.setItem(LocalStoreVarEnum.SESSION_USER_ACCOUNT, JSON.stringify(account));
-                    this.userAccountOnChange.next(account);
-                    resolve(account);
+    getAccountUser(accountId: string): Promise<any[]> {
+        return new Promise<any[]>((resolve) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.userAccountsByUserIdAccountId,
+                [   this._authTokenSession.currentAuthUser.id,
+                    accountId
+                ]
+            );
+            this._http
+                .Get(httpConfig, true)
+                .then((userAccounts: any[]) => {
+                    this._authTokenSession.checkAuthTokenStatus();
+                    this.userAccounts = userAccounts;
+
+                    localStorage.setItem(LocalStoreVarEnum.SESSION_USER_ACCOUNT, JSON.stringify(userAccounts));
+                    this.userAccountOnChange.next(userAccounts);
+                    resolve(userAccounts);
                 })
                 .catch(() => {
                     this.userAccountOnChange.next([]);
@@ -85,8 +112,8 @@ export class AccountProfileSessionService {
 
     accountHolder(userId): boolean {
         let holder = false;
-        if (this.accountUser) {
-            this.accountUser.some((accUser) => {
+        if (this.userAccounts) {
+            this.userAccounts.some((accUser) => {
                 if (accUser.user_id === userId && accUser.acc_type === 'HOLDER') {
                     holder = true;
                     return true;

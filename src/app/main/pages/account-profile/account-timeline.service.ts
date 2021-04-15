@@ -16,7 +16,7 @@ export interface AccountTimelinePostMediaIfc {
 }
 export interface AccountTimelinePostIfc  {
     post_user_id: string;
-    timeline_account_id: string;
+    account_id: string;
     message: string;
     medias: AccountTimelinePostMediaIfc[];
     location: {
@@ -73,13 +73,13 @@ export class AccountTimelineService implements OnDestroy {
                 const accountTimelineDTO = {
                     id: '',
                     status: 'OK',
-                    timeline_account_id: post.timeline_account_id,
+                    account_id: post.account_id,
                     post_user_id: post.post_user_id,
                     post_date: postDTO.post_date,
                     post_id: postDTO.id
                 };
                 const accountTimelineHttpConfig = this._http.getSrvHttpConfig(
-                    SrvApiEnvEnum.accountTimeline,
+                    SrvApiEnvEnum.accountGroupTimeline,
                     undefined,
                     accountTimelineDTO
                 );
@@ -167,14 +167,14 @@ export class AccountTimelineService implements OnDestroy {
 
     doFindTimelineAccountLikeActivity(
         timelineId: string,
-        accountId: string
+        userId: string
     ): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.findAccountTimelineLikeActivity,
+                SrvApiEnvEnum.findAccountGroupTimelineLikeActivity,
                 [
                     timelineId,
-                    accountId
+                    userId
                 ]
             );
             this._http.Get(httpConfig, true)
@@ -198,7 +198,7 @@ export class AccountTimelineService implements OnDestroy {
                 SrvApiEnvEnum.accountActivitiesLikes,
                 undefined,
                 {
-                    timeline_user_id: timelineAccountId,
+                    timeline_account_id: timelineAccountId,
                     user_id: userId,
                     timeline_id: timelineId,
                     message: 'like your post'

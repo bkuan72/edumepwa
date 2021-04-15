@@ -1,3 +1,4 @@
+import { SharedModule } from './../../../pipes/shared.module';
 import { GroupsComponent } from './tabs/group/group.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonComponentModule } from '../../../components/component.module';
@@ -14,9 +15,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { FuseSharedModule } from '@fuse/shared.module';
 
-import { ProfileTimelineComponent } from 'app/main/pages/account-profile/tabs/timeline/timeline.component';
-import { ProfileAboutComponent } from 'app/main/pages/account-profile/tabs/about/about.component';
-import { ProfilePhotosVideosComponent } from 'app/main/pages/account-profile/tabs/photos-videos/photos-videos.component';
+import { AccountProfileTimelineComponent } from 'app/main/pages/account-profile/tabs/timeline/timeline.component';
+import { AccountProfileAboutComponent } from 'app/main/pages/account-profile/tabs/about/about.component';
+import { AccountProfilePhotosVideosComponent } from 'app/main/pages/account-profile/tabs/photos-videos/photos-videos.component';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import {NgxPhotoEditorModule} from 'ngx-photo-editor';
 import { AccountsService } from 'app/services/account/account.service';
@@ -40,10 +41,10 @@ const routes = [
 @NgModule({
     declarations: [
         AccountProfileComponent,
-        ProfileTimelineComponent,
-        ProfileAboutComponent,
-        ProfilePhotosVideosComponent,
-        GroupsComponent,
+        AccountProfileTimelineComponent,
+        AccountProfileAboutComponent,
+        AccountProfilePhotosVideosComponent,
+        GroupsComponent
         ],
     imports     : [
         RouterModule.forChild(routes),
@@ -62,7 +63,8 @@ const routes = [
         MatBadgeModule,
 
         FuseSharedModule,
-        CommonComponentModule
+        CommonComponentModule,
+        SharedModule
     ],
     providers   : [
         AccountProfileService,
