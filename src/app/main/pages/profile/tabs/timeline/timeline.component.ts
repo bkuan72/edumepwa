@@ -13,6 +13,7 @@ import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-to
 import { CroppedEvent, NgxPhotoEditorComponent } from 'ngx-photo-editor';
 import { ContactsService } from 'app/main/apps/contacts/contacts.service';
 import { ActivityService } from 'app/services/activity/activity.service';
+import { MemberContactsService } from 'app/main/apps/members/member-contacts.service';
 
 @Component({
     selector: 'profile-timeline',
@@ -54,6 +55,7 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
                 private _timelineService: TimelineService,
                 public _auth: AuthTokenSessionService,
                 private _contactService: ContactsService,
+                private _memberContactService: MemberContactsService,
                 private _activityService: ActivityService,
                 public fn: CommonFn,
                 private alert: AlertService) {
@@ -308,14 +310,14 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
     }
 
     acceptFriend(activity: any): void {
-        let blockContact = new Contact({
+        let newContact = new Contact({
             user_id: this.authUser.id,
             friend_id: activity.user_id,
             friend_status: 'OK'
         });
         this._profileService.getUserData(activity.user_id).then((userData) => {
-            blockContact = this.fn.mapValueToObj(blockContact, userData, ['id']);
-            this._contactService.updateContact(blockContact).then(() => {
+            newContact = this.fn.mapValueToObj(newContact, userData, ['id']);
+            this._contactService.updateContact(newContact).then(() => {
                 this._activityService.deleteActivity(activity.id).finally(() => {
                     this._profileService.getActivities();
                 });
@@ -335,10 +337,98 @@ export class ProfileTimelineComponent implements OnInit, OnDestroy {
             friend_id: activity.user_id,
             friend_status: 'BLOCKED'
         });
-        this._profileService.getBasicUserData(activity.user_id).then((userData) => {
+        this._profileService._userAccountGroupCache.getBasicUserData(activity.user_id).then((userData) => {
             blockContact.first_name = userData.first_name;
             blockContact.last_name = userData.last_name;
             blockContact.avatar = userData.avatar;
+            this._contactService.updateContact(blockContact).then(() => {
+                this._activityService.deleteActivity(activity.id).finally(() => {
+                    this._profileService.getActivities();
+                });
+            });
+        });
+
+    }
+
+
+    acceptAccountMemberReq(activity: any): void {
+        let newContact = new Contact({
+            user_id: this.authUser.id,
+            account_id: activity.account_id,
+            friend_status: 'OK'
+        });
+        this._memberContactService.updateContactMemberStatusOk(activity.member_id).then(() => { 
+            this._profileService._userAccountGroupCache.getAccountData(activity.account_id).then((accountData) => {
+                newContact = this.fn.mapValueToObj(newContact, accountData, ['id']);
+                this._contactService.updateContact(newContact).then(() => {
+                    this._activityService.deleteActivity(activity.id).finally(() => {
+                        this._profileService.getActivities();
+                    });
+                });
+            });
+        });
+    }
+
+    ignoreAccountMemberReq(activity: any): void {
+        this._activityService.deleteActivity(activity.id).finally(() => {
+            this._profileService.getActivities();
+        });
+    }
+
+
+    blockAccount(activity: any): void {
+        const blockContact = new Contact({
+            user_id: this.authUser.id,
+            account_id: activity.account_id,
+            friend_status: 'BLOCKED'
+        });
+        this._profileService._userAccountGroupCache.getBasicAccountData(activity.account_id).then((accountData) => {
+            blockContact.first_name = accountData.account_name;
+            blockContact.avatar = accountData.avatar;
+            this._contactService.updateContact(blockContact).then(() => {
+                this._activityService.deleteActivity(activity.id).finally(() => {
+                    this._profileService.getActivities();
+                });
+            });
+        });
+
+    }
+
+
+    acceptGroupMemberReq(activity: any): void {
+        let newContact = new Contact({
+            user_id: this.authUser.id,
+            group_id: activity.group_id,
+            friend_status: 'OK'
+        });
+        this._memberContactService.updateContactMemberStatusOk(activity.member_id).then(() => {
+            this._profileService._userAccountGroupCache.getGroupData(activity.group_id).then((groupData) => {
+                newContact = this.fn.mapValueToObj(newContact, groupData, ['id']);
+                newContact.first_name = groupData.group_name;
+                this._contactService.updateContact(newContact).then(() => {
+                    this._activityService.deleteActivity(activity.id).finally(() => {
+                        this._profileService.getActivities();
+                    });
+                });
+            });
+        });
+    }
+
+    ignoreGroupMemberReq(activity: any): void {
+        this._activityService.deleteActivity(activity.id).finally(() => {
+            this._profileService.getActivities();
+        });
+    }
+
+    blockGroup(activity: any): void {
+        const blockContact = new Contact({
+            user_id: this.authUser.id,
+            group_id: activity.group_id,
+            friend_status: 'BLOCKED'
+        });
+        this._profileService._userAccountGroupCache.getBasicGroupData(activity.group_id).then((groupData) => {
+            blockContact.first_name = groupData.account_name;
+            blockContact.avatar = groupData.avatar;
             this._contactService.updateContact(blockContact).then(() => {
                 this._activityService.deleteActivity(activity.id).finally(() => {
                     this._profileService.getActivities();

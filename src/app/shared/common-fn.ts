@@ -1,5 +1,6 @@
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { isString } from 'lodash';
+import { isMoment, Moment } from 'moment';
 export enum DateAddIntervalEnum {
     YEAR,
     QUARTER,
@@ -192,7 +193,13 @@ export class CommonFn {
                 });
             }
             if (incProp && this.hasProperty(obj2, propName)) {
-                mapObj = this.defineProperty(mapObj, propName, obj2[propName]);
+                if (isMoment(obj2[propName])) {
+                    const momentObj: Moment = obj2[propName];
+                    const dateObj = momentObj.toDate();
+                    mapObj = this.defineProperty(mapObj, propName, dateObj.toISOString());
+                } else {
+                    mapObj = this.defineProperty(mapObj, propName, obj2[propName]);
+                }
             }
         }
         return mapObj;

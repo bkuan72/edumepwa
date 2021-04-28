@@ -29,7 +29,12 @@ export enum SrvApiEnvEnum {
     friendDTO= '/api/friends/DTO',
     updFriendDTO= '/api/friends/updDTO',
     friendsSchema= '/api/friends/schema',
+
     blockedByUser= '/api/friends/isBlockedByFriend',
+    blockedByAccount= '/api/accountGroupMembers/isBlockedByAccount',
+    blockedByGroup= '/api/accountGroupMembers/isBlockedByGroup',
+    accountBlockByUser= '/api/friends/isAccountBlockedByUser',
+    groupBlockByUser= '/api/friends/isGroupBlockedByUser',
 
     about = '/api/users/profile-about/byUserId',
     aboutAccount = '/api/accounts/profile-about/byAccountId',
@@ -115,6 +120,8 @@ export enum SrvApiEnvEnum {
     accountsUpdDTO= '/api/accounts/updDTO',
     accountsSchema= '/api/accounts/schema',
     basicAccountByAccountId = '/api/accounts/basicInfo/byAccountId',
+    basicGroupByGroupId = '/api/groups/basicInfo/byGroupId',
+    groupByGroupId = '/api/groups/byGroupId',
 
     userAccounts= '/api/userAccounts',
     userAccountsByUserId= '/api/userAccounts/byUserId',
@@ -143,7 +150,7 @@ export enum SrvApiEnvEnum {
     removeAccountGroupActivity = '/api/accountGroupActivities/remove',
 
     accountGroupMembers = '/api/accountGroupMembers',
-    accountMembers = '/api/accountGroupMembers/accountGroupMemberList/byAccountId',
+    accountMembers = '/api/accountGroupMembers/contactList/byAccountId',
     areAccountMembers= '/api/accountGroupMembers/areAccountMembers',
 
     accountMemberContactsUpdate= '/api/accountGroupMembers',
@@ -153,7 +160,6 @@ export enum SrvApiEnvEnum {
     memberDTO= '/api/accountGroupMembers/DTO',
     updMemberDTO= '/api/accountGroupMembers/updDTO',
     accountGroupMembersSchema= '/api/accountGroupMembers/schema',
-    blockedByMember= '/api/accountGroupMembers/isBlockedByAccountGroupMember',
 
     accountGroupTimeline = '/api/accountGroupTimelines',
     accountGroupTimelineDTO= '/api/accountGroupTimelines/timelineDTO',

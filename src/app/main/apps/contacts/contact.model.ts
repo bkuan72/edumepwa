@@ -8,6 +8,10 @@ export class Contact
     // tslint:disable-next-line:variable-name
     friend_id: string;
     // tslint:disable-next-line:variable-name
+    account_id: string;
+    // tslint:disable-next-line:variable-name
+    group_id: string;
+    // tslint:disable-next-line:variable-name
     first_name: string;
     // tslint:disable-next-line:variable-name
     last_name: string;
@@ -40,6 +44,8 @@ export class Contact
             this.id = contact.id || '';
             this.user_id = contact.user_id || '';
             this.friend_id = contact.friend_id || '';
+            this.account_id = contact.account_id || '';
+            this.group_id = contact.group_id || '';
             this.first_name = contact.first_name || '';
             this.last_name = contact.last_name || '';
             this.avatar = contact.avatar || '';

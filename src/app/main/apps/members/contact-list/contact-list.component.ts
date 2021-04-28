@@ -13,6 +13,7 @@ import { MemberContactsContactFormDialogComponent } from 'app/main/apps/members/
 import { CommonFn } from 'app/shared/common-fn';
 import { OkDialogComponent } from 'app/components/ok-dialog/ok-dialog.component';
 import { UserProfileSessionService } from 'app/services/session/user-profile-session.service';
+import { ProfileAccessControlService } from 'app/services/profile-access-control/profile-access-control.service';
 
 @Component({
     selector     : 'contacts-contact-list',
@@ -49,7 +50,8 @@ export class MemberContactsContactListComponent implements OnInit, OnDestroy
         private _contactsService: MemberContactsService,
         public _matDialog: MatDialog,
         public fn: CommonFn,
-        private _session: UserProfileSessionService
+        private _session: UserProfileSessionService,
+        private _profileAccessCtrl: ProfileAccessControlService
     )
     {
         // Set the private defaults
@@ -93,7 +95,7 @@ export class MemberContactsContactListComponent implements OnInit, OnDestroy
                 this.selectedMemberContacts = selectedMemberContacts;
             });
 
-        this._contactsService.onUserDataChanged
+        this._contactsService.onAccountDataChanged
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(user => {
                 this.user = user;
@@ -209,43 +211,8 @@ export class MemberContactsContactListComponent implements OnInit, OnDestroy
         this._contactsService.updateContactStar(contact.id);
     }
 
-    gotoProfile(friend): void {
-        if (this.fn.isZeroUuid(friend.friend_id)) {
-            this.okDialogRef = this._matDialog.open(OkDialogComponent, {
-                disableClose: false
-            });
-            this.okDialogRef.componentInstance.confirmMessage = 'Friend is NOT a Registered User';
-            this.okDialogRef.afterClosed().subscribe(result => {
-
-                this.okDialogRef = null;
-            });
-        } else {
-            this._contactsService.checkBlockByFriend(friend.friend_id).then((resp) => {
-                if (resp.blocked) {
-                    this.okDialogRef = this._matDialog.open(OkDialogComponent, {
-                        disableClose: false
-                    });
-                    this.okDialogRef.componentInstance.confirmMessage = 'You have been blocked by User';
-                    this.okDialogRef.afterClosed().subscribe(result => {
-        
-                        this.okDialogRef = null;
-                    });
-                } else {
-                    this._session.goToUserProfile(friend.friend_id);
-                }
-            })
-            .catch(() => {
-                this.okDialogRef = this._matDialog.open(OkDialogComponent, {
-                    disableClose: false
-                });
-                this.okDialogRef.componentInstance.confirmMessage = 'Unable to goto Profile';
-                this.okDialogRef.afterClosed().subscribe(result => {
-    
-                    this.okDialogRef = null;
-                });
-            });
-        }
-
+    gotoProfile(member): void {
+        this._profileAccessCtrl.gotoMemberContactProfile(member);
     }
 }
 

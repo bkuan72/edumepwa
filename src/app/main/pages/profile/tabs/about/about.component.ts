@@ -10,6 +10,7 @@ import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-to
 import { CommonFn } from 'app/shared/common-fn';
 import { OkDialogComponent } from 'app/components/ok-dialog/ok-dialog.component';
 import { UserProfileSessionService } from 'app/services/session/user-profile-session.service';
+import { ProfileAccessControlService } from 'app/services/profile-access-control/profile-access-control.service';
 
 @Component({
     selector     : 'profile-about',
@@ -42,8 +43,7 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
         private router: Router,
         private _auth: AuthTokenSessionService,
         public fn: CommonFn,
-        private _matDialog: MatDialog,
-        private _session: UserProfileSessionService
+        private _profileAccessCtrl: ProfileAccessControlService
     )
     {
         this.ownerOfProfile = false;
@@ -121,18 +121,6 @@ export class ProfileAboutComponent implements OnInit, OnDestroy
     }
 
     gotoProfile(friend): void {
-        if (this.fn.isZeroUuid(friend.friend_id)) {
-            this.confirmDialogRef = this._matDialog.open(OkDialogComponent, {
-                disableClose: false
-            });
-            this.confirmDialogRef.componentInstance.confirmMessage = 'Friend is NOT a Registered User';
-            this.confirmDialogRef.afterClosed().subscribe(result => {
-
-                this.confirmDialogRef = null;
-            });
-        } else {
-            this._session.goToUserProfile(friend.friend_id);
-        }
-
+        this._profileAccessCtrl.gotoFriendContactProfile(friend);
     }
 }

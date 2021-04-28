@@ -18,6 +18,10 @@ import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-to
 import { SrvApiEnvEnum } from 'app/shared/SrvApiEnvEnum';
 import { fn } from '@angular/compiler/src/output/output_ast';
 import { CommonFn } from 'app/shared/common-fn';
+import { UserAccountGroupCacheService } from 'app/services/user-account-group-cache/user-account-group-cache.service';
+import { E } from '@angular/cdk/keycodes';
+import { rest } from 'lodash';
+import * as _ from 'lodash';
 
 @Injectable()
 export class ContactsService implements Resolve<any>, OnDestroy {
@@ -53,6 +57,7 @@ export class ContactsService implements Resolve<any>, OnDestroy {
     constructor(
         private _http: SrvHttpService,
         private _authTokenSession: AuthTokenSessionService,
+        private _userAccountGroupCache: UserAccountGroupCacheService,
         private _matDialog: MatDialog,
         private _fn: CommonFn
     ) {
@@ -200,6 +205,75 @@ export class ContactsService implements Resolve<any>, OnDestroy {
         });
     }
 
+
+    /**
+     * populate activity users with user data
+     */
+    doPopulateUserAccountGroupFromCache(): Promise<void> {
+        const doGetBasicContactInfo = (idx: number, res: (value: void | PromiseLike<void>) => void) => {
+            if (this.contacts.length === 0) {
+                res();
+                return;
+            }
+            const contact = this.contacts[idx];
+            if (!this._fn.isZeroUuid(contact.friend_id)) {
+                this._userAccountGroupCache.getBasicUserData(contact.friend_id).then((user) => {
+                    if (user) {
+                        contact.avatar = user.avatar;
+                        if (this._fn.emptyStr(contact.first_name)) {
+                            contact.first_name = user.first_name;
+                            contact.last_name = user.last_name;
+                        }
+                    }
+                    if (idx + 1 >= this.contacts.length) {
+                        res();
+                    } else {
+                        doGetBasicContactInfo(idx + 1, res);
+                    }
+                });
+            } else
+            if (!this._fn.isZeroUuid(contact.account_id)) {
+                this._userAccountGroupCache.getBasicAccountData(contact.account_id).then((account) => {
+                    if (account) {
+                        contact.avatar = account.avatar;
+                        if (this._fn.emptyStr(contact.first_name)) {
+                            contact.first_name = account.account_name;
+                        }
+                    }
+                    if (idx + 1 >= this.contacts.length) {
+                        res();
+                    } else {
+                        doGetBasicContactInfo(idx + 1, res);
+                    }
+                });
+            } else
+            if (!this._fn.isZeroUuid(contact.group_id)) {
+                this._userAccountGroupCache.getBasicGroupData(contact.group_id).then((group) => {
+                    if (group) {
+                        contact.avatar = group.avatar;
+                        if (this._fn.emptyStr(contact.first_name)) {
+                            contact.first_name = group.group_name;
+                        }
+                    }
+                    if (idx + 1 >= this.contacts.length) {
+                        res();
+                    } else {
+                        doGetBasicContactInfo(idx + 1, res);
+                    }
+                });
+            } else {
+                if (idx + 1 >= this.contacts.length) {
+                    res();
+                } else {
+                    doGetBasicContactInfo(idx + 1, res);
+                }
+            }
+        };
+        return new Promise((resolve) => {
+            doGetBasicContactInfo(0, resolve);
+        });
+    }
+
     /**
      * Get contacts
      *
@@ -249,9 +323,10 @@ export class ContactsService implements Resolve<any>, OnDestroy {
                 this.contacts = this.contacts.map((contact) => {
                     return new Contact(contact);
                 });
-
-                this.onContactsChanged.next(this.contacts);
-                resolve(this.contacts);
+                this.doPopulateUserAccountGroupFromCache().finally(() => {
+                    this.onContactsChanged.next(this.contacts);
+                    resolve(this.contacts);
+                });
             }, reject);
         });
     }
@@ -408,7 +483,7 @@ export class ContactsService implements Resolve<any>, OnDestroy {
             this.deleteContact(contactId).finally(() => {
                 deleteSelected(idx + 1);
             });
-        }
+        };
         if (this.selectedContacts.length > 0) {
             deleteSelected(0);
         }

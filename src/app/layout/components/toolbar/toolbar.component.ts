@@ -12,6 +12,7 @@ import { navigation } from 'app/navigation/navigation';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 import { UserProfileSessionService } from 'app/services/session/user-profile-session.service';
 import { CommonFn } from 'app/shared/common-fn';
+import { ProfileAccessControlService } from 'app/services/profile-access-control/profile-access-control.service';
 
 @Component({
     selector     : 'toolbar',
@@ -48,7 +49,7 @@ export class ToolbarComponent implements OnInit, OnDestroy
         public _authSession: AuthTokenSessionService,
         private router: Router,
         public  fn: CommonFn,
-        private _session: UserProfileSessionService
+        private _profileAccessCtrl: ProfileAccessControlService
     )
     {
         // Set the defaults
@@ -189,7 +190,7 @@ export class ToolbarComponent implements OnInit, OnDestroy
         });
     }
     goToUserProfile(): void {
-        this._session.goToUserProfile(this._authSession.currentAuthUser.id);
+        this._profileAccessCtrl.gotoUserProfile(this._authSession.currentAuthUser.id);
     }
 
 }

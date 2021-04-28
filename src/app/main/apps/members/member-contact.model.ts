@@ -4,9 +4,9 @@ export class MemberContact
 {
     id: string;
     // tslint:disable-next-line:variable-name
-    user_id: string;
+    account_id: string;
     // tslint:disable-next-line:variable-name
-    friend_id: string;
+    user_id: string;
     // tslint:disable-next-line:variable-name
     first_name: string;
     // tslint:disable-next-line:variable-name
@@ -25,7 +25,7 @@ export class MemberContact
     starred: boolean;
     frequent: number;
     // tslint:disable-next-line:variable-name
-    friend_status: string;
+    member_status: string;
 
     blockUser: boolean;
 
@@ -38,8 +38,8 @@ export class MemberContact
     {
         {
             this.id = contact.id || '';
+            this.account_id = contact.account_id || '';
             this.user_id = contact.user_id || '';
-            this.friend_id = contact.friend_id || '';
             this.first_name = contact.first_name || '';
             this.last_name = contact.last_name || '';
             this.avatar = contact.avatar || '';
@@ -53,7 +53,7 @@ export class MemberContact
             this.notes = contact.notes || '';
             this.starred = contact.starred || false;
             this.frequent = contact.frequent || 0;
-            this.friend_status = contact.friend_status || 'REQUEST';
+            this.member_status = contact.member_status || 'REQUEST';
             this.blockUser = contact.friend_status === 'BLOCKED' || false;
         }
     }

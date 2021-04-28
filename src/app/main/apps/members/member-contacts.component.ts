@@ -27,9 +27,9 @@ export class MemberContactsComponent implements OnInit, OnDestroy
     canDev: boolean;
     panelOpenState = false;
 
-    friendDTO: any;
-    updFriendDTO: any;
-    friendsSchema: any;
+    memberDTO: any;
+    updMemberDTO: any;
+    accountGroupMembersSchema: any;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -50,9 +50,9 @@ export class MemberContactsComponent implements OnInit, OnDestroy
     )
     {
         this.canDev = this._auth.devUser;
-        this.friendDTO = this._contactsService.friendDTO;
-        this.updFriendDTO = this._contactsService.updFriendDTO;
-        this.friendsSchema = this._contactsService.friendsSchema;
+        this.memberDTO = this._contactsService.memberDTO;
+        this.updMemberDTO = this._contactsService.updMemberDTO;
+        this.accountGroupMembersSchema = this._contactsService.accountGroupMembersSchema;
 
         // Set the defaults
         this.searchInput = new FormControl('');
@@ -70,20 +70,20 @@ export class MemberContactsComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        this._contactsService.friendDTOOnChanged
+        this._contactsService.memberDTOOnChanged
         .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe((friendDTO) => {
-            this.friendDTO = friendDTO;
+        .subscribe((memberDTO) => {
+            this.memberDTO = memberDTO;
         });
-        this._contactsService.updFriendDTOOnChanged
+        this._contactsService.updMemberDTOOnChanged
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((updFriendDTO) => {
-                this.updFriendDTO = updFriendDTO;
+            .subscribe((updMemberDTO) => {
+                this.updMemberDTO = updMemberDTO;
             });
-        this._contactsService.friendsSchemaOnChanged
+        this._contactsService.accountGroupMembersSchemaOnChanged
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((friendsSchema) => {
-                this.friendsSchema = friendsSchema;
+            .subscribe((accountGroupMembersSchema) => {
+                this.accountGroupMembersSchema = accountGroupMembersSchema;
             });
         this._contactsService.onSelectedMemberContactsChanged
             .pipe(takeUntil(this._unsubscribeAll))

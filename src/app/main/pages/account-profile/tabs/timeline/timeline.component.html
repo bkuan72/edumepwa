@@ -230,10 +230,10 @@
                             </div>
                             <span class="time secondary-text">{{activity.activity_date | dateSinceNow}}</span>
                         </div>
-                        <div fxLayout="row" *ngIf="ownerOfProfile && activity.activity_type === 'FRIEND_REQUEST'">
-                            <button (click)="acceptFriend(activity)">Accept</button>
-                            <button (click)="ignoreFriend(activity)">Ignore</button>
-                            <button (click)="blockFriend(activity)">Block</button>
+                        <div fxLayout="row" *ngIf="ownerOfProfile && activity.activity_type === 'JOIN_REQUEST'">
+                            <button (click)="acceptJoin(activity)">Accept</button>
+                            <button (click)="ignoreJoin(activity)">Ignore</button>
+                            <button (click)="blockUser(activity)">Block</button>
                         </div>
                     </div>
                 </div>

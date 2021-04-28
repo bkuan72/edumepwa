@@ -10,18 +10,20 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { FuseUtils } from '@fuse/utils';
 
-import { MemberContact } from 'app/main/apps/members/contact.model';
+import { MemberContact } from 'app/main/apps/members/member-contact.model';
 import { takeUntil } from 'rxjs/operators';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
 import { SrvApiEnvEnum } from 'app/shared/SrvApiEnvEnum';
 import { CommonFn } from 'app/shared/common-fn';
 import { AccountsService } from 'app/services/account/account.service';
+import { AccountProfileService } from 'app/main/pages/account-profile/account-profile.service';
+import { UserAccountGroupCacheService } from 'app/services/user-account-group-cache/user-account-group-cache.service';
 
 @Injectable()
 export class MemberContactsService implements Resolve<any>, OnDestroy {
     onMemberContactsChanged: BehaviorSubject<any>;
     onSelectedMemberContactsChanged: BehaviorSubject<any>;
-    onUserDataChanged: BehaviorSubject<any>;
+    onAccountDataChanged: BehaviorSubject<any>;
     onSearchTextChanged: Subject<any>;
     onFilterChanged: Subject<any>;
 
@@ -29,13 +31,13 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
     account: any;
     selectedMemberContacts: string[] = [];
 
-    friendDTO: any;
-    updFriendDTO: any;
-    friendsSchema: any;
+    memberDTO: any;
+    updMemberDTO: any;
+    accountGroupMembersSchema: any;
 
-    friendDTOOnChanged: BehaviorSubject<any>;
-    updFriendDTOOnChanged: BehaviorSubject<any>;
-    friendsSchemaOnChanged: BehaviorSubject<any>;
+    memberDTOOnChanged: BehaviorSubject<any>;
+    updMemberDTOOnChanged: BehaviorSubject<any>;
+    accountGroupMembersSchemaOnChanged: BehaviorSubject<any>;
 
     searchText: string;
     filterBy: string;
@@ -52,7 +54,8 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
         private _http: SrvHttpService,
         private _authTokenSession: AuthTokenSessionService,
         private _matDialog: MatDialog,
-        private _accountService: AccountsService,
+        private _accountService: AccountProfileService,
+        private _userAccountGroupCache: UserAccountGroupCacheService,
         private _fn: CommonFn
     ) {
         this.account = this._accountService.account;
@@ -60,13 +63,13 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
         // Set the defaults
         this.onMemberContactsChanged = new BehaviorSubject([]);
         this.onSelectedMemberContactsChanged = new BehaviorSubject([]);
-        this.onUserDataChanged = new BehaviorSubject([]);
+        this.onAccountDataChanged = new BehaviorSubject([]);
         this.onSearchTextChanged = new Subject();
         this.onFilterChanged = new Subject();
 
-        this.friendDTOOnChanged = new BehaviorSubject(this.friendDTO);
-        this.updFriendDTOOnChanged = new BehaviorSubject(this.updFriendDTO);
-        this.friendsSchemaOnChanged = new BehaviorSubject(this.friendsSchema);
+        this.memberDTOOnChanged = new BehaviorSubject(this.memberDTO);
+        this.updMemberDTOOnChanged = new BehaviorSubject(this.updMemberDTO);
+        this.accountGroupMembersSchemaOnChanged = new BehaviorSubject(this.accountGroupMembersSchema);
 
         // Set the private defaults
         this._unsubscribeAll = new Subject();
@@ -78,7 +81,7 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
                 if (this.account) {
                     this.getMemberContacts();
                 }
-                this.onUserDataChanged.next(this.account);
+                this.onAccountDataChanged.next(this.account);
             });
     }
 
@@ -103,16 +106,16 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
                 return;
             }
             if (this.account) {
-                this.checkBlockByFriend(this.account.id).then((resp) => {
+                this.checkBlockByAccount(this.account.id, this._authTokenSession.currentAuthUser.id).then((resp) => {
                     if (resp.blocked) {
                         reject();
                         return;
                     }
                     Promise.all([
                         this.getMemberContacts(),
-                        this.getFriendDTO(),
-                        this.getUpdFriendDTO(),
-                        this.getFriendSchema()
+                        this.getMemberDTO(),
+                        this.getUpdMemberDTO(),
+                        this.getMemberSchema()
                     ]).then(() => {
                         this.onSearchTextChanged.subscribe((searchText) => {
                             this.searchText = searchText;
@@ -143,19 +146,19 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
 
 
     /**
-     * Get friend DTO
+     * Get member DTO
      */
-     getFriendDTO(): Promise<void> {
+     getMemberDTO(): Promise<void> {
         return new Promise((resolve, reject) => {
             if (this._authTokenSession.devUser) {
                 const httpConfig = this._http.getSrvHttpConfig(
                     SrvApiEnvEnum.memberDTO
                 );
-                this._http.GetObs(httpConfig, true).subscribe((friendDTO: any) => {
+                this._http.GetObs(httpConfig, true).subscribe((memberDTO: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
-                    this.friendDTO = friendDTO;
-                    this.friendDTOOnChanged.next(this.friendDTO);
-                    resolve(this.friendDTO);
+                    this.memberDTO = memberDTO;
+                    this.memberDTOOnChanged.next(this.memberDTO);
+                    resolve(this.memberDTO);
                 }, reject);
             } else {
                 resolve();
@@ -164,39 +167,78 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
         });
     }
     /**
-     * Get update friend DTO
+     * Get update member DTO
      */
-    getUpdFriendDTO(): Promise<void> {
+    getUpdMemberDTO(): Promise<void> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.updMemberDTO
             );
-            this._http.GetObs(httpConfig, true).subscribe((updFriendDTO: any) => {
+            this._http.GetObs(httpConfig, true).subscribe((updMemberDTO: any) => {
                 this._authTokenSession.checkAuthTokenStatus();
-                this.updFriendDTO = updFriendDTO;
-                this.updFriendDTOOnChanged.next(this.updFriendDTO);
-                resolve(this.updFriendDTO);
+                this.updMemberDTO = updMemberDTO;
+                this.updMemberDTOOnChanged.next(this.updMemberDTO);
+                resolve(this.updMemberDTO);
             }, reject);
         });
     }
     /**
-     * Get friend schema
+     * Get member schema
      */
-    getFriendSchema(): Promise<void> {
+    getMemberSchema(): Promise<void> {
         return new Promise((resolve, reject) => {
             if (this._authTokenSession.devUser) {
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.accountGroupMembersSchema
             );
-            this._http.GetObs(httpConfig, true).subscribe((friendsSchema: any) => {
+            this._http.GetObs(httpConfig, true).subscribe((accountGroupMembersSchema: any) => {
                 this._authTokenSession.checkAuthTokenStatus();
-                this.friendsSchema = friendsSchema;
-                this.friendsSchemaOnChanged.next(this.friendsSchema);
-                resolve(this.friendsSchema);
+                this.accountGroupMembersSchema = accountGroupMembersSchema;
+                this.accountGroupMembersSchemaOnChanged.next(this.accountGroupMembersSchema);
+                resolve(this.accountGroupMembersSchema);
             }, reject);
             } else {
                 resolve();
             }
+        });
+    }
+
+    
+    /**
+     * populate activity users with user data
+     */
+     doPopulateUserFromCache(): Promise<void> {
+        const doGetBasicContactInfo = (idx: number, res: (value: void | PromiseLike<void>) => void) => {
+            if (this.contacts.length === 0) {
+                res();
+                return;
+            }
+            const contact = this.contacts[idx];
+            if (!this._fn.isZeroUuid(contact.user_id)) {
+                this._userAccountGroupCache.getBasicUserData(contact.user_id).then((user) => {
+                    if (user) {
+                        contact.avatar = user.avatar;
+                        if (this._fn.emptyStr(contact.first_name)) {
+                            contact.first_name = user.first_name;
+                            contact.last_name = user.last_name;
+                        }
+                    }
+                    if (idx + 1 >= this.contacts.length) {
+                        res();
+                    } else {
+                        doGetBasicContactInfo(idx + 1, res);
+                    }
+                });
+            } else {
+                if (idx + 1 >= this.contacts.length) {
+                    res();
+                } else {
+                    doGetBasicContactInfo(idx + 1, res);
+                }
+            }
+        };
+        return new Promise((resolve) => {
+            doGetBasicContactInfo(0, resolve);
         });
     }
 
@@ -235,7 +277,7 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
 
                 if (this.filterBy === 'blocked') {
                     this.contacts = this.contacts.filter((_contact) => {
-                        return _contact.friend_status === 'BLOCKED';
+                        return _contact.member_status === 'BLOCKED';
                     });
                 }
 
@@ -249,9 +291,10 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
                 this.contacts = this.contacts.map((contact) => {
                     return new MemberContact(contact);
                 });
-
-                this.onMemberContactsChanged.next(this.contacts);
-                resolve(this.contacts);
+                this.doPopulateUserFromCache().finally(() => {
+                    this.onMemberContactsChanged.next(this.contacts);
+                    resolve(this.contacts);
+                });
             }, reject);
         });
     }
@@ -328,16 +371,16 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
 
             if (this._fn.emptyStr(contact.id)) {
                 if (contact.blockUser) {
-                    contact.friend_status = 'BLOCKED';
+                    contact.member_status = 'BLOCKED';
                 }
-                contact.friend_date = this._fn.getNowISODate();
+                contact.member_date = this._fn.getNowISODate();
                 const newContact = this._fn.mapObj(contact, contact, ['id', 'blockUser']);
                 const httpConfig = this._http.getSrvHttpConfig(
                     SrvApiEnvEnum.accountGroupMembers,
                     undefined,
                     newContact
                 );
-                this._fn.defineProperty(contact, 'friend_date', '');
+                this._fn.defineProperty(contact, 'member_date', '');
 
                 this._http.PostObs(httpConfig, true).subscribe((newUser: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
@@ -347,7 +390,7 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
             } else {
                 let origContact = {};
                 if (contact.blockUser) {
-                    contact.friend_status = 'BLOCKED';
+                    contact.member_status = 'BLOCKED';
                 }
                 this.contacts.some((ct) => {
                     if (ct.id === contact.id) {
@@ -382,6 +425,30 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.toggleMemberContactStar,
                 [contactId]
+            );
+            this._http.PatchObs(httpConfig, true).subscribe((newUser: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                this.getMemberContacts();
+                resolve();
+            }, reject);
+        });
+    }
+
+
+    /**
+     * Update user data
+     *
+     * @param userData
+     * @returns {Promise<any>}
+     */
+    updateContactMemberStatusOk(contactId): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.accountMemberContactsUpdate,
+                [contactId],
+                {
+                    member_status: 'OK'
+                }
             );
             this._http.PatchObs(httpConfig, true).subscribe((newUser: any) => {
                 this._authTokenSession.checkAuthTokenStatus();
@@ -456,7 +523,7 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
     inContact(userId: string): boolean {
         let isContact = false;
         this.contacts.some((contact) => {
-            if (contact.friend_id === userId) {
+            if (contact.user_id === userId) {
                 isContact = true;
                 return true;
             }
@@ -469,13 +536,76 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
      * @param userId - link users
      * @returns 
      */
-    checkBlockByFriend(friendId: string): Promise<any> {
+    checkBlockByAccount(accountId: string, userId: string): Promise<any> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.blockedByMember,
+                SrvApiEnvEnum.blockedByAccount,
                 [
-                    this.account.id,
-                    friendId,
+                    accountId,
+                    userId,
+                ]
+            );
+            this._http.GetObs(httpConfig, true).subscribe((resp: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                resolve(resp);
+            }, reject);
+        });
+    }
+
+    /**
+     * Check if group have blocked current login user
+     * @param userId - link users
+     * @returns 
+     */
+     checkBlockByGroup(groupId: string, userId: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.blockedByGroup,
+                [
+                    groupId,
+                    userId,
+                ]
+            );
+            this._http.GetObs(httpConfig, true).subscribe((resp: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                resolve(resp);
+            }, reject);
+        });
+    }
+
+    /**
+     * Check if account have blocked current login user
+     * @param userId - link users
+     * @returns 
+     */
+    checkAccountBlockByUser(accountId: string, userId: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.accountBlockByUser,
+                [
+                    userId,
+                    accountId
+                ]
+            );
+            this._http.GetObs(httpConfig, true).subscribe((resp: any) => {
+                this._authTokenSession.checkAuthTokenStatus();
+                resolve(resp);
+            }, reject);
+        });
+    }
+
+    /**
+     * Check if group have blocked current login user
+     * @param userId - link users
+     * @returns 
+     */
+    checkGroupBlockByUser(accountId: string, userId: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.groupBlockByUser,
+                [
+                    userId,
+                    accountId
                 ]
             );
             this._http.GetObs(httpConfig, true).subscribe((resp: any) => {

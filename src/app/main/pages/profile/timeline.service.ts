@@ -263,7 +263,7 @@ export class TimelineService implements OnDestroy {
             .then((respActivityDTO: any[]) => {
                 this._auth.checkAuthTokenStatus();
                 if (respActivityDTO.length > 0) {
-                    this._activityService.deleteAccountGroupActivity(respActivityDTO[0].id).then(() => {
+                    this._activityService.deleteActivity(respActivityDTO[0].id).then(() => {
                         this.decrementTimelineLikes(timelineId).finally(() => {
                             resolve();
                         }).catch(() => { reject(); });

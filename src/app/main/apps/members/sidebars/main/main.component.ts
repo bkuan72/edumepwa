@@ -43,7 +43,7 @@ export class MemberContactsMainSidebarComponent implements OnInit, OnDestroy
     {
         this.filterBy = this._contactsService.filterBy || 'all';
 
-        this._contactsService.onUserDataChanged
+        this._contactsService.onAccountDataChanged
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(user => {
                 this.user = user;

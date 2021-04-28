@@ -17,6 +17,7 @@ import { LoggerService } from 'app/services/logger/logger.service';
 import { CommonFn } from 'app/shared/common-fn';
 import { ActivityService } from 'app/services/activity/activity.service';
 import { AccountProfileSessionService } from 'app/services/session/account-profile-session.service';
+import { UserAccountGroupCacheService } from 'app/services/user-account-group-cache/user-account-group-cache.service';
 
 @Injectable()
 export class ProfileService implements Resolve<any>, OnDestroy {
@@ -120,6 +121,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         public _accountProfileSession: AccountProfileSessionService,
         private _authTokenSession: AuthTokenSessionService,
         public _accountService: AccountsService,
+        public _userAccountGroupCache: UserAccountGroupCacheService,
         private _logger: LoggerService,
         private _activities: ActivityService,
         private _fn: CommonFn
@@ -463,47 +465,8 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         });
     }
 
-    getUserFromCache(userId: string): any {
-        let fr: any;
-        this.friends.some((friend) => {
-            if (friend.id === userId) {
-                fr = friend;
-                return true;
-            }
-        });
-        if (fr === undefined) {
-            this.strangers.some((stranger) => {
-                if (stranger.id === userId) {
-                    fr = stranger;
-                    return true;
-                }
-            });
-        }
-        return fr;
-    }
 
-    /**
-     * Get basic information for userId
-     * @param userId - uuid of user
-     */
-    getBasicUserData(userId: string): Promise<any> {
-        return new Promise((resolve) => {
-            const fr = this.getUserFromCache(userId);
 
-            if (fr === undefined) {
-                this.getBasicUserDataFromServer(userId)
-                    .then((userBasicData) => {
-                        this.strangers.push(userBasicData);
-                        resolve(userBasicData);
-                    })
-                    .catch(() => {
-                        resolve({ id: '', name: '', avatar: '' });
-                    });
-            } else {
-                resolve(fr);
-            }
-        });
-    }
 
     /**
      * Get userTimeline
@@ -538,7 +501,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
      */
 
     doPopulateCommentUserFromCache(comment: any): void {
-        const user = this.getUserFromCache(comment.user_id);
+        const user = this._userAccountGroupCache.getUserFromCache(comment.user_id);
         if (user) {
             comment.user = user;
         }
@@ -570,7 +533,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
                     }
                 });
                 userIdList.forEach((id) => {
-                    promiseList.push(this.getBasicUserData(id));
+                    promiseList.push(this._userAccountGroupCache.getBasicUserData(id));
                 });
                 if (promiseList.length > 0) {
                     Promise.all(promiseList).finally(() => {
@@ -669,7 +632,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
      */
     doPopulateTimelineUserFromCache(): void {
         this.userTimeline.forEach((timeline) => {
-            const user = this.getUserFromCache(timeline.post_user_id);
+            const user = this._userAccountGroupCache.getUserFromCache(timeline.post_user_id);
             if (user) {
                 timeline.user = user;
             }
@@ -690,7 +653,7 @@ export class ProfileService implements Resolve<any>, OnDestroy {
             }
         });
         userIdList.forEach((id) => {
-            promiseList.push(this.getBasicUserData(id));
+            promiseList.push(this._userAccountGroupCache.getBasicUserData(id));
         });
         if (promiseList.length > 0) {
             Promise.all(promiseList).finally(() => {
@@ -725,10 +688,24 @@ export class ProfileService implements Resolve<any>, OnDestroy {
      * populate activity users with user data
      */
     doPopulateActivityUserFromCache(): void {
-        this.activities.forEach((activity) => {
-            const user = this.getUserFromCache(activity.user_id);
-            if (user) {
-                activity.user = user;
+        this.activities.forEach(async (activity) => {
+            if (!this._fn.isZeroUuid(activity.user_id)) {
+                const user = await this._userAccountGroupCache.getBasicUserData(activity.user_id);
+                if (user) {
+                    activity.user = user;
+                }
+            }
+            if (!this._fn.isZeroUuid(activity.account_id)) {
+                const user = await this._userAccountGroupCache.getBasicAccountData(activity.account_id);
+                if (user) {
+                    activity.user = user;
+                }
+            }
+            if (!this._fn.isZeroUuid(activity.group_id)) {
+                const user = await this._userAccountGroupCache.getBasicGroupData(activity.group_id);
+                if (user) {
+                    activity.user = user;
+                }
             }
         });
     }
@@ -738,25 +715,75 @@ export class ProfileService implements Resolve<any>, OnDestroy {
     getActivitiesUser(): void {
         const promiseList: Promise<any>[] = [];
         const userIdList: string[] = [];
+        const accountIdList: string[] = [];
+        const groupIdList: string[] = [];
         this.activities.forEach((activity) => {
-            const found = userIdList.includes(activity.user_id);
-            if (!found) {
-                userIdList.push(activity.user_id);
+            if (!this._fn.isZeroUuid(activity.user_id)) {
+                const found = userIdList.includes(activity.user_id);
+                if (!found) {
+                    userIdList.push(activity.user_id);
+                }
+            }
+            if (!this._fn.isZeroUuid(activity.account_id)) {
+                const found = accountIdList.includes(activity.account_id);
+                if (!found) {
+                    accountIdList.push(activity.account_id);
+                }
+            }
+            if (!this._fn.isZeroUuid(activity.group_id)) {
+                const found = groupIdList.includes(activity.group_id);
+                if (!found) {
+                    groupIdList.push(activity.group_id);
+                }
             }
         });
-        userIdList.forEach((id) => {
-            promiseList.push(this.getBasicUserData(id));
-        });
 
-        if (promiseList.length > 0) {
-            Promise.all(promiseList).finally(() => {
-                this.doPopulateActivityUserFromCache();
-                this.activitiesOnChanged.next(this.activities);
+        const getUserBasicData = (idx: number): void => {
+            if (userIdList.length === 0) {
+                return;
+            }
+            this._userAccountGroupCache.getBasicUserData(userIdList[idx]).finally(() => {
+                if (idx + 1 >= userIdList.length) {
+                    this.doPopulateActivityUserFromCache();
+                    this.activitiesOnChanged.next(this.activities);
+                } else {
+                    getUserBasicData(idx + 1);
+                }
             });
-        } else {
-            this.doPopulateActivityUserFromCache();
-            this.activitiesOnChanged.next(this.activities);
-        }
+        };
+
+        const getAccountBasicData = (idx: number): void => {
+            if (accountIdList.length === 0) {
+                return;
+            }
+            this._userAccountGroupCache.getBasicAccountData(accountIdList[idx]).finally(() => {
+                if (idx + 1 >= accountIdList.length) {
+                    this.doPopulateActivityUserFromCache();
+                    this.activitiesOnChanged.next(this.activities);
+                } else {
+                    getAccountBasicData(idx + 1);
+                }
+            });
+        };
+
+        const getGroupBasicData = (idx: number): void => {
+            if (groupIdList.length === 0) {
+                return;
+            }
+            this._userAccountGroupCache.getBasicGroupData(groupIdList[idx]).finally(() => {
+                if (idx + 1 >= groupIdList.length) {
+                    this.doPopulateActivityUserFromCache();
+                    this.activitiesOnChanged.next(this.activities);
+                } else {
+                    getGroupBasicData(idx + 1);
+                }
+            });
+        };
+
+        getUserBasicData(0);
+        getAccountBasicData(0);
+        getGroupBasicData(0);
+
     }
 
     /**
@@ -1075,21 +1102,22 @@ export class ProfileService implements Resolve<any>, OnDestroy {
         });
     }
 
+
     /**
-     * Get basic user data
+     * Get basic account data
      */
-    getBasicUserDataFromServer(userId: string): Promise<any> {
+    getBasicAccountDataFromServer(accountId: string): Promise<any> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.basicUserByUserId,
-                [userId]
+                SrvApiEnvEnum.basicAccountByAccountId,
+                [accountId]
             );
 
             this._http
                 .GetObs(httpConfig, true)
-                .subscribe((userBasicData: any) => {
+                .subscribe((accountBasicData: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
-                    resolve(userBasicData);
+                    resolve(accountBasicData);
                 }, reject);
         });
     }

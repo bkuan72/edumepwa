@@ -1,5 +1,6 @@
+import { ProfileAccessControlService } from './services/profile-access-control/profile-access-control.service';
+import { UserAccountGroupCacheService } from './services/user-account-group-cache/user-account-group-cache.service';
 import { SharedModule } from './pipes/shared.module';
-import { DatePeriodPipe } from './pipes/date-period.pipe';
 import { MemberContactsService } from './main/apps/members/member-contacts.service';
 import { ActivityService } from './services/activity/activity.service';
 import { UserService } from './services/user/user.service';
@@ -55,7 +56,6 @@ import { AccountsService } from './services/account/account.service';
 import { UserProfileSessionService } from './services/session/user-profile-session.service';
 import { AngularMaterialImageOverlayModule } from 'angular-material-image-overlay';
 import { ContactsService } from './main/apps/contacts/contacts.service';
-import { DateSinceNowPipe } from './pipes/date-since-now.pipe';
 import { AccountProfileComponent } from './main/pages/account-profile/account-profile.component';
 import { AccountProfileService } from './main/pages/account-profile/account-profile.service';
 
@@ -136,11 +136,11 @@ const appRoutes: Routes = [
         }
     },
     {
-        path        : 'contacts',
+        path        : 'members',
         canActivate : [AuthGuard],
         loadChildren: () => import('./main/apps/members/member-contacts.module').then(m => m.MemberContactsModule),
         resolve     : {
-            any: MemberContactsService
+            any: AccountProfileService
         }
     },
     {
@@ -199,13 +199,13 @@ const appRoutes: Routes = [
         AppSettingsService,
         AlertService,
         UserProfileSessionService,
-        AccountsService,
-        AccountProfileService,
         ContactsService,
         MemberContactsService,
         ActivityService,
         UserService,
-        CommonFn
+        CommonFn,
+        UserAccountGroupCacheService,
+        ProfileAccessControlService
     ],
     bootstrap   : [
         AppComponent

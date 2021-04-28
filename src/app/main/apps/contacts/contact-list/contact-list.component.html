@@ -15,7 +15,7 @@
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let contact">
             <img [hidden]="fn.showGenericAvatar(contact.avatar)" class="avatar" src="{{ contact.avatar }}" />
-            <ngx-avatar size=40 [hidden]="!fn.showGenericAvatar(contact.avatar)" first_name="{{ contact.first_name }}"></ngx-avatar>
+            <ngx-avatar size=40 [hidden]="!fn.showGenericAvatar(contact.avatar)" name="{{ contact.first_name }}"></ngx-avatar>
         </mat-cell>
     </ng-container>
 

@@ -75,24 +75,24 @@
                     <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
-                                Friends DTO
+                                Members DTO
                             </mat-panel-title>
                             <mat-panel-description>
-                                Friends - Contacts
+                                Members - Contacts
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                         <div class="mb-24" fxLayout="column" fxLayoutAlign="start" fxLayout.gt-md="row">
-                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="friendDTO">
-                                <div class="h2 mb-24">Friend DTO</div>
-                                <pre><code>{{friendDTO | json}}</code></pre>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="memberDTO">
+                                <div class="h2 mb-24">Member DTO</div>
+                                <pre><code>{{memberDTO | json}}</code></pre>
                             </div>
-                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updFriendDTO">
-                                <div class="h2 mb-24">Update Friend DTO</div>
-                                <pre><code>{{updFriendDTO | json}}</code></pre>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="updMemberDTO">
+                                <div class="h2 mb-24">Update Member DTO</div>
+                                <pre><code>{{updMemberDTO | json}}</code></pre>
                             </div>
-                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="friendsSchema">
-                                <div class="h2 mb-24">Friends Schema</div>
-                                <pre><code>{{friendsSchema | json}}</code></pre>
+                            <div class="mat-card form-errors-model p-24 mat-elevation-z4" *ngIf="accountGroupMembersSchema">
+                                <div class="h2 mb-24">Members Schema</div>
+                                <pre><code>{{accountGroupMembersSchema | json}}</code></pre>
                             </div>
                         </div>
                     </mat-expansion-panel>

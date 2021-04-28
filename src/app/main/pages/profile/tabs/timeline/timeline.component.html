@@ -235,6 +235,16 @@
                             <button (click)="ignoreFriend(activity)">Ignore</button>
                             <button (click)="blockFriend(activity)">Block</button>
                         </div>
+                        <div fxLayout="row" *ngIf="ownerOfProfile && activity.activity_type === 'ACC_MEMBER_REQ'">
+                            <button (click)="acceptAccountMemberReq(activity)">Accept</button>
+                            <button (click)="ignoreAccountMemberReq(activity)">Ignore</button>
+                            <button (click)="blockAccount(activity)">Block</button>
+                        </div>
+                        <div fxLayout="row" *ngIf="ownerOfProfile && activity.activity_type === 'GRP_MEMBER_REQ'">
+                            <button (click)="acceptGroupMemberReq(activity)">Accept</button>
+                            <button (click)="ignoreGroupMemberReq(activity)">Ignore</button>
+                            <button (click)="blockGroup(activity)">Block</button>
+                        </div>
                     </div>
                 </div>
             </div>

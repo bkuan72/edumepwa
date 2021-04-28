@@ -14,6 +14,7 @@ import { CroppedEvent, NgxPhotoEditorComponent } from 'ngx-photo-editor';
 import { ContactsService } from 'app/main/apps/contacts/contacts.service';
 import { ActivityService } from 'app/services/activity/activity.service';
 import { Moment } from 'moment';
+import { MemberContactsService } from 'app/main/apps/members/member-contacts.service';
 
 @Component({
     selector: 'account-profile-timeline',
@@ -54,7 +55,7 @@ export class AccountProfileTimelineComponent implements OnInit, OnDestroy {
     constructor(private _profileService: AccountProfileService,
                 private _timelineService: AccountTimelineService,
                 public _auth: AuthTokenSessionService,
-                private _contactService: ContactsService,
+                private _contactService: MemberContactsService,
                 private _activityService: ActivityService,
                 public fn: CommonFn,
                 private alert: AlertService) {
@@ -293,11 +294,11 @@ export class AccountProfileTimelineComponent implements OnInit, OnDestroy {
         this.alert.error('Invalid Image File');
     }
 
-    acceptFriend(activity: any): void {
+    acceptJoin(activity: any): void {
         let blockContact = new Contact({
-            user_id: this.authUser.id,
-            friend_id: activity.user_id,
-            friend_status: 'OK'
+            account_id: this.account.id,
+            user_id: activity.user_id,
+            member_status: 'OK'
         });
         this._profileService.getUserData(activity.user_id).then((userData) => {
             blockContact = this.fn.mapValueToObj(blockContact, userData, ['id']);
@@ -309,19 +310,19 @@ export class AccountProfileTimelineComponent implements OnInit, OnDestroy {
         });
     }
 
-    ignoreFriend(activity: any): void {
+    ignoreJoin(activity: any): void {
         this._activityService.deleteActivity(activity.id).finally(() => {
             this._profileService.getActivities();
         });
     }
 
-    blockFriend(activity: any): void {
+    blockUser(activity: any): void {
         const blockContact = new Contact({
-            user_id: this.authUser.id,
-            friend_id: activity.user_id,
-            friend_status: 'BLOCKED'
+            account_id: this.account.id,
+            user_id: activity.user_id,
+            member_status: 'BLOCKED'
         });
-        this._profileService.getBasicUserData(activity.user_id).then((userData) => {
+        this._profileService._userAccountGroupCache.getBasicUserData(activity.user_id).then((userData) => {
             blockContact.first_name = userData.first_name;
             blockContact.last_name = userData.last_name;
             blockContact.avatar = userData.avatar;

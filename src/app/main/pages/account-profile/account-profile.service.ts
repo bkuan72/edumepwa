@@ -16,6 +16,7 @@ import { ActivityService } from 'app/services/activity/activity.service';
 import { AuthTokenSessionService } from '../../../services/auth-token-session/auth-token-session.service';
 import { LoggerService } from '../../../services/logger/logger.service';
 import { AccountsService } from 'app/services/account/account.service';
+import { UserAccountGroupCacheService } from 'app/services/user-account-group-cache/user-account-group-cache.service';
 
 @Injectable()
 export class AccountProfileService implements Resolve<any>, OnDestroy {
@@ -49,7 +50,6 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
 
     activities: any[];
     members: any[];
-    strangers: any[];
     groups: any[];
     countries: any[];
     titles: any[];
@@ -100,6 +100,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         public _accountService: AccountsService,
         private _logger: LoggerService,
         private _activities: ActivityService,
+        public _userAccountGroupCache: UserAccountGroupCacheService,
         private _fn: CommonFn
     ) {
         this._mediaService = new MediaService(
@@ -118,7 +119,6 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         this.photosVideos = [];
         this.activities = [];
         this.members = [];
-        this.strangers = [];
         this.groups = [];
         this.countries = [];
         this.titles = [];
@@ -133,9 +133,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         // Set the defaults
         this.ownerOfProfileOnChanged = new BehaviorSubject(this.ownerOfProfile);
 
-        this.accountOnChanged = new BehaviorSubject(
-            this.account
-        );
+        this.accountOnChanged = new BehaviorSubject(this.account);
         this.accountDTOOnChanged = new BehaviorSubject(
             this._accountService.accountsDTO
         );
@@ -146,7 +144,9 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
             this._accountService.accountsSchema
         );
 
-        this.accountTimelineOnChanged = new BehaviorSubject(this.accountTimeline);
+        this.accountTimelineOnChanged = new BehaviorSubject(
+            this.accountTimeline
+        );
         this.aboutOnChanged = new BehaviorSubject(this.about);
         this.photosVideosOnChanged = new BehaviorSubject(this.photosVideos);
         this.activitiesOnChanged = new BehaviorSubject(this.activities);
@@ -155,7 +155,9 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         this.countriesOnChanged = new BehaviorSubject(this.countries);
         this.titlesOnChanged = new BehaviorSubject(this.titles);
         this.userBasicDataOnChanged = new BehaviorSubject(this.userBasicData);
-        this.accountFullDataOnChanged = new BehaviorSubject(this.accountFullData);
+        this.accountFullDataOnChanged = new BehaviorSubject(
+            this.accountFullData
+        );
 
         this.accountTimelineDTOOnChanged = new BehaviorSubject(
             this.accountTimelineDTO
@@ -176,7 +178,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         this.accountTimelineCommentSchemaOnChanged = new BehaviorSubject(
             this.accountTimelineCommentSchema
         );
-        this.updateOwnerOfProfile ();
+        this.updateOwnerOfProfile();
 
         // Set the private defaults
         this._unsubscribeAll = new Subject();
@@ -190,7 +192,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
                     this.account,
                     undefined
                 );
-                this.updateOwnerOfProfile ().finally(() => {
+                this.updateOwnerOfProfile().finally(() => {
                     this.doCheckAreAccountGroupMembers().finally(() => {
                         this.doLoadAccountProfile().then(() => {
                             this.accountOnChanged.next(this.account);
@@ -234,22 +236,29 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
 
     checkShowFullProfile(): void {
         this.showFullProfile =
-        this.areAccountGroupMembers ||
-        this.ownerOfProfile ||
-        this.account.public;
+            this.areAccountGroupMembers ||
+            this.ownerOfProfile ||
+            this.account.public;
     }
 
-
     updateOwnerOfProfile(): Promise<void> {
-        return new Promise ((resolve) => {
+        return new Promise((resolve) => {
             this.ownerOfProfile = false;
             this.ownerOfProfileOnChanged.next(this.ownerOfProfile);
-            this._accountProfileSession.getBasicAccount(this.account.id).finally(() => {
-                this.ownerOfProfile = this._accountProfileSession.accountHolder(this._authTokenSession.currentAuthUser.id);
-                this.checkShowFullProfile();
-                this.ownerOfProfileOnChanged.next(this.ownerOfProfile);
+            if (this.account) {
+                this._accountProfileSession
+                .getBasicAccount(this.account.id)
+                .finally(() => {
+                    this.ownerOfProfile = this._accountProfileSession.accountHolder(
+                        this._authTokenSession.currentAuthUser.id
+                    );
+                    this.checkShowFullProfile();
+                    this.ownerOfProfileOnChanged.next(this.ownerOfProfile);
+                    resolve();
+                });
+            } else {
                 resolve();
-            });    
+            }
         });
     }
 
@@ -263,9 +272,10 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
                 .GetObs(httpConfig, true)
                 .subscribe((accountGroupMember: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
-                    this.areAccountGroupMembers = accountGroupMember.accountGroupMembers;
+                    this.areAccountGroupMembers =
+                        accountGroupMember.accountGroupMembers;
 
-                    this.checkShowFullProfile ();
+                    this.checkShowFullProfile();
                     resolve();
                 }, resolve);
         });
@@ -273,66 +283,70 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
 
     doLoadAccountProfile(): Observable<any> | Promise<any> | any {
         return new Promise<void>((resolve, reject) => {
-            Promise.all([
-                this.getTimeline(),
-                this.getAbout(),
-                this.getActivities(),
-                this.getAccountMembers(),
-                this.getGroups(),
-                this.getCountries(),
-            ]).then(() => {
-                this.getMediaAndPhotos();
-
-                if (this._authTokenSession.devUser) {
-                    this.getTimelineDTO();
-                    this.getPostDTO();
-                    this.getUpdPostDTO();
-                    this.getPostSchema();
-                    this.getPostMediaDTO();
-                    this.getPostMediaSchema();
-                    this.getAccountTimelineCommentDTO();
-                    this.getUpdAccountTimelineCommentDTO();
-                    this.getAccountTimelineCommentSchema();
-                    this._accountService.getAccountsDTO();
-                    this._accountService.getAccountsSchema();
-                    this._accountService.getAccountsUpdDTO();
-                    this._accountService.getUserAccountsDTO();
-                    this._accountService.getUserAccountsSchema();
-                    this._accountService.getUserAccountsUpdDTO();
-                    this._accountService.getUserAccountsDataDTO();
-                } else {
-                    this.accountTimelineDTO = undefined;
-                    this.postDTO = undefined;
-                    this.updPostDTO = undefined;
-                    this.postSchema = undefined;
-                    this.postMediaDTO = undefined;
-                    this.postMediaSchema = undefined;
-                    this.accountDTO = undefined;
-                    this.updAccountDTO = undefined;
-                    this.accountsSchema = undefined;
-
-                    this.accountTimelineDTOOnChanged.next(this.accountTimelineDTO);
-                    this.postDTOOnChanged.next(this.postDTO);
-                    this.updPostDTOOnChanged.next(this.updPostDTO);
-                    this.postSchemaOnChanged.next(this.postSchema);
-                    this.postMediaDTOOnChanged.next(this.postMediaDTO);
-                    this.postMediaSchemaOnChanged.next(this.postMediaSchema);
-                    this.accountTimelineCommentDTOOnChanged.next(
-                        this.accountTimelineCommentDTO
-                    );
-                    this.updAccountTimelineCommentDTOOnChanged.next(
-                        this.updAccountTimelineCommentDTO
-                    );
-                    this.accountTimelineCommentSchemaOnChanged.next(
-                        this.accountTimelineCommentSchema
-                    );
-                    this.accountDTOOnChanged.next(this.accountDTO);
-                    this.updAccountDTOOnChanged.next(this.updAccountDTO);
-                    this.accountSchemaOnChanged.next(this.accountsSchema);
-
-                }
+            if (this.account) {
+                Promise.all([
+                    this.getTimeline(),
+                    this.getAbout(),
+                    this.getActivities(),
+                    this.getAccountMembers(),
+                    this.getGroups(),
+                    this.getCountries(),
+                ]).then(() => {
+                    this.getMediaAndPhotos();
+    
+                    if (this._authTokenSession.devUser) {
+                        this.getTimelineDTO();
+                        this.getPostDTO();
+                        this.getUpdPostDTO();
+                        this.getPostSchema();
+                        this.getPostMediaDTO();
+                        this.getPostMediaSchema();
+                        this.getAccountTimelineCommentDTO();
+                        this.getUpdAccountTimelineCommentDTO();
+                        this.getAccountTimelineCommentSchema();
+                        this._accountService.getAccountsDTO();
+                        this._accountService.getAccountsSchema();
+                        this._accountService.getAccountsUpdDTO();
+                        this._accountService.getUserAccountsDTO();
+                        this._accountService.getUserAccountsSchema();
+                        this._accountService.getUserAccountsUpdDTO();
+                        this._accountService.getUserAccountsDataDTO();
+                    } else {
+                        this.accountTimelineDTO = undefined;
+                        this.postDTO = undefined;
+                        this.updPostDTO = undefined;
+                        this.postSchema = undefined;
+                        this.postMediaDTO = undefined;
+                        this.postMediaSchema = undefined;
+                        this.accountDTO = undefined;
+                        this.updAccountDTO = undefined;
+                        this.accountsSchema = undefined;
+                        this.accountTimelineDTOOnChanged.next(
+                            this.accountTimelineDTO
+                        );
+                        this.postDTOOnChanged.next(this.postDTO);
+                        this.updPostDTOOnChanged.next(this.updPostDTO);
+                        this.postSchemaOnChanged.next(this.postSchema);
+                        this.postMediaDTOOnChanged.next(this.postMediaDTO);
+                        this.postMediaSchemaOnChanged.next(this.postMediaSchema);
+                        this.accountTimelineCommentDTOOnChanged.next(
+                            this.accountTimelineCommentDTO
+                        );
+                        this.updAccountTimelineCommentDTOOnChanged.next(
+                            this.updAccountTimelineCommentDTO
+                        );
+                        this.accountTimelineCommentSchemaOnChanged.next(
+                            this.accountTimelineCommentSchema
+                        );
+                        this.accountDTOOnChanged.next(this.accountDTO);
+                        this.updAccountDTOOnChanged.next(this.updAccountDTO);
+                        this.accountSchemaOnChanged.next(this.accountsSchema);
+                    }
+                    resolve();
+                }, reject);
+            } else {
                 resolve();
-            }, reject);
+            }
         });
     }
 
@@ -354,7 +368,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Observable<any> | Promise<any> | any {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             if (this.account) {
                 this.updateOwnerOfProfile().finally(() => {
                     this.doCheckAreAccountGroupMembers().finally(() => {
@@ -365,52 +379,12 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
                     });
                 });
             } else {
-                reject('');
+                resolve('');
             }
         });
     }
 
-    getUserFromCache(userId: string): any {
-        let fr: any;
-        this.members.some((friend) => {
-            if (friend.id === userId) {
-                fr = friend;
-                return true;
-            }
-        });
-        if (fr === undefined) {
-            this.strangers.some((stranger) => {
-                if (stranger.id === userId) {
-                    fr = stranger;
-                    return true;
-                }
-            });
-        }
-        return fr;
-    }
 
-    /**
-     * Get basic information for userId
-     * @param userId - uuid of user
-     */
-    getBasicUserData(userId: string): Promise<any> {
-        return new Promise((resolve) => {
-            const fr = this.getUserFromCache(userId);
-
-            if (fr === undefined) {
-                this.getBasicUserDataFromServer(userId)
-                    .then((userBasicData) => {
-                        this.strangers.push(userBasicData);
-                        resolve(userBasicData);
-                    })
-                    .catch(() => {
-                        resolve({ id: '', name: '', avatar: '' });
-                    });
-            } else {
-                resolve(fr);
-            }
-        });
-    }
 
     /**
      * Get accountTimeline
@@ -445,7 +419,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
      */
 
     doPopulateCommentUserFromCache(comment: any): void {
-        const user = this.getUserFromCache(comment.user_id);
+        const user = this._userAccountGroupCache.getUserFromCache(comment.user_id);
         if (user) {
             comment.user = user;
         }
@@ -477,14 +451,16 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
                     }
                 });
                 userIdList.forEach((id) => {
-                    promiseList.push(this.getBasicUserData(id));
+                    promiseList.push(this._userAccountGroupCache.getBasicUserData(id));
                 });
                 if (promiseList.length > 0) {
                     Promise.all(promiseList).finally(() => {
                         timelinePost.comments.forEach(async (comment) => {
                             this.doPopulateCommentUserFromCache(comment);
                         });
-                        this.accountTimelineOnChanged.next(this.accountTimeline);
+                        this.accountTimelineOnChanged.next(
+                            this.accountTimeline
+                        );
                         resolve();
                     });
                 } else {
@@ -576,7 +552,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
      */
     doPopulateTimelineUserFromCache(): void {
         this.accountTimeline.forEach((timeline) => {
-            const user = this.getUserFromCache(timeline.post_user_id);
+            const user = this._userAccountGroupCache.getUserFromCache(timeline.post_user_id);
             if (user) {
                 timeline.user = user;
             }
@@ -597,7 +573,7 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
             }
         });
         userIdList.forEach((id) => {
-            promiseList.push(this.getBasicUserData(id));
+            promiseList.push(this._userAccountGroupCache.getBasicUserData(id));
         });
         if (promiseList.length > 0) {
             Promise.all(promiseList).finally(() => {
@@ -632,10 +608,24 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
      * populate activity users with user data
      */
     doPopulateActivityUserFromCache(): void {
-        this.activities.forEach((activity) => {
-            const user = this.getUserFromCache(activity.user_id);
-            if (user) {
-                activity.user = user;
+        this.activities.forEach(async (activity) => {
+            if (!this._fn.isZeroUuid(activity.user_id)) {
+                const user = await this._userAccountGroupCache.getBasicUserData(activity.user_id);
+                if (user) {
+                    activity.user = user;
+                }
+            }
+            if (!this._fn.isZeroUuid(activity.account_id)) {
+                const user = await this._userAccountGroupCache.getBasicAccountData(activity.account_id);
+                if (user) {
+                    activity.user = user;
+                }
+            }
+            if (!this._fn.isZeroUuid(activity.group_id)) {
+                const user = await this._userAccountGroupCache.getBasicGroupData(activity.group_id);
+                if (user) {
+                    activity.user = user;
+                }
             }
         });
     }
@@ -645,16 +635,37 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
     getActivitiesUser(): void {
         const promiseList: Promise<any>[] = [];
         const userIdList: string[] = [];
+        const accountIdList: string[] = [];
+        const groupIdList: string[] = [];
         this.activities.forEach((activity) => {
-            const found = userIdList.includes(activity.user_id);
-            if (!found) {
-                userIdList.push(activity.user_id);
+            if (!this._fn.isZeroUuid(activity.user_id)) {
+                const found = userIdList.includes(activity.user_id);
+                if (!found) {
+                    userIdList.push(activity.user_id);
+                }
+            }
+            if (!this._fn.isZeroUuid(activity.account_id)) {
+                const found = accountIdList.includes(activity.account_id);
+                if (!found) {
+                    accountIdList.push(activity.account_id);
+                }
+            }
+            if (!this._fn.isZeroUuid(activity.group_id)) {
+                const found = groupIdList.includes(activity.group_id);
+                if (!found) {
+                    groupIdList.push(activity.group_id);
+                }
             }
         });
         userIdList.forEach((id) => {
-            promiseList.push(this.getBasicUserData(id));
+            promiseList.push(this._userAccountGroupCache.getBasicUserData(id));
         });
-
+        accountIdList.forEach((id) => {
+            promiseList.push(this._userAccountGroupCache.getBasicAccountData(id));
+        });        
+        groupIdList.forEach((id) => {
+            promiseList.push(this._userAccountGroupCache.getBasicGroupData(id));
+        });
         if (promiseList.length > 0) {
             Promise.all(promiseList).finally(() => {
                 this.doPopulateActivityUserFromCache();
@@ -676,12 +687,14 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
                 resolve(this.activities);
                 return;
             }
-            this._activities.getAccountActivities(this.account.id).then((activities) => {
-                this.activities = activities;
-                this.getActivitiesUser();
-                this.activitiesOnChanged.next(this.activities);
-                resolve(this.activities);
-            });
+            this._activities
+                .getAccountActivities(this.account.id)
+                .then((activities) => {
+                    this.activities = activities;
+                    this.getActivitiesUser();
+                    this.activitiesOnChanged.next(this.activities);
+                    resolve(this.activities);
+                });
         });
     }
 
@@ -731,7 +744,6 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
             }, reject);
         });
     }
-
 
     /**
      * Get Country listing from json file
@@ -805,7 +817,9 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
                 .subscribe((accoutnGroupTimelineDTO: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
                     this.accountTimelineDTO = accoutnGroupTimelineDTO;
-                    this.accountTimelineDTOOnChanged.next(this.accountTimelineDTO);
+                    this.accountTimelineDTOOnChanged.next(
+                        this.accountTimelineDTO
+                    );
                     resolve(this.accountTimelineDTO);
                 }, reject);
         });
@@ -897,23 +911,24 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
     }
 
     /**
-     * Get basic user data
+     * Get basic account data
      */
-    getBasicUserDataFromServer(userId: string): Promise<any> {
+    getBasicAccountDataFromServer(accountId: string): Promise<any> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(
-                SrvApiEnvEnum.basicUserByUserId,
-                [userId]
+                SrvApiEnvEnum.basicAccountByAccountId,
+                [accountId]
             );
 
             this._http
                 .GetObs(httpConfig, true)
-                .subscribe((userBasicData: any) => {
+                .subscribe((accountBasicData: any) => {
                     this._authTokenSession.checkAuthTokenStatus();
-                    resolve(userBasicData);
+                    resolve(accountBasicData);
                 }, reject);
         });
     }
+
 
     /**
      * Get user data

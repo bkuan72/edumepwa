@@ -48,6 +48,7 @@ export class ActivityService {
         });
     }
 
+
     /**
      * Delete an AccountGroup activity
      * @param activityId activities.id

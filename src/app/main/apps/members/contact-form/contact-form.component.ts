@@ -4,7 +4,7 @@ import { Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angula
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 
-import { MemberContact } from 'app/main/apps/members/contact.model';
+import { MemberContact } from 'app/main/apps/members/member-contact.model';
 import { Observable, Subject } from 'rxjs';
 import { startWith, map, takeUntil, debounceTime } from 'rxjs/operators';
 import { AuthTokenSessionService } from 'app/services/auth-token-session/auth-token-session.service';
@@ -65,7 +65,7 @@ export class MemberContactsContactFormDialogComponent implements OnDestroy, OnIn
         {
             this.dialogTitle = 'New Contact';
             this.contact = new MemberContact({});
-            this.contact.user_id = this._auth.currentAuthUser.id;
+            this.contact.account_id = this._contactService.account.id;
             this.newContact = true;
         }
 
@@ -141,8 +141,8 @@ export class MemberContactsContactFormDialogComponent implements OnDestroy, OnIn
     {
         return this._formBuilder.group({
             id      : [this.contact.id],
+            account_id      : [this.contact.account_id],
             user_id      : [this.contact.user_id],
-            friend_id      : [this.contact.friend_id],
             first_name    : [this.contact.first_name, [Validators.required]],
             last_name: [this.contact.last_name],
             avatar  : [this.contact.avatar],
@@ -154,8 +154,8 @@ export class MemberContactsContactFormDialogComponent implements OnDestroy, OnIn
             address : [this.contact.address],
             birthday: [this.contact.birthday],
             notes   : [this.contact.notes],
-            friend_status: [this.contact.friend_status],
-            blockUser: [this.contact.friend_status === 'BLOCKED']
+            member_status: [this.contact.member_status],
+            blockUser: [this.contact.member_status === 'BLOCKED']
         });
     }
 
@@ -174,7 +174,7 @@ export class MemberContactsContactFormDialogComponent implements OnDestroy, OnIn
                 this.confirmDialogRef = null;
             });
         } else {
-        this._contactService.checkBlockByFriend(user.id).then((resp) => {
+        this._contactService.checkAccountBlockByUser(this._contactService.account.id, user.id).then((resp) => {
             if (resp.blocked) {
                 this.confirmDialogRef = this._matDialog.open(OkDialogComponent, {
                     disableClose: false
@@ -188,8 +188,8 @@ export class MemberContactsContactFormDialogComponent implements OnDestroy, OnIn
                     this.selectedUser = userData;
                     this.contactForm.setValue({
                         id: '',
-                        user_id: this._auth.currentAuthUser.id,
-                        friend_id: userData.id,
+                        account_id: this._contactService.account.id,
+                        user_id: userData.id,
                         first_name: userData.first_name,
                         last_name: userData.last_name,
                         avatar: userData.avatar,
@@ -201,7 +201,7 @@ export class MemberContactsContactFormDialogComponent implements OnDestroy, OnIn
                         address: '',
                         birthday: '',
                         notes: '',
-                        friend_status: 'REQUEST',
+                        member_status: 'REQUEST',
                         blockUser: false
                     });
                     this.contact.avatar = userData.avatar;
@@ -217,7 +217,7 @@ export class MemberContactsContactFormDialogComponent implements OnDestroy, OnIn
             this.confirmDialogRef.afterClosed().subscribe(result => {
                 this.confirmDialogRef = null;
             });
-        })
+        });
         }
 
     }
