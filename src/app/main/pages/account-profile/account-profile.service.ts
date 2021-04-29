@@ -245,17 +245,21 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
         return new Promise((resolve) => {
             this.ownerOfProfile = false;
             this.ownerOfProfileOnChanged.next(this.ownerOfProfile);
-            if (this.account) {
-                this._accountProfileSession
-                .getBasicAccount(this.account.id)
-                .finally(() => {
-                    this.ownerOfProfile = this._accountProfileSession.accountHolder(
-                        this._authTokenSession.currentAuthUser.id
-                    );
-                    this.checkShowFullProfile();
-                    this.ownerOfProfileOnChanged.next(this.ownerOfProfile);
+            if (this._authTokenSession.isLoggedIn()) {
+                if (this.account) {
+                    this._accountProfileSession
+                    .getBasicAccount(this.account.id)
+                    .finally(() => {
+                        this.ownerOfProfile = this._accountProfileSession.accountHolder(
+                            this._authTokenSession.currentAuthUser.id
+                        );
+                        this.checkShowFullProfile();
+                        this.ownerOfProfileOnChanged.next(this.ownerOfProfile);
+                        resolve();
+                    });
+                } else {
                     resolve();
-                });
+                }
             } else {
                 resolve();
             }
@@ -283,6 +287,10 @@ export class AccountProfileService implements Resolve<any>, OnDestroy {
 
     doLoadAccountProfile(): Observable<any> | Promise<any> | any {
         return new Promise<void>((resolve, reject) => {
+            if (!this._authTokenSession.isLoggedIn()) {
+                resolve(undefined);
+                return;
+            }
             if (this.account) {
                 Promise.all([
                     this.getTimeline(),

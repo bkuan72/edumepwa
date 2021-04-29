@@ -250,7 +250,7 @@ export class MemberContactsService implements Resolve<any>, OnDestroy {
     getMemberContacts(): Promise<any> {
         return new Promise((resolve, reject) => {
         if (!this._authTokenSession.isLoggedIn()) {
-            reject();
+            resolve(undefined);
             return;
         }
         const httpConfig = this._http.getSrvHttpConfig(
