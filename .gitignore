@@ -38,3 +38,4 @@ testem.log
 .DS_Store
 Thumbs.db
 src/assets/data/company.json
+/src/assets/app-settings.json
