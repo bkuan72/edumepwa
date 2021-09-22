@@ -16,7 +16,7 @@ enum PaginationType {
     PAGE_UP,
     PAGE_DOWN,
     NONE
-};
+}
 
 @Component({
     selector     : 'search-modern',
@@ -170,7 +170,7 @@ export class SearchModernComponent implements OnInit, OnDestroy, AfterViewInit
         if (pageNo > this.maxPageNo) {
             return;
         }
-        switch(paginationAction) {
+        switch (paginationAction) {
             case PaginationType.PAGE_UP:
                 this.paginationStart += this.settings.paginationRange;
                 this.paginationEnd = this.paginationStart + this.settings.paginationRange;
