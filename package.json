@@ -1,9 +1,10 @@
 {
-  "name": "fuse",
+  "name": "edumepwa",
   "version": "10.0.0",
   "license": "https://themeforest.net/licenses/terms/regular",
   "scripts": {
     "ng": "ng",
+    "start-container": "ng serve --host=0.0.0.0 --port=4201",
     "start": "ng serve --open",
     "start:mem": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng serve --open",
     "build": "ng build",
@@ -68,10 +69,10 @@
     "zone.js": "0.10.3"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "0.1000.4",
     "@angular/cli": "10.0.4",
     "@angular/compiler-cli": "10.0.5",
     "@angular/language-service": "10.0.5",
-    "@angular-devkit/build-angular": "0.1000.4",
     "@types/jasmine": "3.5.2",
     "@types/jasminewd2": "2.0.8",
     "@types/lodash": "4.14.149",

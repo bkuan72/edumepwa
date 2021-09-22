@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  edumepwa-application:
+    container_name: edumepwa-application
+    build:
+      context: .
+      dockerfile: ./Dockerfile-dev
+    stdin_open: true
+    tty: true
+    ports:
+      - "8082:80"
+    # depends_on:
+    #   - edumeserver_application
+    # volumes:
+    #    - ./../../edumepwa:/usr/src/app/edumepwa
+    #    - /usr/src/app/edumepwa/node_modules
