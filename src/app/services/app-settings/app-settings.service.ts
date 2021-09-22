@@ -28,57 +28,21 @@ export class AppSettingsService {
     }
 
     getSettings(): void {
-        this._httpClient.get(
-            SrvApiEnvEnum.SETTINGS_JSON_LOCATION
-        ).subscribe((dfltSettings: AppSettings) => {
-            this.settingsSubject.next(dfltSettings);
-        });
-    }
+        this.settings = new AppSettings();
+        // Read environment variables from browser window
+        const browserWindow = window || {};
+        const browserWindowEnv = browserWindow['__env'] || {};
 
-    private handleMissingJSONSettingsConfigErrors(error: any): Observable<AppSettings> {
-        // Log the error to the console
-        switch (error.status) {
-            case 404:
-                console.error('Can\'t find file: ' + SrvApiEnvEnum.SETTINGS_JSON_LOCATION);
-                break;
-            default:
-                console.error(error);
-                break;
+        // Assign environment variables from browser window to env
+        // In the current implementation, properties from env.js overwrite defaults from the EnvService.
+        // If needed, a deep merge can be performed here to merge properties instead of overwriting them.
+        for (const key in browserWindowEnv) {
+            if (browserWindowEnv.hasOwnProperty(key)) {
+                this.settings[key] = window['__env'][key];
+            }
         }
-        // Return default configuration values
-        const settings = new AppSettings();
-        return of(settings);
-        // SETTINGS_WEBAPI_LOCATION = settings.settingsApi;
-        // const httpConfig = this.http.getSrvHttpConfig(
-        //     SETTINGS_WEBAPI_LOCATION,
-        //     [],
-        //     undefined,
-        //     'application/json'
-        // );
-        // return this.http.GetObs(httpConfig, true).pipe(
-        //     map((response) => response.json()),
-        //     catchError(this.handleMissingServerSettingsConfigErrors)
-        // );
-
+        this.settingsSubject.next(this.settings);
     }
-
-
-
-    // private handleMissingServerSettingsConfigErrors(error: any): Observable<AppSettings> {
-    //     // Log the error to the console
-    //     switch (error.status) {
-    //         case 404:
-    //             console.error('Can\'t find file: ' + SETTINGS_WEBAPI_LOCATION);
-    //             break;
-    //         default:
-    //             console.error(error);
-    //             break;
-    //     }
-    //     // Return default configuration
-    //     return of<AppSettings>(new AppSettings());
-    // }
-
-
 
     saveSettings = (settings: AppSettings) => {
         localStorage.setItem(LocalStoreVarEnum.SETTINGS, JSON.stringify(settings));
