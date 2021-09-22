@@ -110,8 +110,8 @@ export enum SrvApiEnvEnum {
     deleteAdAgeGroups= '/api/adAgeGroups/delete',
 
     accounts= '/api/accounts',
-    newServiceAccount='/api/accounts/service',
-    newNormalAccount='/api/accounts/normal',
+    newServiceAccount= '/api/accounts/service',
+    newNormalAccount= '/api/accounts/normal',
     accountById= '/api/accounts/byAccountId',
     updateAccountAvatar= '/api/accounts/avatar/byAccountId',
     patchAccounts= '/api/accounts/byAccountId',
@@ -203,7 +203,6 @@ export enum SrvApiEnvEnum {
 
 
     // local web server path
-    SETTINGS_JSON_LOCATION = 'assets/app-settings.json',
     COUNTRIES_JSON = 'assets/data/countries.json',
     TITLES_JSON = 'assets/data/titles.json'
 
