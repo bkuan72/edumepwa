@@ -4,9 +4,8 @@
   "license": "https://themeforest.net/licenses/terms/regular",
   "scripts": {
     "ng": "ng",
-    "start-container": "ng serve --host=0.0.0.0 --port=4201",
-    "start": "ng serve --open",
-    "start:mem": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng serve --open",
+    "start": "ng serve --open --port 8082",
+    "start:mem": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng serve --open --port 8082",
     "build": "ng build",
     "build:prod": "ng build --prod",
     "build:prod:mem": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng build --prod",
