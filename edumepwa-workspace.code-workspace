@@ -17,6 +17,7 @@
 			"localstorage",
 			"sidepanel",
 			"webapi"
-		]
+		],
+		"angular.enable-strict-mode-prompt": false
 	}
 }
