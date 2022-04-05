@@ -17,7 +17,7 @@ export class AdminAuthGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    console.log ('validating Auth Guard')
+    console.log ('validating Auth Guard');
     if (!this._auth.isLoggedIn() || !this._auth.adminUser) {
       this.router.navigate(['search-modern']);
       return false;

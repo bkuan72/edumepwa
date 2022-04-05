@@ -146,7 +146,7 @@ export class AuthTokenSessionService implements OnDestroy {
                             this.router.navigate([
                                 'auth/lock',
                                 {
-                                    user_name: authUser.user_name,
+                                    username: authUser.username,
                                     email: authUser.email,
                                 },
                             ]);
@@ -159,7 +159,7 @@ export class AuthTokenSessionService implements OnDestroy {
                     this.router.navigate([
                         'auth/lock',
                         {
-                            user_name: authUser.user_name,
+                            username: authUser.username,
                             email: authUser.email,
                         },
                     ]);
@@ -218,7 +218,7 @@ export class AuthTokenSessionService implements OnDestroy {
                 this.router.navigate([
                     'auth/lock',
                     {
-                        user_name: this.authUser.user_name,
+                        username: this.authUser.username,
                         email: this.authUser.email,
                     },
                 ]);

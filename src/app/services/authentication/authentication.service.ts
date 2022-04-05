@@ -155,6 +155,25 @@ export class AuthenticationService {
                 });
         });
     }
+
+    emailDeviceConfirmation(email: string, deviceUuid: string, regConfirmKey: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const httpConfig = this._http.getSrvHttpConfig(
+                SrvApiEnvEnum.deviceRegConfirmation,
+                [email, deviceUuid, regConfirmKey]
+            );
+            this._http
+                .Get(httpConfig, false)
+                .then((res) => {
+                    resolve();
+                })
+                .catch((res) => {
+                    this._logger.error('Error Confirming Device Uuid', res);
+                    reject();
+                });
+        });
+    }
+
     resetPasswordConfirmation(email: string): Promise<void> {
         return new Promise((resolve, reject) => {
             const httpConfig = this._http.getSrvHttpConfig(

@@ -119,7 +119,7 @@ export class AccountsService implements OnDestroy, Resolve<any> {
                 this.account = newAccount;
                 this.accountOnChanged.next(this.account);
                 resolve();
-            })
+            });
         });
     }
 
@@ -303,8 +303,8 @@ export class AccountsService implements OnDestroy, Resolve<any> {
             const userAccount = {
                 user_id: userId,
                 account_id: accountId,
-                acc_type: "HOLDER",
-            }
+                acc_type: 'HOLDER',
+            };
             const httpConfig = this._http.getSrvHttpConfig(
                 SrvApiEnvEnum.userAccounts,
                 undefined,

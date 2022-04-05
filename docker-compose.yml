@@ -1,16 +1,16 @@
 version: '3.8'
 services:
-  edumepwa-application:
-    container_name: edumepwa-application
+  ls10_net_pwa_application:
+    # container_name: ls10_net_pwa-application
     build:
       context: .
-      dockerfile: ./Dockerfile-dev
+      dockerfile: ./Dockerfile
     stdin_open: true
     tty: true
     ports:
-      - "8082:80"
+      - "8082:8082"
     # depends_on:
-    #   - edumeserver_application
+    #   - ls10_net_server_application
     # volumes:
-    #    - ./../../edumepwa:/usr/src/app/edumepwa
-    #    - /usr/src/app/edumepwa/node_modules
+    #    - ./../../ls10_net_pwa:/usr/src/app/ls10_net_pwa
+    #    - /usr/src/app/ls10_net_pwa/node_modules

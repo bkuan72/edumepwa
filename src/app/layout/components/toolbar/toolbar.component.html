@@ -34,8 +34,8 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="currentUser && isAuth()">
                     <img [hidden]="fn.showGenericAvatar(currentUser.avatar)" class="avatar mr-0 mr-sm-16" src="{{currentUser.avatar}}">
-                    <ngx-avatar [hidden]="!fn.showGenericAvatar(currentUser.avatar)" name="{{currentUser.user_name}}"></ngx-avatar>
-                    <span class="username mr-12" fxHide fxShow.gt-sm>{{currentUser.user_name}}</span>
+                    <ngx-avatar [hidden]="!fn.showGenericAvatar(currentUser.avatar)" name="{{currentUser.username}}"></ngx-avatar>
+                    <span class="username mr-12" fxHide fxShow.gt-sm>{{currentUser.username}}</span>
                     <mat-icon class="s-16" fxHide.xs>keyboard_arrow_down</mat-icon>
                 </div>
             </button>

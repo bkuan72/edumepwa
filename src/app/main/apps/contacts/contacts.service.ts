@@ -280,9 +280,9 @@ export class ContactsService implements Resolve<any>, OnDestroy {
      * @returns {Promise<any>}
      */
     getContacts(): Promise<any> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
         if (!this._authTokenSession.isLoggedIn()) {
-            reject();
+            resolve(undefined);
             return;
         }
         const httpConfig = this._http.getSrvHttpConfig(
@@ -327,7 +327,7 @@ export class ContactsService implements Resolve<any>, OnDestroy {
                     this.onContactsChanged.next(this.contacts);
                     resolve(this.contacts);
                 });
-            }, reject);
+            }, resolve);
         });
     }
 

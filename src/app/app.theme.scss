@@ -85,7 +85,7 @@ $typography: mat-typography-config(
 @import "src/app/main/pages/authentication/reset-password/reset-password.theme";
 @import "src/app/main/pages/authentication/forgot-password/forgot-password.theme";
 @import "src/app/main/pages/authentication/lock/lock.theme";
-@import "src/app/main/pages/authentication/mail-confirm/mail-confirm.theme";
+@import "src/app/main/pages/authentication/mail-device-confirm/mail-device-confirm.theme";
 @import "src/app/main/pages/authentication/mail-confirmation/mail-confirmation.theme";
 @import "src/app/main/pages/authentication/reset-password-confirm/reset-password-confirm.theme";
 @import "src/app/main/pages/coming-soon/coming-soon.theme";
@@ -114,7 +114,7 @@ $typography: mat-typography-config(
     @include reset-password-confirm-theme($theme);
     @include forgot-password-theme($theme);
     @include lock-theme($theme);
-    @include mail-confirm-theme($theme);
+    @include mail-device-confirm-theme($theme);
     @include mail-confirmation-theme($theme);
     @include coming-soon-theme($theme);
     @include error-404-theme($theme);

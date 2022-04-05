@@ -1,16 +1,16 @@
-@mixin mail-confirm-theme($theme) {
+@mixin mail-device-confirm-theme($theme) {
 
     $background: map-get($theme, background);
     $foreground: map-get($theme, foreground);
     $is-dark: map-get($theme, is-dark);
 
-    mail-confirm {
+    mail-device-confirm {
 
-        #mail-confirm {
+        #mail-device-confirm {
 
-            #mail-confirm-form-wrapper {
+            #mail-device-confirm-form-wrapper {
 
-                #mail-confirm-form {
+                #mail-device-confirm-form {
                     @if ($is-dark) {
                         background: mat-color($fuse-navy, 600);
                     } @else {

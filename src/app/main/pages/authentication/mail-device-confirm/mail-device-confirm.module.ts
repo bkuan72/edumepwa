@@ -4,18 +4,18 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { FuseSharedModule } from '@fuse/shared.module';
 
-import { MailConfirmComponent } from 'app/main/pages/authentication/mail-confirm/mail-confirm.component';
+import { MailDeviceConfirmComponent } from 'app/main/pages/authentication/mail-device-confirm/mail-device-confirm.component';
 
 const routes = [
     {
-        path     : 'auth/mail-confirm',
-        component: MailConfirmComponent
+        path     : 'auth/mail-device-confirm',
+        component: MailDeviceConfirmComponent
     }
 ];
 
 @NgModule({
     declarations: [
-        MailConfirmComponent
+        MailDeviceConfirmComponent
     ],
     imports     : [
         RouterModule.forChild(routes),
@@ -25,6 +25,6 @@ const routes = [
         FuseSharedModule
     ]
 })
-export class MailConfirmModule
+export class MailDeviceConfirmModule
 {
 }

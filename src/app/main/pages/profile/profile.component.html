@@ -17,7 +17,7 @@
                 src="{{ user.avatar }}" />
             <ngx-avatar size=80 [hidden]="
                     user && isAuth() && !fn.showGenericAvatar(user.avatar)
-                " name="{{ user.user_name }}"></ngx-avatar>
+                " name="{{ user.username }}"></ngx-avatar>
 
             <div *ngIf="showAvatarEditor" fxLayout="row" fxLayoutAlign="start center">
                 <ngx-photo-editor #avatarPhotoEditor [imageChanedEvent]="avatarChangedEvent"
@@ -28,7 +28,7 @@
                     value: '*',
                     params: { delay: '100ms', x: '-25px' }
                 }">
-                {{ user.user_name }}
+                {{ user.username }}
             </div>
         </div>
 

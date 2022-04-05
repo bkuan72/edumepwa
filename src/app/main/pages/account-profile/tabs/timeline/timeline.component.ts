@@ -168,7 +168,7 @@ export class AccountProfileTimelineComponent implements OnInit, OnDestroy {
             this.isPostEmojiPickerVisible = false;
             this._profileService.doLoadAccountProfile();
 
-        }
+        };
         this.isPostEmojiPickerVisible = false;
 
         this.post.message = this.post.message.trim();
@@ -190,8 +190,7 @@ export class AccountProfileTimelineComponent implements OnInit, OnDestroy {
                 } else {
                     Promise.all(promiseList).finally (() => {
                         doTidyUp();
-                    })
-                }
+                    });                }
             })
             .catch(() => {
             });

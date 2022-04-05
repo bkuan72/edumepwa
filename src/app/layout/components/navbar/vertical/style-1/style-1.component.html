@@ -35,9 +35,9 @@
 
     </div>
     <div class="user" fxLayout="column" [ngClass]="fuseConfig.layout.navbar.secondaryBackground" *ngIf="isAuth() && currentUser">
-        <div class="h3 username">{{currentUser.user_name}}</div>
+        <div class="h3 username">{{currentUser.username}}</div>
         <div class="h5 email hint-text mt-8">{{currentUser.email}}</div>
-        <ngx-avatar [hidden]="!fn.showGenericAvatar(currentUser.avatar)" name="{{currentUser.user_name}}" size=80></ngx-avatar>
+        <ngx-avatar [hidden]="!fn.showGenericAvatar(currentUser.avatar)" name="{{currentUser.username}}" size=80></ngx-avatar>
 
         <div [hidden]="fn.showGenericAvatar(currentUser.avatar)" class="avatar-container" [ngClass]="fuseConfig.layout.navbar.primaryBackground">
             <img class="avatar" src="{{currentUser.avatar}}">

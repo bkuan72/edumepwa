@@ -1,16 +1,16 @@
 
 # Stage 1
 FROM node:12 as build-step
-RUN mkdir -p /app/edumepwa
-WORKDIR /app/edumepwa
+RUN mkdir -p /app/ls10_net_pwa
+WORKDIR /app/ls10_net_pwa
 
-COPY package.json /app/edumepwa
+COPY package.json /app/ls10_net_pwa
 RUN npm install
-COPY . /app/edumepwa
+COPY . /app/ls10_net_pwa
 RUN npm run build
 # Stage 2
 FROM nginx
-EXPOSE 3000
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=build-step /app/edumepwa/dist/edumepwa /usr/share/nginx/html
+COPY --from=build-step /app/ls10_net_pwa/dist/ls10_net_pwa /usr/share/nginx/html
+EXPOSE 8082
 

@@ -52,12 +52,12 @@ import { ProfileService } from './main/pages/profile/profile.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdKeywordsFormComponent } from './main/pages/forms/ad-keywords-maintenance/ad-keywords-maintenance-form.component';
-import { AccountsService } from './services/account/account.service';
 import { UserProfileSessionService } from './services/session/user-profile-session.service';
 import { AngularMaterialImageOverlayModule } from 'angular-material-image-overlay';
 import { ContactsService } from './main/apps/contacts/contacts.service';
 import { AccountProfileComponent } from './main/pages/account-profile/account-profile.component';
 import { AccountProfileService } from './main/pages/account-profile/account-profile.service';
+import { MailDeviceConfirmComponent } from './main/pages/authentication/mail-device-confirm/mail-device-confirm.component';
 
 
 const appRoutes: Routes = [
@@ -70,6 +70,11 @@ const appRoutes: Routes = [
     {
         path        : 'auth/confirmMail',
         component   : MailConfirmationComponent,
+        pathMatch   : 'full'
+    },
+    {
+        path        : 'auth/confirmDeviceMail',
+        component   : MailDeviceConfirmComponent,
         pathMatch   : 'full'
     },
     {

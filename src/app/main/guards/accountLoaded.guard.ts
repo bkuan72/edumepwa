@@ -17,7 +17,7 @@ export class AccountLoadedGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    console.log ('validating AccountLoaded Guard')
+    console.log ('validating AccountLoaded Guard');
     if (this._accountService.account === undefined) {
       this.router.navigate(['search-modern']);
       return false;

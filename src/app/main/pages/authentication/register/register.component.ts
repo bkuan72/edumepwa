@@ -134,12 +134,12 @@ export class RegisterComponent implements OnInit, OnDestroy
         let registerData: RegisterDTO;
         registerData = {
             email: this.f.email.value,
-            user_name: this.f.name.value,
+            username: this.f.name.value,
             password: this.f.password.value
         };
         this._auth.registerNewUser(registerData).then(() => {
             this._log.log('register user');
-            this.router.navigate(['auth/mail-confirm', { user_name: registerData.user_name, email: registerData.email }]);
+            this.router.navigate(['auth/mail-confirm', { username: registerData.username, email: registerData.email }]);
         })
         .catch(() => {
             this.alertService.error('Register User Failed');
@@ -148,7 +148,7 @@ export class RegisterComponent implements OnInit, OnDestroy
     }
 
     showAcceptTermWarning(): boolean {
-        return (this.warnAcceptTerms && !this.f.acceptTerms.value)
+        return (this.warnAcceptTerms && !this.f.acceptTerms.value);
     }
 }
 

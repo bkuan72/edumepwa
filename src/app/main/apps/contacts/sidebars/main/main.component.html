@@ -7,8 +7,8 @@
 
             <!-- USER -->
             <img [hidden]="fn.showGenericAvatar(user.avatar)" class="avatar mr-16" src="{{ user.avatar }}" />
-            <ngx-avatar size=40 [hidden]="!fn.showGenericAvatar(user.avatar)" name="{{ user.user_name }}"></ngx-avatar>
-            <span class="h5">{{user.user_name}}</span>
+            <ngx-avatar size=40 [hidden]="!fn.showGenericAvatar(user.avatar)" name="{{ user.username }}"></ngx-avatar>
+            <span class="h5">{{user.username}}</span>
             <!-- / USER -->
 
         </div>

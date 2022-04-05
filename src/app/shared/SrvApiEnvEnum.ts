@@ -50,6 +50,7 @@ export enum SrvApiEnvEnum {
     groupGroups = '/api/userGroups/byGroupId',
 
     regConfirmation = '/api/auth/confirm/byEmailNRegConfirmKey',
+    deviceRegConfirmation = '/api/auth/confirmDevice/byEmailNRegConfirmKey',
     newPasswordConfirmation = '/api/auth/resetPassword/byEmailNresetConfirmKeyNnewPassword',
     resetPassword = '/api/auth/resetPassword/byEmail',
     validResetPasswordKey = '/api/auth/confirm/byEmailResetPasswordKey',

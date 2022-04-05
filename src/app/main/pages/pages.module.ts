@@ -11,7 +11,7 @@ import { TermsAndConditionsModule } from './docs/terms-and-conditions/terms-and-
 import { SearchModernModule } from './search/modern/search-modern.module';
 import { ProfileModule } from './profile/profile.module';
 import { ComingSoonModule } from './coming-soon/coming-soon.module';
-import { MailConfirmModule } from './authentication/mail-confirm/mail-confirm.module';
+import { MailDeviceConfirmModule } from './authentication/mail-device-confirm/mail-device-confirm.module';
 import { LockModule } from './authentication/lock/lock.module';
 import { ForgotPasswordModule } from './authentication/forgot-password/forgot-password.module';
 import { Error500Module } from './errors/500/error-500.module';
@@ -36,7 +36,7 @@ import { NgModule } from '@angular/core';
         ResetPasswordConfirmModule,
         // ResetPassword2Module,
         LockModule,
-        MailConfirmModule,
+        MailDeviceConfirmModule,
         MailConfirmationModule,
 
         // Coming-soon

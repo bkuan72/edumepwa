@@ -103,7 +103,7 @@ export class UserProfileMaintenanceFormsComponent implements OnInit, OnDestroy
             title   : ['', [Validators.required, Validators.maxLength(10)]],
             first_name : ['', [Validators.required, Validators.maxLength(60)]],
             last_name  : ['', [Validators.required, Validators.maxLength(60)]],
-            user_name  : ['', [Validators.required, Validators.maxLength(60)]],
+            username  : ['', [Validators.required, Validators.maxLength(60)]],
             company  : ['', [Validators.maxLength(60)]],
             address   : ['', [Validators.required, Validators.maxLength(255)]],
             suburb  : ['', [Validators.required, Validators.maxLength(40)]],

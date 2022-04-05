@@ -1,13 +1,13 @@
 @import "src/@fuse/scss/fuse";
 
-mail-confirm {
+mail-device-confirm {
 
-    #mail-confirm {
+    #mail-device-confirm {
         width: 100%;
         background: url('/assets/images/backgrounds/dark-material-bg.jpg') no-repeat;
         background-size: cover;
 
-        #mail-confirm-form-wrapper {
+        #mail-device-confirm-form-wrapper {
             flex: 1 0 auto;
             padding: 32px;
 
@@ -15,7 +15,7 @@ mail-confirm {
                 padding: 16px;
             }
 
-            #mail-confirm-form {
+            #mail-device-confirm-form {
                 max-width: 480px;
                 padding: 48px;
                 text-align: center;
