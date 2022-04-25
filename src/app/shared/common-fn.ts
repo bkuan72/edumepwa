@@ -55,6 +55,9 @@ export class CommonFn {
                 ret.setDate(0);
             }
         };
+        let addMillisec = 0;
+        let daysFraction = 0;
+        let adjDays = 0;
         switch (interval) {
             case DateAddIntervalEnum.YEAR:
                 ret.setFullYear(ret.getFullYear() + units);
@@ -74,18 +77,47 @@ export class CommonFn {
             case DateAddIntervalEnum.DAY:
                 ret.setDate(ret.getDate() + units);
                 break;
-            case DateAddIntervalEnum.HOUR:
-                ret.setTime(ret.getTime() + this.hourToMillisec(units));
-                break;
-            case DateAddIntervalEnum.MINUTE:
-                ret.setTime(ret.getTime() + this.minToMillisec(units));
-                break;
-            case DateAddIntervalEnum.SECOND:
-                ret.setTime(ret.getTime() + this.secToMillisec(units));
-                break;
-            case DateAddIntervalEnum.MILLISECOND:
-                ret.setTime(ret.getTime() + units);
-                break;
+                case DateAddIntervalEnum.HOUR:
+                    daysFraction = units / 24;
+                    addMillisec = units * 3600000;
+                    if (daysFraction >= 1.0) {
+                      adjDays = parseInt(daysFraction.toFixed(0), 0);
+                      ret.setDate(ret.getDate() + adjDays);
+                      addMillisec -= (adjDays * (8640000));
+                    }
+      
+                    ret.setTime(ret.getTime() + addMillisec);
+                    break;
+                case DateAddIntervalEnum.MINUTE:
+                    daysFraction = units / 1440;
+                    addMillisec = units * 60000;
+                    if (daysFraction >= 1.0) {
+                      adjDays = parseInt(daysFraction.toFixed(0), 0);
+                      ret.setDate(ret.getDate() + adjDays);
+                      addMillisec -= (adjDays * (8640000));
+                    }
+                    ret.setTime(ret.getTime() + addMillisec);
+                    break;
+                case DateAddIntervalEnum.SECOND:
+                    daysFraction = units / 86400;
+                    addMillisec = units * 1000;
+                    if (daysFraction >= 1.0) {
+                      adjDays = parseInt(daysFraction.toFixed(0), 0);
+                      ret.setDate(ret.getDate() + adjDays);
+                      addMillisec -= (adjDays * (8640000));
+                    }
+                    ret.setTime(ret.getTime() + addMillisec);
+                    break;
+                case DateAddIntervalEnum.MILLISECOND:
+                    daysFraction = units / 86400000;
+                    addMillisec = units;
+                    if (daysFraction >= 1.0) {
+                      adjDays = parseInt(daysFraction.toFixed(0), 0);
+                      ret.setDate(ret.getDate() + adjDays);
+                      addMillisec -= (adjDays * (8640000));
+                    }
+                    ret.setTime(ret.getTime() + addMillisec);
+                    break;
             default:
                 ret = undefined;
                 break;
