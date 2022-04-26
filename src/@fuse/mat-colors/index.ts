@@ -707,8 +707,8 @@ const matPresetColors = [
 ];
 
 /**
- // Color palettes from the Material Design spec.
- // See https://www.google.com/design/spec/style/color.html
+ * Color palettes from the Material Design spec.
+ * See https://www.google.com/design/spec/style/color.html
  */
 export class MatColors
 {
