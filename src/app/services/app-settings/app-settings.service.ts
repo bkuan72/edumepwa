@@ -1,9 +1,9 @@
-import { SrvApiEnvEnum } from './../../shared/SrvApiEnvEnum';
 import { LocalStoreVarEnum } from './../../shared/local-store-var-enum';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AppSettings } from '../../shared/app-settings';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'environments/environment';
 
 @Injectable({
     providedIn: 'root',
@@ -31,14 +31,13 @@ export class AppSettingsService {
         this.settings = new AppSettings();
         // Read environment variables from browser window
         const browserWindow = window || {};
-        const browserWindowEnv = browserWindow['__env'] || {};
 
         // Assign environment variables from browser window to env
         // In the current implementation, properties from env.js overwrite defaults from the EnvService.
         // If needed, a deep merge can be performed here to merge properties instead of overwriting them.
-        for (const key in browserWindowEnv) {
-            if (browserWindowEnv.hasOwnProperty(key)) {
-                this.settings[key] = window['__env'][key];
+        for (const key in environment) {
+            if (this.settings.hasOwnProperty(key)) {
+                this.settings[key] = environment[key];
             }
         }
         this.settingsSubject.next(this.settings);

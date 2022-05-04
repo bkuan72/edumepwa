@@ -39,4 +39,3 @@ testem.log
 Thumbs.db
 src/assets/data/company.json
 /src/assets/env.json
-/src/env.js
