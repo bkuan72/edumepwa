@@ -8,19 +8,16 @@
                 <mat-icon class="mat-accent s-96">email</mat-icon>
             </div>
 
-            <div class="title">Confirm your new login device!</div>
+            <div class="title">Thank You for confirming your login to a new device!</div>
 
             <div class="subtitle">
                 <p>
-                    A confirmation e-mail has been sent to <b>{{email}}</b>.
-                </p>
-                <p>
-                    Check your inbox and click on the "Confirm my email" link to confirm your new login device.
+                    <b>You are ready to login to Ls10Delivery</b>.
                 </p>
             </div>
 
             <div class="message">
-                <a class="link" [routerLink]="'/auth/login'">Go back to login page</a>
+                <a class="link" (click)="navigateToLs10Delivery()">Go to Ls10Delivery login page</a>
             </div>
 
         </div>

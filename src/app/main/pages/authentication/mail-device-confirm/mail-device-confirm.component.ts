@@ -1,9 +1,12 @@
+import { RedirectService } from './../../../../services/redirect/redirect.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 
 import { FuseConfigService } from '@fuse/services/config.service';
 import { fuseAnimations } from '@fuse/animations';
 import { AuthenticationService } from 'app/services/authentication/authentication.service';
+import { AppSettingsService } from 'app/services/app-settings/app-settings.service';
+
 
 @Component({
     selector     : 'mail-device-confirm',
@@ -18,6 +21,8 @@ export class MailDeviceConfirmComponent implements OnInit
     regConfirmKey: string;
     deviceUuid: string;
     email: string;
+    ls10deliverUrl: string;
+
     /**
      * Constructor
      *
@@ -27,9 +32,12 @@ export class MailDeviceConfirmComponent implements OnInit
         private _fuseConfigService: FuseConfigService,
         private actRouter: ActivatedRoute,
         private router: Router,
-        private _auth: AuthenticationService
+        private _auth: AuthenticationService,
+        private _appSetting: AppSettingsService,
+        private _redirect: RedirectService
     )
     {
+        this.ls10deliverUrl = this._appSetting.settingsValue.deliveryLoginUrl;
         this.deviceUuid = '';
         this.email = '';
         this.regConfirmKey = '';
@@ -65,5 +73,9 @@ export class MailDeviceConfirmComponent implements OnInit
                 this.router.navigateByUrl('errors/error-404');
             });
         });
+    }
+
+    navigateToLs10Delivery(): void {
+        this._redirect.navigate(this.ls10deliverUrl);
     }
 }
