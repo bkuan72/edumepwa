@@ -1,3 +1,5 @@
+import { RedirectService } from './../../../../services/redirect/redirect.service';
+import { AppSettingsService } from 'app/services/app-settings/app-settings.service';
 import { LoggerService } from 'app/services/logger/logger.service';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -9,17 +11,18 @@ import { AuthenticationService } from 'app/services/authentication/authenticatio
 import { AlertService } from 'app/services/alert/alert.service';
 
 @Component({
-    selector     : 'forgot-password',
-    templateUrl  : './forgot-password.component.html',
-    styleUrls    : ['./forgot-password.component.scss'],
+    selector     : 'forgot-delivery-password',
+    templateUrl  : './forgot-delivery-password.component.html',
+    styleUrls    : ['./forgot-delivery-password.component.scss'],
     encapsulation: ViewEncapsulation.None,
     animations   : fuseAnimations
 })
-export class ForgotPasswordComponent implements OnInit
+export class ForgotDeliveryPasswordComponent implements OnInit
 {
-    forgotPasswordForm: FormGroup;
+    ForgotDeliveryPasswordForm: FormGroup;
     loading = false;
     submitted = false;
+    ls10deliverUrl: string;
 
     /**
      * Constructor
@@ -33,9 +36,12 @@ export class ForgotPasswordComponent implements OnInit
         private router: Router,
         private _auth: AuthenticationService,
         private alertService: AlertService,
-        private _log: LoggerService
+        private _log: LoggerService,
+        private _appSetting: AppSettingsService,
+        private _redirect: RedirectService
     )
     {
+        this.ls10deliverUrl = this._appSetting.settingsValue.deliveryLoginUrl;
         // Configure the layout
         this._fuseConfigService.config = {
             layout: {
@@ -65,7 +71,7 @@ export class ForgotPasswordComponent implements OnInit
      */
     ngOnInit(): void
     {
-        this.forgotPasswordForm = this._formBuilder.group({
+        this.ForgotDeliveryPasswordForm = this._formBuilder.group({
             email: ['', [Validators.required, Validators.email]]
         });
     }
@@ -73,7 +79,7 @@ export class ForgotPasswordComponent implements OnInit
 
     // convenience getter for easy access to form fields
     // tslint:disable-next-line:typedef
-    get f() { return this.forgotPasswordForm.controls; }
+    get f() { return this.ForgotDeliveryPasswordForm.controls; }
     onSubmit(): void {
         if (this.submitted) {
             return;
@@ -84,7 +90,7 @@ export class ForgotPasswordComponent implements OnInit
         this.alertService.clear();
 
         // stop here if form is invalid
-        if (this.forgotPasswordForm.invalid) {
+        if (this.ForgotDeliveryPasswordForm.invalid) {
             return;
         }
 
@@ -94,11 +100,14 @@ export class ForgotPasswordComponent implements OnInit
 
         this._auth.resetPasswordConfirmation(this.f.email.value).then(() => {
             this._log.log('reset password confirmation');
-            this.router.navigate(['auth/reset-password-confirm', { email: this.f.email.value,  navigateToUrl: 'auth/login', urlDescription: 'Go to Login' }]);
+            this.router.navigate(['auth/reset-password-confirm', { email: this.f.email.value, navigateToUrl: this.ls10deliverUrl, urlDescription: 'Go to Ls10Delivery Login' }]);
         })
         .catch(() => {
             this.alertService.error('Register User Failed');
             this.loading = false;
         });
+    }
+    navigateToLs10Delivery(): void {
+        this._redirect.navigate(this.ls10deliverUrl);
     }
 }

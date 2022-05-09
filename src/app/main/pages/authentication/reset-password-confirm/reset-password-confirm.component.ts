@@ -3,6 +3,7 @@ import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 
 import { FuseConfigService } from '@fuse/services/config.service';
 import { fuseAnimations } from '@fuse/animations';
+import { RedirectService } from 'app/services/redirect/redirect.service';
 
 @Component({
     selector     : 'reset-password-confirm',
@@ -14,6 +15,8 @@ import { fuseAnimations } from '@fuse/animations';
 export class ResetPasswordConfirmComponent implements OnInit
 {
     email: string;
+    navigateToUrl: string;
+    urlDescription: string;
     /**
      * Constructor
      *
@@ -21,7 +24,8 @@ export class ResetPasswordConfirmComponent implements OnInit
      */
     constructor(
         private _fuseConfigService: FuseConfigService,
-        private activeRouter: ActivatedRoute
+        private activeRouter: ActivatedRoute,
+        private redirect: RedirectService
     )
     {
         this.email = '';
@@ -47,6 +51,12 @@ export class ResetPasswordConfirmComponent implements OnInit
     ngOnInit(): void {
         this.activeRouter.params.subscribe(params => {
             this.email = params['email'];
+            this.navigateToUrl = params['navigateToUrl'];
+            this.urlDescription = params['urlDescription'];
         });
+    }
+
+    public redirectToUrl(): void {
+        this.redirect.navigate(this.navigateToUrl);
     }
 }

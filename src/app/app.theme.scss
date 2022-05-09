@@ -84,6 +84,7 @@ $typography: mat-typography-config(
 @import "src/app/main/pages/authentication/register/register.theme";
 @import "src/app/main/pages/authentication/reset-password/reset-password.theme";
 @import "src/app/main/pages/authentication/forgot-password/forgot-password.theme";
+@import "src/app/main/pages/authentication/forgot-delivery-password/forgot-delivery-password.theme";
 @import "src/app/main/pages/authentication/lock/lock.theme";
 @import "src/app/main/pages/authentication/mail-device-confirm/mail-device-confirm.theme";
 @import "src/app/main/pages/authentication/mail-confirmation/mail-confirmation.theme";
@@ -113,6 +114,7 @@ $typography: mat-typography-config(
     @include reset-password-theme($theme);
     @include reset-password-confirm-theme($theme);
     @include forgot-password-theme($theme);
+    @include forgot-delivery-password-theme($theme);
     @include lock-theme($theme);
     @include mail-device-confirm-theme($theme);
     @include mail-confirmation-theme($theme);

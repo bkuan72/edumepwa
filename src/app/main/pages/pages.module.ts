@@ -1,3 +1,4 @@
+import { ForgotDeliveryPasswordModule } from './authentication/forgot-delivery-password/forgot-delivery-password.module';
 import { AccountProfileModule } from './account-profile/account-profile.module';
 import { AccountProfileMaintenanceFormsModule } from './forms/account-profile-maintenance/account-profile-maintenance-form.module';
 import { AdAgeGroupsFormModule } from './forms/ad-ageGroups-maintenance/ad-ageGroups-maintenance-form.module';
@@ -31,6 +32,7 @@ import { NgModule } from '@angular/core';
         RegisterModule,
         // Register2Module,
         ForgotPasswordModule,
+        ForgotDeliveryPasswordModule,
         // ForgotPassword2Module,
         ResetPasswordModule,
         ResetPasswordConfirmModule,

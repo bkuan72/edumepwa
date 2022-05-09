@@ -1,3 +1,4 @@
+import { ForgotDeliveryPasswordComponent } from 'app/main/pages/authentication/forgot-delivery-password/forgot-delivery-password.component';
 import { ProfileAccessControlService } from './services/profile-access-control/profile-access-control.service';
 import { UserAccountGroupCacheService } from './services/user-account-group-cache/user-account-group-cache.service';
 import { SharedModule } from './pipes/shared.module';
@@ -75,6 +76,11 @@ const appRoutes: Routes = [
     {
         path        : 'auth/confirmDeviceMail',
         component   : MailDeviceConfirmComponent,
+        pathMatch   : 'full'
+    },
+    {
+        path        : 'auth/forgot-delivery-password',
+        component   : ForgotDeliveryPasswordComponent,
         pathMatch   : 'full'
     },
     {
