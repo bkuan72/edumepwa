@@ -1,8 +1,8 @@
-import { LocalStoreVarEnum } from './../../shared/local-store-var-enum';
+import { LocalStoreVarEnum } from '../../shared/local-store-var-enum';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RegisterDTO } from './../../dtos/register-dto';
-import { LoginDTO } from './../../dtos/login-dto';
-import { SrvApiEnvEnum } from './../../shared/SrvApiEnvEnum';
+import { RegisterDTO } from '../../dtos/register-dto';
+import { LoginDTO } from '../../dtos/login-dto';
+import { SrvApiEnvEnum } from '../../shared/SrvApiEnvEnum';
 import { Injectable } from '@angular/core';
 import { SrvHttpService } from '../http-connect/srv-http.service';
 import { BehaviorSubject, Observable } from 'rxjs';

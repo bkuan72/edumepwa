@@ -1,6 +1,6 @@
-import { LocalStoreVarEnum } from './../../shared/local-store-var-enum';
+import { LocalStoreVarEnum } from '../../shared/local-store-var-enum';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MemberContactsService } from './../../main/apps/members/member-contacts.service';
+import { MemberContactsService } from '../../main/apps/members/member-contacts.service';
 import { ContactsService } from 'app/main/apps/contacts/contacts.service';
 import { Injectable } from '@angular/core';
 import { CommonFn } from 'app/shared/common-fn';

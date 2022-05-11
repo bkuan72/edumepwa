@@ -1,4 +1,4 @@
-import { LogEntry } from './../services/logger/logger.service';
+import { LogEntry } from '../services/logger/logger.service';
 import { Observable, of } from 'rxjs';
 
 

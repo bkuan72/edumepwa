@@ -1,5 +1,5 @@
 import { takeUntil } from 'rxjs/operators';
-import { CommonFn } from './../../shared/common-fn';
+import { CommonFn } from '../../shared/common-fn';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { AppSettings } from 'app/shared/app-settings';
 import { Router } from '@angular/router';

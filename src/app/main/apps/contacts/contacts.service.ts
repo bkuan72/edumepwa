@@ -1,5 +1,5 @@
 import { MatDialog } from '@angular/material/dialog';
-import { UserService } from './../../../services/user/user.service';
+import { UserService } from '../../../services/user/user.service';
 import { SrvHttpService } from 'app/services/http-connect/srv-http.service';
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';

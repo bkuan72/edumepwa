@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { LogLevel } from './../services/logger/logger.service';
+import { LogLevel } from '../services/logger/logger.service';
 import { catchError, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { LogServer } from './log-server';

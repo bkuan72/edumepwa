@@ -1,7 +1,7 @@
 import { SrvApiEnvEnum } from './SrvApiEnvEnum';
 import { isUndefined } from 'lodash';
 import { catchError, map } from 'rxjs/operators';
-import { SrvHttpService } from './../services/http-connect/srv-http.service';
+import { SrvHttpService } from '../services/http-connect/srv-http.service';
 import { Observable, of, throwError } from 'rxjs';
 import { LogEntry } from '../services/logger/logger.service';
 import { LogPublisher } from './log-publisher';

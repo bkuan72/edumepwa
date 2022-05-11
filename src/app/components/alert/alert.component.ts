@@ -1,5 +1,5 @@
-import { AlertService } from './../../services/alert/alert.service';
-import { Alert, AlertType } from './../../models/alert';
+import { AlertService } from '../../services/alert/alert.service';
+import { Alert, AlertType } from '../../models/alert';
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -87,7 +87,7 @@ export class AlertComponent implements OnInit, OnDestroy {
             [AlertType.Error]: 'alert alert-danger',
             [AlertType.Info]: 'alert alert-info',
             [AlertType.Warning]: 'alert alert-warning'
-        }
+        };
 
         classes.push(alertTypeClass[alert.type]);
 

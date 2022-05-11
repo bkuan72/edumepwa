@@ -1,5 +1,5 @@
-import { AlertService } from './../alert/alert.service';
-import { AppSettingsService } from './../app-settings/app-settings.service';
+import { AlertService } from '../alert/alert.service';
+import { AppSettingsService } from '../app-settings/app-settings.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { isUndefined } from 'lodash';

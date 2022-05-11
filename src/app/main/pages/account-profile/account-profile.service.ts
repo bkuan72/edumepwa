@@ -1,4 +1,4 @@
-import { AccountProfileSessionService } from './../../../services/session/account-profile-session.service';
+import { AccountProfileSessionService } from '../../../services/session/account-profile-session.service';
 import { takeUntil } from 'rxjs/operators';
 import { Injectable, OnDestroy } from '@angular/core';
 import {

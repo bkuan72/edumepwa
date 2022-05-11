@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-  ls10_net_pwa_application:
-    # container_name: ls10_net_pwa-application
+  ls10_net_web_application:
+    # container_name: ls10_net_web-application
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -12,5 +12,5 @@ services:
     # depends_on:
     #   - ls10_net_server_application
     # volumes:
-    #    - ./../../ls10_net_pwa:/usr/src/app/ls10_net_pwa
-    #    - /usr/src/app/ls10_net_pwa/node_modules
+    #    - ./../../ls10_net_web:/usr/src/app/ls10_net_web
+    #    - /usr/src/app/ls10_net_web/node_modules
